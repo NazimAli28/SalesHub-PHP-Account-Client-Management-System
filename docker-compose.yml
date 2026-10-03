@@ -1,0 +1,27 @@
+# Local development services. Run the apps themselves with
+# `php artisan serve` (backend) and `npm run dev` (frontend).
+services:
+    mysql:
+        image: mysql:8.4
+        ports:
+            - '3306:3306'
+        environment:
+            MYSQL_DATABASE: saleshub
+            MYSQL_USER: saleshub
+            MYSQL_PASSWORD: secret
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - mysql-data:/var/lib/mysql
+        healthcheck:
+            test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+            interval: 10s
+            retries: 5
+
+    mailpit:
+        image: axllent/mailpit:latest
+        ports:
+            - '1025:1025' # SMTP
+            - '8025:8025' # Web UI
+
+volumes:
+    mysql-data:

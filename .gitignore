@@ -1,13 +1,6 @@
-# Local configuration / secrets
-config/config.local.php
-.env
-
 # OS / editor
 .DS_Store
 Thumbs.db
-.vscode/
 .idea/
-
-# Logs & exports
-*.log
-/exports/
+.vscode/
+*.swp
