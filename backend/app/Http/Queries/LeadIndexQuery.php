@@ -2,11 +2,13 @@
 
 namespace App\Http\Queries;
 
+use App\Enums\LeadStage;
 use App\Http\Filters\DateFilter;
 use App\Http\Filters\SearchFilter;
 use App\Http\Resources\LeadResource;
 use App\Models\Lead;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -16,6 +18,7 @@ use Spatie\QueryBuilder\QueryBuilder;
  *
  * filter[stage]=new,engaged  filter[owner]=4  filter[client]=7  filter[platform_account]=3
  * filter[contacted_from]=2026-09-01  filter[contacted_to]=2026-09-30  filter[search]=text
+ * filter[follow_up_from]=2026-10-01  filter[follow_up_to]=2026-10-04  filter[open]=1 (stage not won/lost)
  * sort=-contacted_on (default) | contacted_on | stage_changed_at | next_follow_up_on | estimated_value_cents | created_at
  * include=client,owner,closer,platformAccount,services
  *
@@ -39,6 +42,13 @@ final class LeadIndexQuery
                 AllowedFilter::exact('platform_account', 'platform_account_id'),
                 AllowedFilter::custom('contacted_from', new DateFilter('>='), 'contacted_on'),
                 AllowedFilter::custom('contacted_to', new DateFilter('<='), 'contacted_on'),
+                AllowedFilter::custom('follow_up_from', new DateFilter('>='), 'next_follow_up_on'),
+                AllowedFilter::custom('follow_up_to', new DateFilter('<='), 'next_follow_up_on'),
+                AllowedFilter::callback('open', static function (Builder $query, mixed $value): void {
+                    if (filter_var($value, FILTER_VALIDATE_BOOL)) {
+                        $query->whereNotIn('stage', [LeadStage::Won->value, LeadStage::Lost->value]);
+                    }
+                }),
                 AllowedFilter::custom('search', new SearchFilter([
                     'last_message', 'lost_note', 'client.discord_username', 'client.name', 'client.email',
                 ])),

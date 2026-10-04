@@ -55,7 +55,7 @@ npm run dev                # http://localhost:5173 (proxies /api to :8000)
 - [x] **Phase 1:** database schema, authentication, roles & permissions
 - [x] **Phase 2:** core REST API (accounts, clients, leads, orders & payments, approvals)
 - [x] **Phase 3:** frontend foundation (app shell, auth, data tables, design system)
-- [ ] **Phase 4:** all v1 screens rebuilt
+- [x] **Phase 4:** all v1 screens rebuilt
 - [ ] **Phase 5:** analytics, Kanban pipeline, client 360, import wizard, notifications
 - [ ] **Phase 6:** end-to-end tests, accessibility and security hardening
 - [ ] **Phase 7:** live demo deployment and v2.0 release

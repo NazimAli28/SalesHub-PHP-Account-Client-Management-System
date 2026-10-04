@@ -37,6 +37,17 @@ Run the API alongside it (`php artisan serve` in `../backend`, port 8000). The d
 
 Only `VITE_*` variables reach the browser, so never put secrets in them.
 
+## Screens
+
+| Area           | Screens                                                        | Highlights                                                                                                        |
+| -------------- | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Overview       | Dashboard, **Today**, Approvals, Notifications                 | Daily list of due and overdue payments and follow-ups; approval queue with bulk actions and a before → after diff |
+| Sales          | Leads, Clients (+ **Client 360**), Orders (+ detail), Payments | Server-side tables with URL-synced filters; order line items with live totals; payment schedule and mark-paid     |
+| Accounts       | Platform accounts (+ detail), Social accounts                  | Write-only credentials; audited reveal panel that auto-hides after 30 s                                           |
+| Administration | Users, Teams, Workstations, Services, Audit log                | Role rules mirrored in the UI; redacted audit diffs                                                               |
+
+Every screen respects the user's permissions: navigation items, routes and row actions are hidden or guarded, and edits that need approval say "Send for approval" and handle the API's `202 Accepted`.
+
 ## Structure
 
 ```

@@ -7,6 +7,7 @@ use App\Enums\ApprovalStatus;
 use App\Models\ApprovalRequest;
 use App\Models\Lead;
 use App\Models\User;
+use Database\Seeders\Support\DemoText;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -25,12 +26,12 @@ class ApprovalRequestFactory extends Factory
             'action' => ApprovalAction::Update,
             'approvable_type' => 'lead',
             'approvable_id' => Lead::factory(),
-            'payload' => ['changes' => ['last_message' => fake()->sentence()]],
+            'payload' => ['changes' => ['last_message' => DemoText::leadMessage()]],
             'before' => null,
             'after' => null,
             'status' => ApprovalStatus::Pending,
             'pending_key' => fn (array $attributes) => 'lead:'.$attributes['approvable_id'],
-            'reason' => fake()->sentence(),
+            'reason' => DemoText::approvalReason(),
             'requested_by_id' => User::factory()->salesExecutive(),
         ];
     }
@@ -54,7 +55,7 @@ class ApprovalRequestFactory extends Factory
             'pending_key' => null,
             'reviewed_by_id' => $reviewer?->getKey() ?? User::factory()->support(),
             'reviewed_at' => now()->subDay(),
-            'review_comment' => fake()->sentence(),
+            'review_comment' => DemoText::reviewComment(),
         ]);
     }
 

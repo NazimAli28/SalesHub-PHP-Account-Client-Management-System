@@ -7,6 +7,7 @@ use App\Enums\LeadStage;
 use App\Models\Client;
 use App\Models\Lead;
 use App\Models\User;
+use Database\Seeders\Support\DemoText;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -31,7 +32,7 @@ class LeadFactory extends Factory
             'contacted_on' => $contacted->format('Y-m-d'),
             'estimated_value_cents' => fake()->numberBetween(2, 40) * 1000,
             'currency' => 'USD',
-            'last_message' => fake()->sentence(),
+            'last_message' => DemoText::leadMessage(),
             'next_follow_up_on' => now()->addDays(fake()->numberBetween(1, 14))->toDateString(),
             'lost_reason' => null,
             'lost_note' => null,
@@ -78,7 +79,7 @@ class LeadFactory extends Factory
             'stage' => LeadStage::Lost,
             'next_follow_up_on' => null,
             'lost_reason' => fake()->randomElement(LeadLostReason::cases()),
-            'lost_note' => fake()->sentence(),
+            'lost_note' => DemoText::lostNote(),
         ]);
     }
 }

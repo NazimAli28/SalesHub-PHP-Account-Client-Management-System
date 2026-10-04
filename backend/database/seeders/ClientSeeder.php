@@ -6,6 +6,7 @@ use App\Enums\ClientStatus;
 use App\Enums\RoleName;
 use App\Models\Client;
 use App\Models\User;
+use Database\Seeders\Support\DemoText;
 use Illuminate\Database\Seeder;
 
 class ClientSeeder extends Seeder
@@ -39,7 +40,7 @@ class ClientSeeder extends Seeder
                 'next_upsell_plan' => $status === ClientStatus::Lost ? null : fake()->randomElement($plans),
                 'expected_upsell_on' => $status === ClientStatus::Lost ? null : now()->addDays(fake()->numberBetween(-20, 60))->toDateString(),
                 'lost_note' => $status === ClientStatus::Lost ? 'Went with another designer.' : null,
-                'notes' => fake()->boolean(30) ? fake()->sentence() : null,
+                'notes' => fake()->boolean(30) ? DemoText::clientNote() : null,
             ]);
         }
     }

@@ -15,6 +15,7 @@ use App\Models\Payment;
 use App\Models\Service;
 use App\Models\User;
 use Carbon\CarbonImmutable;
+use Database\Seeders\Support\DemoText;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 
@@ -97,7 +98,7 @@ class OrderSeeder extends Seeder
             OrderItem::create([
                 'order_id' => $order->id,
                 'service_id' => $service->id,
-                'description' => fake()->boolean(25) ? fake()->words(3, true) : null,
+                'description' => fake()->boolean(25) ? DemoText::itemDescription() : null,
                 'quantity' => $service->slug === 'emote-each' ? fake()->numberBetween(2, 5) : 1,
                 'unit_price_cents' => $service->base_price_cents,
             ]);

@@ -1,5 +1,8 @@
 <?php
 
+use App\Approvals\RecordSnapshot;
+use App\Enums\ApprovalStatus;
+use App\Models\ApprovalRequest;
 use App\Models\Client;
 use App\Models\Lead;
 use App\Models\Order;
@@ -66,4 +69,35 @@ it('keeps seeded order totals consistent with items and payments', function () {
     });
 
     expect($bad)->toHaveCount(0);
+});
+
+it('seeds pending approval requests that can still be applied (not stale)', function () {
+    $this->seed(DatabaseSeeder::class);
+
+    $pending = ApprovalRequest::query()
+        ->where('status', ApprovalStatus::Pending->value)
+        ->whereNotNull('approvable_id')
+        ->get();
+
+    $stale = $pending->filter(function (ApprovalRequest $request) {
+        $record = $request->approvable;
+
+        return $record === null || RecordSnapshot::isStale($record, $request->before ?? []);
+    });
+
+    expect($pending)->not->toBeEmpty()
+        ->and($stale->map(fn (ApprovalRequest $r) => "{$r->approvable_type}:{$r->approvable_id}")->all())->toBe([]);
+});
+
+it('seeds readable demo text instead of placeholder Latin', function () {
+    $this->seed(DatabaseSeeder::class);
+
+    $texts = collect()
+        ->merge(Lead::query()->pluck('last_message'))
+        ->merge(ApprovalRequest::query()->pluck('reason'))
+        ->merge(Client::query()->whereNotNull('notes')->pluck('notes'))
+        ->filter();
+
+    expect($texts->filter(fn (string $text) => preg_match('/\b(lorem|ipsum|dolor|amet|aliquam|quia|voluptas)\b/i', $text)))
+        ->toBeEmpty();
 });

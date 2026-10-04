@@ -1,6 +1,10 @@
 import '@testing-library/jest-dom/vitest'
-import { cleanup } from '@testing-library/react'
+import { cleanup, configure } from '@testing-library/react'
 import { server } from './server'
+
+// findBy*/waitFor default to 1 s, which is too tight for MSW + Radix renders when the suite
+// runs in parallel on a busy machine or CI runner.
+configure({ asyncUtilTimeout: 5_000 })
 
 // jsdom gaps that Radix UI and the sidebar rely on.
 if (!window.matchMedia) {

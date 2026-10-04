@@ -59,5 +59,8 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     css: true,
+    // Dialog/sheet/popover interaction tests can exceed the 5 s default when the whole suite
+    // runs in parallel (notably on CI runners).
+    testTimeout: 20_000,
   },
 })

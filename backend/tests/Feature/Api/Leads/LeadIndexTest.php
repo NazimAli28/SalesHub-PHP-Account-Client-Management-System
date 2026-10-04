@@ -90,6 +90,18 @@ it('filters by stage, owner, client, platform account, date range and search', f
         ->and($only('filter[search]=overlay quote'))->toBe([$target->id]);
 });
 
+it('filters by follow-up date range and open stages for the daily task list', function () {
+    $this->actingAsRole(RoleName::Support);
+    Lead::query()->whereKey($this->mine->id)->update(['next_follow_up_on' => '2026-10-01', 'stage' => LeadStage::Engaged->value]);
+    Lead::query()->whereKey($this->teammate->id)->update(['next_follow_up_on' => '2026-10-04', 'stage' => LeadStage::Won->value]);
+    Lead::query()->whereKey($this->other->id)->update(['next_follow_up_on' => '2026-10-20', 'stage' => LeadStage::Quoted->value]);
+
+    expect(leadIds($this->getJson('/api/leads?filter[follow_up_to]=2026-10-04')))->toBe([$this->mine->id, $this->teammate->id])
+        ->and(leadIds($this->getJson('/api/leads?filter[follow_up_to]=2026-10-04&filter[open]=1')))->toBe([$this->mine->id])
+        ->and(leadIds($this->getJson('/api/leads?filter[follow_up_from]=2026-10-02')))->toBe([$this->teammate->id, $this->other->id])
+        ->and(leadIds($this->getJson('/api/leads?filter[open]=0')))->toHaveCount(3);
+});
+
 it('rejects malformed dates and unknown filters', function () {
     $this->actingAsRole(RoleName::Support);
 

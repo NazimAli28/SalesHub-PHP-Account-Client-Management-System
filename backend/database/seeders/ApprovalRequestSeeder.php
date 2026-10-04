@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Approvals\RecordSnapshot;
 use App\Enums\ApprovalAction;
 use App\Enums\ApprovalStatus;
 use App\Enums\RoleName;
@@ -9,8 +10,8 @@ use App\Models\ApprovalRequest;
 use App\Models\Client;
 use App\Models\Lead;
 use App\Models\User;
+use Database\Seeders\Support\DemoText;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Arr;
 
 class ApprovalRequestSeeder extends Seeder
 {
@@ -55,7 +56,7 @@ class ApprovalRequestSeeder extends Seeder
                 ...$attributes,
                 'status' => $status,
                 'pending_key' => $status === ApprovalStatus::Pending ? $attributes['pending_key'] : null,
-                'reason' => fake()->sentence(),
+                'reason' => DemoText::approvalReason(),
                 'requested_by_id' => $requester->id,
                 'reviewed_by_id' => $reviewed ? $reviewer->id : null,
                 'reviewed_at' => $reviewed ? $createdAt->copy()->addHours(fake()->numberBetween(1, 30)) : null,
@@ -100,7 +101,7 @@ class ApprovalRequestSeeder extends Seeder
             'approvable_type' => 'lead',
             'approvable_id' => $leadId,
             'payload' => ['changes' => $changes],
-            'before' => [...Arr::only($lead->attributesToArray(), array_keys($changes)), 'updated_at' => $lead->updated_at?->toIso8601String()],
+            'before' => RecordSnapshot::of($lead, array_keys($changes)),
             'pending_key' => 'lead:'.$leadId,
         ];
     }
@@ -118,7 +119,7 @@ class ApprovalRequestSeeder extends Seeder
             'approvable_type' => 'client',
             'approvable_id' => $clientId,
             'payload' => ['changes' => $changes],
-            'before' => [...Arr::only($client->attributesToArray(), array_keys($changes)), 'updated_at' => $client->updated_at?->toIso8601String()],
+            'before' => RecordSnapshot::of($client, array_keys($changes)),
             'pending_key' => 'client:'.$clientId,
         ];
     }
