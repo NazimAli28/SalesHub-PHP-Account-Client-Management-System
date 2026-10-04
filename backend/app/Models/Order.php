@@ -135,6 +135,24 @@ class Order extends Model
     }
 
     /**
+     * Statuses of orders that are still being worked on.
+     *
+     * @return list<OrderStatus>
+     */
+    public static function openStatuses(): array
+    {
+        return [OrderStatus::PendingPayment, OrderStatus::InProgress, OrderStatus::Delivered];
+    }
+
+    /**
+     * @param  Builder<static>  $query
+     */
+    public function scopeOpen(Builder $query): void
+    {
+        $query->whereIn($this->qualifyColumn('status'), array_map(fn (OrderStatus $s): string => $s->value, self::openStatuses()));
+    }
+
+    /**
      * Adds `paid_cents`: the sum of paid payments (balance = total - paid).
      *
      * @param  Builder<static>  $query
@@ -145,6 +163,28 @@ class Order extends Model
             ['payments as paid_cents' => fn (Builder $q) => $q->where('payments.status', PaymentStatus::Paid->value)],
             'amount_cents',
         );
+    }
+
+    /**
+     * Adds `overdue_payments_count`: scheduled payments past their due date.
+     *
+     * @param  Builder<static>  $query
+     */
+    public function scopeWithOverdueCount(Builder $query): void
+    {
+        $query->withCount(['payments as overdue_payments_count' => fn ($q) => $q->overdue()]);
+    }
+
+    /**
+     * Number of overdue payments (uses the `overdue_payments_count` aggregate when loaded).
+     */
+    public function overduePaymentsCount(): int
+    {
+        if (array_key_exists('overdue_payments_count', $this->attributes)) {
+            return (int) $this->attributes['overdue_payments_count'];
+        }
+
+        return $this->payments()->overdue()->count();
     }
 
     /**

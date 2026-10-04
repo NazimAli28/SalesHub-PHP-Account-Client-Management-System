@@ -19,4 +19,10 @@ return [
         'roles' => ['sales_executive', 'team_lead'],
     ],
 
+    /*
+    | Whether the generated API reference at /docs/api is viewable outside the local environment.
+    | It documents endpoints only; every endpoint still requires authentication.
+    */
+    'public_api_docs' => (bool) env('PUBLIC_API_DOCS', true),
+
 ];

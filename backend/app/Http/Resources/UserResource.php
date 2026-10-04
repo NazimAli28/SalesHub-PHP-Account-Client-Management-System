@@ -26,6 +26,8 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'avatar_url' => $this->avatar_path ? Storage::url($this->avatar_path) : null,
             'is_active' => $this->is_active,
+            'team_id' => $this->team_id,
+            'workstation_id' => $this->workstation_id,
             'last_login_at' => $this->last_login_at?->toIso8601ZuluString(),
             'roles' => $this->getRoleNames()->values()->all(),
             'team' => $this->team === null ? null : [
@@ -38,6 +40,8 @@ class UserResource extends JsonResource
                 'id' => $this->workstation->id,
                 'code' => $this->workstation->code,
             ],
+            'created_at' => $this->created_at?->toIso8601ZuluString(),
+            'updated_at' => $this->updated_at?->toIso8601ZuluString(),
         ];
     }
 }

@@ -64,5 +64,8 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for(LoginThrottle::NAME, LoginThrottle::limits(...));
 
         Gate::policy(Activity::class, ActivityPolicy::class);
+
+        // API docs (/docs/api) describe endpoints only; every endpoint still requires authentication.
+        Gate::define('viewApiDocs', fn (?User $user = null): bool => (bool) config('saleshub.public_api_docs'));
     }
 }
