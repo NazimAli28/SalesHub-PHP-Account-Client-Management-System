@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\SocialAccounts;
 
+use App\Http\Requests\Concerns\ResolvesActor;
 use App\Http\Requests\SocialAccounts\Concerns\SocialAccountRules;
 use App\Models\SocialAccount;
-use App\Models\User;
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
@@ -15,7 +15,7 @@ use Illuminate\Support\Arr;
  */
 class StoreSocialAccountRequest extends FormRequest
 {
-    use SocialAccountRules;
+    use ResolvesActor, SocialAccountRules;
 
     public function authorize(): bool
     {
@@ -27,8 +27,7 @@ class StoreSocialAccountRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var User $user */
-        $user = $this->user();
+        $user = $this->actor();
         $attributes = $this->socialAccountAttributeRules($user);
 
         return [

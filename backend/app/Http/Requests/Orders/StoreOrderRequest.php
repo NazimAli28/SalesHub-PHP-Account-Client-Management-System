@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Orders;
 
+use App\Http\Requests\Concerns\ResolvesActor;
 use App\Http\Requests\Orders\Concerns\OrderRules;
 use App\Models\Client;
 use App\Models\Lead;
@@ -20,7 +21,7 @@ use Illuminate\Validation\Validator;
  */
 class StoreOrderRequest extends FormRequest
 {
-    use OrderRules;
+    use OrderRules, ResolvesActor;
 
     public function authorize(): bool
     {
@@ -32,8 +33,7 @@ class StoreOrderRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var User $user */
-        $user = $this->user();
+        $user = $this->actor();
         $rules = $this->orderAttributeRules($user);
         $item = $this->itemRules();
 

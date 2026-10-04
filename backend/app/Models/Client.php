@@ -63,6 +63,14 @@ class Client extends Model
     }
 
     /**
+     * @return HasMany<ClientNote, $this>
+     */
+    public function notes(): HasMany
+    {
+        return $this->hasMany(ClientNote::class);
+    }
+
+    /**
      * @return HasManyThrough<Payment, Order, $this>
      */
     public function payments(): HasManyThrough

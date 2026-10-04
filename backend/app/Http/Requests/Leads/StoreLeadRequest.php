@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Leads;
 
+use App\Http\Requests\Concerns\ResolvesActor;
 use App\Http\Requests\Leads\Concerns\LeadRules;
 use App\Models\Client;
 use App\Models\Lead;
@@ -18,7 +19,7 @@ use Illuminate\Validation\Rule;
  */
 class StoreLeadRequest extends FormRequest
 {
-    use LeadRules;
+    use LeadRules, ResolvesActor;
 
     public function authorize(): bool
     {
@@ -30,8 +31,7 @@ class StoreLeadRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var User $user */
-        $user = $this->user();
+        $user = $this->actor();
         $attributes = $this->leadAttributeRules($user);
 
         return [

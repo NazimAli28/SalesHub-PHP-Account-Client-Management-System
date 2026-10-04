@@ -25,4 +25,10 @@ return [
     */
     'public_api_docs' => (bool) env('PUBLIC_API_DOCS', true),
 
+    /*
+    | Public demo mode. The demo accounts are shared by every visitor, so changing a password
+    | and turning on two-factor sign-in are refused (403) to keep them usable for everyone.
+    */
+    'demo_mode' => (bool) env('DEMO_MODE', false),
+
 ];

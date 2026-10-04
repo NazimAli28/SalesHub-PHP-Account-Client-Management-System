@@ -36,5 +36,6 @@ class DatabaseSeeder extends Seeder
 
         $logStatus->enable();
         $this->call(ActivityLogSeeder::class);
+        $this->call(ClientNoteSeeder::class);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\ApprovalRequest;
 use App\Models\Client;
+use App\Models\ClientNote;
 use App\Models\Lead;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -44,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
             'platform_account' => PlatformAccount::class,
             'social_account' => SocialAccount::class,
             'client' => Client::class,
+            'client_note' => ClientNote::class,
             'lead' => Lead::class,
             'order' => Order::class,
             'payment' => Payment::class,

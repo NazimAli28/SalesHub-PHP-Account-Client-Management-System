@@ -54,6 +54,21 @@ final class DemoText
         'Asked for invoices with a company name.',
     ];
 
+    private const CLIENT_NOTE_BODIES = [
+        'Called today, happy with the first draft and asked for a warmer colour palette.',
+        'Prefers Discord messages over email, usually replies within a few hours.',
+        'Mentioned a charity stream next month, good moment to pitch an alert pack.',
+        'Asked for an invoice with the company name before paying the second half.',
+        'Wants to see the animated version before approving the static one.',
+        'Referred a friend who streams variety games, follow up this week.',
+        'Payment will arrive after the sponsor pays them on Friday.',
+        'Sent the brand guide, asked us to keep the logo font consistent.',
+        'Not ready for new work until the channel hits affiliate.',
+        'Very happy with the delivery, said we can use the emotes in our portfolio.',
+        'Asked about a discount for bundling panels and overlays.',
+        'Time zone is eight hours behind us, schedule calls in the evening.',
+    ];
+
     private const ITEM_DESCRIPTIONS = [
         'Two revision rounds included',
         'Matches the existing brand colours',
@@ -92,6 +107,11 @@ final class DemoText
     public static function clientNote(): string
     {
         return fake()->randomElement(self::CLIENT_NOTES);
+    }
+
+    public static function clientNoteBody(): string
+    {
+        return fake()->randomElement(self::CLIENT_NOTE_BODIES);
     }
 
     public static function itemDescription(): string

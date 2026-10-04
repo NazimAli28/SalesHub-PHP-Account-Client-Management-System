@@ -3,10 +3,10 @@
 namespace App\Http\Requests\Leads;
 
 use App\Http\Requests\Concerns\AuthorizesChangeOrRequest;
+use App\Http\Requests\Concerns\ResolvesActor;
 use App\Http\Requests\Leads\Concerns\LeadRules;
 use App\Models\Client;
 use App\Models\Lead;
-use App\Models\User;
 use App\Rules\VisibleTo;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
@@ -17,7 +17,7 @@ use Illuminate\Support\Arr;
  */
 class UpdateLeadRequest extends FormRequest
 {
-    use AuthorizesChangeOrRequest, LeadRules;
+    use AuthorizesChangeOrRequest, LeadRules, ResolvesActor;
 
     public function authorize(): bool
     {
@@ -29,8 +29,7 @@ class UpdateLeadRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var User $user */
-        $user = $this->user();
+        $user = $this->actor();
         $attributes = $this->leadAttributeRules($user);
 
         return [

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Actions\Auth\EnsureNotDemoMode;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -20,6 +21,9 @@ class MeResource extends UserResource
         return [
             ...parent::toArray($request),
             'permissions' => $this->getAllPermissions()->pluck('name')->sort()->values()->all(),
+            'two_factor_enabled' => $this->hasTwoFactorEnabled(),
+            // Public demo: shared accounts, so password changes and 2FA are switched off.
+            'demo_mode' => EnsureNotDemoMode::enabled(),
         ];
     }
 }

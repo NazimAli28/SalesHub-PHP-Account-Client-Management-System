@@ -26,7 +26,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = $this->userAttributeRules($this->target());
+        $rules = $this->userAttributeRules($this->route('user') instanceof User ? $this->target() : null);
 
         return [
             'name' => ['sometimes', 'required', ...$rules['name']],

@@ -22,7 +22,7 @@ use Spatie\Permission\Traits\HasRoles;
 #[Fillable([
     'name', 'username', 'email', 'password', 'team_id', 'workstation_id', 'avatar_path', 'is_active',
 ])]
-#[Hidden(['password', 'remember_token'])]
+#[Hidden(['password', 'remember_token', 'two_factor_secret', 'two_factor_recovery_codes'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -40,7 +40,19 @@ class User extends Authenticatable
             'last_login_at' => 'datetime',
             'is_active' => 'boolean',
             'password' => 'hashed',
+            'two_factor_secret' => 'encrypted',
+            'two_factor_recovery_codes' => 'encrypted:array',
+            'two_factor_confirmed_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Two-factor sign-in is active once setup has been confirmed with a valid code.
+     * The 2FA columns are deliberately not fillable: only the two-factor endpoints set them.
+     */
+    public function hasTwoFactorEnabled(): bool
+    {
+        return $this->two_factor_confirmed_at !== null && $this->two_factor_secret !== null;
     }
 
     /**

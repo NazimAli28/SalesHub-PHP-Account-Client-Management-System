@@ -100,6 +100,12 @@ class ActivityLogSeeder extends Seeder
             ];
         }
 
+        [$from, $to] = fake()->randomElement([
+            ['pending_payment', 'in_progress'],
+            ['in_progress', 'delivered'],
+            ['delivered', 'completed'],
+        ]);
+
         return [
             'log_name' => 'model',
             'description' => 'updated',
@@ -107,8 +113,8 @@ class ActivityLogSeeder extends Seeder
             'subject_type' => 'order',
             'subject_id' => fake()->randomElement($orders),
             'attribute_changes' => json_encode([
-                'attributes' => ['status' => 'in_progress'],
-                'old' => ['status' => 'pending_payment'],
+                'attributes' => ['status' => $to],
+                'old' => ['status' => $from],
             ]),
         ];
     }

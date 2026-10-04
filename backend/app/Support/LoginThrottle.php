@@ -10,11 +10,13 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 
 /**
- * Rate limits for POST /api/auth/login (the `login` named limiter).
+ * Rate limits for POST /api/auth/login (the `login` named limiter) and the two-factor challenge.
  */
 final class LoginThrottle
 {
     public const NAME = 'login';
+
+    private const TWO_FACTOR_ATTEMPTS = 5;
 
     /**
      * @return list<Limit>
@@ -37,6 +39,45 @@ final class LoginThrottle
     public static function clear(string $login, ?string $ip): void
     {
         RateLimiter::clear(md5(self::NAME.self::loginKey($login, (string) $ip)));
+    }
+
+    /**
+     * Two-factor challenge: 5 wrong codes per minute for one pending user and IP. Applied inside
+     * the controller because the pending user is only known from the session.
+     *
+     * @return int|null seconds until the next attempt is allowed, or null when not locked out
+     */
+    public static function twoFactorLockedOutFor(int|string $userId, ?string $ip): ?int
+    {
+        $key = self::twoFactorKey($userId, $ip);
+
+        return RateLimiter::tooManyAttempts($key, self::TWO_FACTOR_ATTEMPTS)
+            ? max(RateLimiter::availableIn($key), 1)
+            : null;
+    }
+
+    public static function twoFactorFailed(int|string $userId, ?string $ip): void
+    {
+        RateLimiter::hit(self::twoFactorKey($userId, $ip), 60);
+    }
+
+    public static function twoFactorClear(int|string $userId, ?string $ip): void
+    {
+        RateLimiter::clear(self::twoFactorKey($userId, $ip));
+    }
+
+    public static function twoFactorLockedOutResponse(int $retryAfter): JsonResponse
+    {
+        return response()->json([
+            'message' => "Too many verification attempts. Please try again in {$retryAfter} seconds.",
+            'code' => 'too_many_attempts',
+            'retry_after' => $retryAfter,
+        ], 429, ['Retry-After' => (string) $retryAfter]);
+    }
+
+    private static function twoFactorKey(int|string $userId, ?string $ip): string
+    {
+        return 'two-factor-challenge:'.$userId.'|'.$ip;
     }
 
     private static function loginKey(string $login, string $ip): string

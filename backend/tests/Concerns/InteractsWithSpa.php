@@ -48,6 +48,8 @@ trait InteractsWithSpa
 
         $this->unencryptedCookies = [];
         $this->withUnencryptedCookies($this->spaCookies);
+        // json() sends cookies only with credentials on, like fetch with credentials: "include".
+        $this->withCredentials();
 
         if (isset($this->spaCookies['XSRF-TOKEN'])) {
             $headers['X-XSRF-TOKEN'] ??= $this->spaCookies['XSRF-TOKEN'];

@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Orders;
 
 use App\Http\Requests\Concerns\AuthorizesChangeOrRequest;
+use App\Http\Requests\Concerns\ResolvesActor;
 use App\Http\Requests\Orders\Concerns\OrderRules;
 use App\Models\Order;
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Validator;
@@ -16,7 +16,7 @@ use Illuminate\Validation\Validator;
  */
 class UpdateOrderRequest extends FormRequest
 {
-    use AuthorizesChangeOrRequest, OrderRules;
+    use AuthorizesChangeOrRequest, OrderRules, ResolvesActor;
 
     public function authorize(): bool
     {
@@ -28,8 +28,7 @@ class UpdateOrderRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var User $user */
-        $user = $this->user();
+        $user = $this->actor();
         $rules = $this->orderAttributeRules($user);
 
         return [

@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Actions\Auth\CompleteLogin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Resources\MeResource;
 use App\Models\User;
 use App\Support\AuditLogger;
 use App\Support\IpAllowlist;
 use App\Support\LoginThrottle;
+use App\Support\TwoFactorPendingLogin;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -22,12 +22,15 @@ class LoginController extends Controller
      */
     private const DUMMY_HASH = '$2y$12$1moCwaSVy3yBMKsSI9wsU.woXJUhzR/siqiKJ7Yw74dmlwt9VT/SW';
 
-    public function __invoke(LoginRequest $request): JsonResponse
+    public function __invoke(LoginRequest $request, CompleteLogin $completeLogin): JsonResponse
     {
         abort_unless($request->hasSession(), 400, 'Sign-in requires a browser session request.');
 
         $identifier = $request->identifier();
         $password = $request->string('password')->toString();
+
+        // A new password attempt replaces any unfinished two-factor sign-in.
+        TwoFactorPendingLogin::forget($request);
 
         /** @var User|null $user */
         $user = User::query()
@@ -62,15 +65,16 @@ class LoginController extends Controller
             ], 403);
         }
 
-        Auth::guard('web')->login($user, $request->boolean('remember'));
-        $request->session()->regenerate();
-
         LoginThrottle::clear($identifier, $request->ip());
 
-        $user->forceFill(['last_login_at' => now(), 'last_login_ip' => $request->ip()])->saveQuietly();
+        if ($user->hasTwoFactorEnabled()) {
+            // The password was right, but the session stays a guest until the second factor passes.
+            TwoFactorPendingLogin::start($request, $user, $request->boolean('remember'));
+            AuditLogger::auth('two_factor_challenged', $user, $request);
 
-        AuditLogger::auth('login', $user, $request);
+            return response()->json(['data' => ['two_factor' => true]]);
+        }
 
-        return (new MeResource($user->load(['team', 'workstation', 'roles'])))->response();
+        return $completeLogin->handle($request, $user, $request->boolean('remember'));
     }
 }

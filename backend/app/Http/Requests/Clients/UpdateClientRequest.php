@@ -4,8 +4,8 @@ namespace App\Http\Requests\Clients;
 
 use App\Http\Requests\Clients\Concerns\ClientRules;
 use App\Http\Requests\Concerns\AuthorizesChangeOrRequest;
+use App\Http\Requests\Concerns\ResolvesActor;
 use App\Models\Client;
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
 
@@ -14,7 +14,7 @@ use Illuminate\Support\Arr;
  */
 class UpdateClientRequest extends FormRequest
 {
-    use AuthorizesChangeOrRequest, ClientRules;
+    use AuthorizesChangeOrRequest, ClientRules, ResolvesActor;
 
     public function authorize(): bool
     {
@@ -26,8 +26,7 @@ class UpdateClientRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var User $user */
-        $user = $this->user();
+        $user = $this->actor();
         $client = $this->route('client');
         $rules = $this->clientAttributeRules($user, $client instanceof Client ? $client : null);
 

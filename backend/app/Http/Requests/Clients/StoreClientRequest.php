@@ -3,8 +3,8 @@
 namespace App\Http\Requests\Clients;
 
 use App\Http\Requests\Clients\Concerns\ClientRules;
+use App\Http\Requests\Concerns\ResolvesActor;
 use App\Models\Client;
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -12,7 +12,7 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class StoreClientRequest extends FormRequest
 {
-    use ClientRules;
+    use ClientRules, ResolvesActor;
 
     public function authorize(): bool
     {
@@ -24,8 +24,7 @@ class StoreClientRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var User $user */
-        $user = $this->user();
+        $user = $this->actor();
         $rules = $this->clientAttributeRules($user);
 
         return [

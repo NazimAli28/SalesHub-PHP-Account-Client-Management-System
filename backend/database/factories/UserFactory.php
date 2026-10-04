@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\RoleName;
 use App\Models\User;
+use App\Support\TwoFactorAuthenticator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -47,6 +48,22 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'is_active' => false,
         ]);
+    }
+
+    /**
+     * Two-factor sign-in confirmed, with a random TOTP secret and eight recovery codes.
+     */
+    public function withTwoFactor(): static
+    {
+        return $this->state(function (array $attributes) {
+            $twoFactor = new TwoFactorAuthenticator;
+
+            return [
+                'two_factor_secret' => $twoFactor->generateSecret(),
+                'two_factor_recovery_codes' => $twoFactor->generateRecoveryCodes(),
+                'two_factor_confirmed_at' => now(),
+            ];
+        });
     }
 
     public function admin(): static

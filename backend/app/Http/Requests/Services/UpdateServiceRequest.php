@@ -20,7 +20,7 @@ class UpdateServiceRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = $this->serviceAttributeRules($this->service());
+        $rules = $this->serviceAttributeRules($this->route('service') instanceof Service ? $this->service() : null);
 
         return [
             'name' => ['sometimes', 'required', ...$rules['name']],

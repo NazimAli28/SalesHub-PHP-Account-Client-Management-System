@@ -20,7 +20,7 @@ class UpdateTeamRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = $this->teamAttributeRules($this->team());
+        $rules = $this->teamAttributeRules($this->route('team') instanceof Team ? $this->team() : null);
 
         return [
             'name' => ['sometimes', 'required', ...$rules['name']],

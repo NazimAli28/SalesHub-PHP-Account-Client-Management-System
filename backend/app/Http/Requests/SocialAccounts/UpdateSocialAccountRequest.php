@@ -3,9 +3,9 @@
 namespace App\Http\Requests\SocialAccounts;
 
 use App\Http\Requests\Concerns\AuthorizesChangeOrRequest;
+use App\Http\Requests\Concerns\ResolvesActor;
 use App\Http\Requests\SocialAccounts\Concerns\SocialAccountRules;
 use App\Models\SocialAccount;
-use App\Models\User;
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Arr;
@@ -16,7 +16,7 @@ use Illuminate\Support\Arr;
  */
 class UpdateSocialAccountRequest extends FormRequest
 {
-    use AuthorizesChangeOrRequest, SocialAccountRules;
+    use AuthorizesChangeOrRequest, ResolvesActor, SocialAccountRules;
 
     public function authorize(): bool
     {
@@ -28,8 +28,7 @@ class UpdateSocialAccountRequest extends FormRequest
      */
     public function rules(): array
     {
-        /** @var User $user */
-        $user = $this->user();
+        $user = $this->actor();
         $account = $this->route('socialAccount');
         $direct = $account instanceof SocialAccount && $user->can('update', $account);
         $attributes = $this->socialAccountAttributeRules($user);

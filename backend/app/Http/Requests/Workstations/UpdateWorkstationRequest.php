@@ -21,7 +21,7 @@ class UpdateWorkstationRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = $this->workstationAttributeRules($this->workstation());
+        $rules = $this->workstationAttributeRules($this->route('workstation') instanceof Workstation ? $this->workstation() : null);
 
         return [
             'code' => ['sometimes', 'required', ...$rules['code']],
