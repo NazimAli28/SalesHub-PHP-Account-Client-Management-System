@@ -17,7 +17,7 @@ class ClientFactory extends Factory
      */
     public function definition(): array
     {
-        $name = fake()->name();
+        $name = fake()->firstName().' '.fake()->lastName();
 
         return [
             'discord_username' => Str::lower(fake()->unique()->userName()).fake()->numerify('##'),

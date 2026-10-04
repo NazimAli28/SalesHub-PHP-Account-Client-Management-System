@@ -29,7 +29,7 @@ class PlatformAccountFactory extends Factory
             'discord_created_on' => fake()->dateTimeBetween('-2 years', '-6 months')->format('Y-m-d'),
             'recovery_email' => 'recovery.'.$handle.'@example.com',
             'recovery_phone' => fake()->numerify('+1555#######'),
-            'phone_holder_name' => fake()->name(),
+            'phone_holder_name' => fake()->firstName().' '.fake()->lastName(),
             'batch_date' => fake()->dateTimeBetween('-6 months', '-1 month')->format('Y-m-d'),
             'workstation_id' => null,
             'assigned_at' => null,
