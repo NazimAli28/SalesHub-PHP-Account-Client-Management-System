@@ -389,6 +389,14 @@ Reject: same lock + pending check, `review_comment` required (min 5 chars), `sta
 
 Each approvable model uses trait `App\Models\Concerns\HasApprovals`: `approvalRequests(): MorphMany`, `pendingApproval(): MorphOne` (`status = pending`, latest). List and detail Resources include `pending_change: null | {id, action, fields: [...changed keys], requested_by, requested_at}` (eager-loaded via `with('pendingApproval.requester')`). The frontend shows a "Pending change" badge and the diff; this replaces v1 `pending_standings`.
 
+### 6.6 Implementation notes (Phase 2)
+
+- Class names: `App\Actions\Approvals\SubmitChangeRequest` (update/delete/create/request_accounts), `ApproveRequest`, `RejectRequest`, `CancelRequest` replace `SubmitApprovalRequest` / `ReviewApprovalRequest`. Writes go through per-alias appliers in `App\Approvals\Appliers` (see `docs/api/module-guide.md`).
+- Update payloads may also carry `"relations": {"services": [1, 4]}`; `before`/`after` then include `"relations"` with the sorted ID lists.
+- The staleness check compares the whole stored `before` snapshot (fields + `updated_at` + relations), not only `updated_at`. A target record that was deleted in the meantime also marks the request `failed` (409).
+- `approval_request` was added to the morph map (approval activity entries use it as subject).
+- A lead moves to `won` only through `PATCH /api/leads/{id}/stage` with an `order_id` of the same client (or by the Orders module); create/update reject `stage=won`.
+
 ## 7. Activity log
 
 Use spatie/laravel-activitylog. Models use `LogsActivity` with `logOnly($fillable minus encrypted)`, `logOnlyDirty()`, `dontSubmitEmptyLogs()`.

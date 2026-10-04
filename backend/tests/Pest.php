@@ -2,6 +2,7 @@
 
 use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Concerns\InteractsWithApi;
 use Tests\Concerns\InteractsWithSpa;
 use Tests\TestCase;
 
@@ -20,9 +21,10 @@ pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
     ->in('Feature');
 
-// Auth and authorization tests start with the real roles and permissions from PermissionMatrix.
+// Auth, authorization and API tests start with the real roles and permissions from PermissionMatrix.
 pest()->use(InteractsWithSpa::class)->in('Feature/Auth', 'Feature/Authorization');
-pest()->beforeEach(fn () => $this->seed(RolesAndPermissionsSeeder::class))->in('Feature/Auth', 'Feature/Authorization');
+pest()->use(InteractsWithApi::class)->in('Feature/Api');
+pest()->beforeEach(fn () => $this->seed(RolesAndPermissionsSeeder::class))->in('Feature/Auth', 'Feature/Authorization', 'Feature/Api');
 
 /*
 |--------------------------------------------------------------------------

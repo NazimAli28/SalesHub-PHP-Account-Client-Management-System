@@ -11,11 +11,6 @@ class ApprovalRequestPolicy
 {
     use ChecksVisibility;
 
-    /**
-     * Morph aliases a team lead may review (for requests from their own team).
-     */
-    private const TEAM_REVIEWABLE = ['lead', 'client', 'order', 'payment'];
-
     public function viewAny(User $user): bool
     {
         return $this->canViewAny($user, 'approvals');
@@ -44,7 +39,7 @@ class ApprovalRequestPolicy
             return false;
         }
 
-        return in_array($approvalRequest->approvable_type, self::TEAM_REVIEWABLE, true)
+        return in_array($approvalRequest->approvable_type, ApprovalRequest::TEAM_REVIEWABLE_TYPES, true)
             && $approvalRequest->requester()->where('team_id', $user->team_id)->exists();
     }
 

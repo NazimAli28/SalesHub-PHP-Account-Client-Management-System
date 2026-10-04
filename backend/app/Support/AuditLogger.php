@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\ApprovalRequest;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -30,6 +31,23 @@ final class AuditLogger
         }
 
         $logger->log($event);
+    }
+
+    /**
+     * `approval` channel: submitted, approved, rejected, cancelled, failed (data-model section 7).
+     */
+    public static function approval(string $event, ApprovalRequest $approval, User $causer): void
+    {
+        activity('approval')
+            ->event($event)
+            ->performedOn($approval)
+            ->causedBy($causer)
+            ->withProperties([
+                'action' => $approval->action->value,
+                'approvable_type' => $approval->approvable_type,
+                'approvable_id' => $approval->approvable_id,
+            ])
+            ->log($event);
     }
 
     /**

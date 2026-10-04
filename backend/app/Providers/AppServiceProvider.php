@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\ApprovalRequest;
 use App\Models\Client;
 use App\Models\Lead;
 use App\Models\Order;
@@ -51,6 +52,7 @@ class AppServiceProvider extends ServiceProvider
             'workstation' => Workstation::class,
             'service' => Service::class,
             'order_item' => OrderItem::class,
+            'approval_request' => ApprovalRequest::class,
         ]);
 
         Password::defaults(fn () => Password::min(10)
