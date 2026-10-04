@@ -61,7 +61,7 @@ Design documents: [data model](../docs/architecture/data-model.md) · [auth & pe
 
 - Credentials are encrypted at rest (`encrypted` casts) and never serialized. They can only be read through the reveal endpoints, which check permissions and write to the audit log.
 - Login throttling per identifier+IP and per IP, generic failure messages, inactive-account blocking, session regeneration, and a strong password policy.
-- 69 permissions across 4 roles (`App\Support\PermissionMatrix`), enforced by Policies, with row-level scoping (`visibleTo`) so each role sees only its own, its team's, or all records.
+- 71 permissions across 4 roles (`App\Support\PermissionMatrix`), enforced by Policies, with row-level scoping (`visibleTo`) so each role sees only its own, its team's, or all records.
 - Optional office-network IP allowlist for agent roles (`IP_ALLOWLIST_ENABLED`).
 - An audit trail of model changes and auth events (spatie/laravel-activitylog).
 

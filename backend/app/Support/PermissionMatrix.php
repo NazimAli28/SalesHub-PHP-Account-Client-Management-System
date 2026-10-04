@@ -113,6 +113,7 @@ final class PermissionMatrix
             'clients.update' => $st,
             'clients.delete' => [self::S],
             'clients.request-change' => $tlse,
+            'clients.import' => [self::S],
 
             'leads.view-all' => [self::S],
             'leads.view-team' => $st,
@@ -122,6 +123,7 @@ final class PermissionMatrix
             'leads.delete' => [self::S],
             'leads.reassign' => $st,
             'leads.request-change' => $tlse,
+            'leads.import' => [self::S],
 
             'orders.view-all' => [self::S],
             'orders.view-team' => $st,

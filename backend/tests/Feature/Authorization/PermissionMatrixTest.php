@@ -22,8 +22,8 @@ it('gives admin every permission', function () {
 });
 
 it('matches the documented role sizes', function () {
-    expect(count(PermissionMatrix::forRole(RoleName::Admin)))->toBe(69)
-        ->and(count(PermissionMatrix::forRole(RoleName::Support)))->toBe(59)
+    expect(count(PermissionMatrix::forRole(RoleName::Admin)))->toBe(71)
+        ->and(count(PermissionMatrix::forRole(RoleName::Support)))->toBe(61)
         ->and(count(PermissionMatrix::forRole(RoleName::TeamLead)))->toBe(37)
         ->and(count(PermissionMatrix::forRole(RoleName::SalesExecutive)))->toBe(26);
 });
@@ -45,7 +45,7 @@ it('seeds idempotently', function () {
     $this->seed(RolesAndPermissionsSeeder::class);
     $this->seed(RolesAndPermissionsSeeder::class);
 
-    expect(Permission::count())->toBe(69)
+    expect(Permission::count())->toBe(71)
         ->and(Role::count())->toBe(4);
 
     $agent = User::factory()->salesExecutive()->create();

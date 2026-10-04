@@ -119,12 +119,14 @@ Legend: A = admin, S = support, TL = team_lead, SE = sales_executive.
 | `clients.update` | ✓ | ✓ | ✓ | |
 | `clients.delete` | ✓ | ✓ | | |
 | `clients.request-change` | | | ✓ | ✓ |
+| `clients.import` (CSV import wizard) | ✓ | ✓ | | |
 | `leads.view-all` / `.view-team` / `.view-own` | ✓✓✓ | ✓✓✓ | –✓✓ | ––✓ |
 | `leads.create` | ✓ | ✓ | ✓ | ✓ |
 | `leads.update` | ✓ | ✓ | ✓ | |
 | `leads.delete` | ✓ | ✓ | | |
 | `leads.reassign` (change owner) | ✓ | ✓ | ✓ | |
 | `leads.request-change` | | | ✓ | ✓ |
+| `leads.import` (CSV import wizard) | ✓ | ✓ | | |
 | `orders.view-all` / `.view-team` / `.view-own` | ✓✓✓ | ✓✓✓ | –✓✓ | ––✓ |
 | `orders.create` | ✓ | ✓ | ✓ | ✓ |
 | `orders.update` | ✓ | ✓ | ✓ | |

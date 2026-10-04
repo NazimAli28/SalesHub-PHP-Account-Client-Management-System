@@ -10,6 +10,7 @@ export const paths = {
   clients: '/clients',
   orders: '/orders',
   payments: '/payments',
+  imports: '/imports',
   platformAccounts: '/platform-accounts',
   socialAccounts: '/social-accounts',
   approvals: '/approvals',

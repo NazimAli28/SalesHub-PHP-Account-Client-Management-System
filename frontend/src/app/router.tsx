@@ -196,6 +196,12 @@ export const routes: RouteObject[] = [
         'services.view',
       ),
       page(
+        paths.imports,
+        () => import('@/features/imports/pages/ImportPage'),
+        { crumb: 'Import' },
+        ['leads.import', 'clients.import'],
+      ),
+      page(
         paths.auditLog,
         () => import('@/features/audit-log/pages/AuditLogPage'),
         { crumb: 'Audit log' },
