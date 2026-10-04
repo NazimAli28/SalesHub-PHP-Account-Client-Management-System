@@ -4,12 +4,46 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
+/** Matches modules of the given packages, with `/` or `\` separators (Windows paths). */
+function vendor(packages: string): RegExp {
+  const pattern = `node_modules/(${packages})/`.replaceAll('/', '[\\\\/]')
+  return new RegExp(pattern)
+}
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(import.meta.dirname, './src'),
+    },
+  },
+  build: {
+    rolldownOptions: {
+      output: {
+        // Long-lived vendor chunks: they change far less often than app code, so browsers keep
+        // them cached across deploys. Route pages are split automatically by their lazy imports.
+        codeSplitting: {
+          groups: [
+            { name: 'vendor-react', test: vendor('react|react-dom|scheduler'), priority: 30 },
+            {
+              name: 'vendor-router',
+              test: vendor('react-router|cookie|set-cookie-parser'),
+              priority: 20,
+            },
+            {
+              name: 'vendor-query',
+              test: vendor('@tanstack/(query-core|react-query)'),
+              priority: 20,
+            },
+            {
+              name: 'vendor-ui',
+              test: vendor('radix-ui|@radix-ui|cmdk|sonner|@floating-ui'),
+              priority: 10,
+            },
+          ],
+        },
+      },
     },
   },
   server: {

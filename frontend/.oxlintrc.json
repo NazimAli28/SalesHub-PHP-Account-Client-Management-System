@@ -3,6 +3,21 @@
   "plugins": ["react", "typescript", "oxc"],
   "rules": {
     "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
+    "react/only-export-components": [
+      "warn",
+      {
+        "allowConstantExport": true
+      }
+    ]
+  },
+  "ignorePatterns": ["src/api/schema.d.ts"],
+  "overrides": [
+    {
+      "files": ["src/components/ui/**", "src/hooks/use-mobile.ts"],
+      "rules": {
+        "react/only-export-components": "off",
+        "react/set-state-in-effect": "off"
+      }
+    }
+  ]
 }

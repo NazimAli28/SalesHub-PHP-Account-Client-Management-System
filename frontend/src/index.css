@@ -1,1 +1,163 @@
 @import 'tailwindcss';
+@import 'tw-animate-css';
+@import './styles/shadcn-tailwind.css';
+@import '@fontsource-variable/inter';
+
+/* Dark mode is class-based: <html class="dark"> (set by index.html before paint, then ThemeProvider). */
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans:
+    'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-heading: var(--font-sans);
+  --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+ * Brand: indigo-violet (hue ~277). Violet is the colour streamers associate with their platform,
+ * which fits a team that sells branding to streamers, while the indigo lean keeps it calm and
+ * "business software" rather than playful. Primary on white passes WCAG AA for text and buttons.
+ * Neutrals carry a faint tint of the same hue so surfaces feel related to the brand.
+ */
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.17 0.02 277);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.17 0.02 277);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.17 0.02 277);
+  --primary: oklch(0.51 0.23 277);
+  --primary-foreground: oklch(0.985 0.005 277);
+  --secondary: oklch(0.965 0.008 277);
+  --secondary-foreground: oklch(0.25 0.03 277);
+  --muted: oklch(0.967 0.006 277);
+  --muted-foreground: oklch(0.5 0.02 277);
+  --accent: oklch(0.955 0.025 277);
+  --accent-foreground: oklch(0.3 0.12 277);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.92 0.008 277);
+  --input: oklch(0.9 0.01 277);
+  --ring: oklch(0.6 0.2 277);
+  --chart-1: oklch(0.51 0.23 277);
+  --chart-2: oklch(0.6 0.15 185);
+  --chart-3: oklch(0.7 0.16 70);
+  --chart-4: oklch(0.62 0.2 340);
+  --chart-5: oklch(0.55 0.05 277);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0.004 277);
+  --sidebar-foreground: oklch(0.25 0.02 277);
+  --sidebar-primary: oklch(0.51 0.23 277);
+  --sidebar-primary-foreground: oklch(0.985 0.005 277);
+  --sidebar-accent: oklch(0.95 0.025 277);
+  --sidebar-accent-foreground: oklch(0.3 0.12 277);
+  --sidebar-border: oklch(0.92 0.008 277);
+  --sidebar-ring: oklch(0.6 0.2 277);
+}
+
+.dark {
+  --background: oklch(0.16 0.012 277);
+  --foreground: oklch(0.96 0.005 277);
+  --card: oklch(0.2 0.014 277);
+  --card-foreground: oklch(0.96 0.005 277);
+  --popover: oklch(0.21 0.015 277);
+  --popover-foreground: oklch(0.96 0.005 277);
+  --primary: oklch(0.68 0.17 277);
+  --primary-foreground: oklch(0.16 0.03 277);
+  --secondary: oklch(0.26 0.015 277);
+  --secondary-foreground: oklch(0.96 0.005 277);
+  --muted: oklch(0.25 0.012 277);
+  --muted-foreground: oklch(0.71 0.015 277);
+  --accent: oklch(0.29 0.05 277);
+  --accent-foreground: oklch(0.93 0.03 277);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.6 0.15 277);
+  --chart-1: oklch(0.68 0.17 277);
+  --chart-2: oklch(0.7 0.13 185);
+  --chart-3: oklch(0.78 0.14 70);
+  --chart-4: oklch(0.7 0.18 340);
+  --chart-5: oklch(0.65 0.04 277);
+  --sidebar: oklch(0.18 0.013 277);
+  --sidebar-foreground: oklch(0.9 0.008 277);
+  --sidebar-primary: oklch(0.68 0.17 277);
+  --sidebar-primary-foreground: oklch(0.16 0.03 277);
+  --sidebar-accent: oklch(0.27 0.04 277);
+  --sidebar-accent-foreground: oklch(0.95 0.01 277);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.6 0.15 277);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans antialiased;
+    /* Inter: open digits and a disambiguated l/I make IDs and amounts easier to read. */
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-heading tracking-tight text-balance;
+  }
+  :focus-visible {
+    @apply outline-ring outline-2 outline-offset-2;
+  }
+  /* Respect users who ask for less motion. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
