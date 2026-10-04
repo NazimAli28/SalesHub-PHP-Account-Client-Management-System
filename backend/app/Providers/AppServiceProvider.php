@@ -13,8 +13,14 @@ use App\Models\SocialAccount;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\Workstation;
+use App\Policies\ActivityPolicy;
+use App\Support\LoginThrottle;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
+use Spatie\Activitylog\Models\Activity;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -46,5 +52,15 @@ class AppServiceProvider extends ServiceProvider
             'service' => Service::class,
             'order_item' => OrderItem::class,
         ]);
+
+        Password::defaults(fn () => Password::min(10)
+            ->mixedCase()
+            ->numbers()
+            ->symbols()
+            ->when($this->app->isProduction(), fn (Password $rule) => $rule->uncompromised()));
+
+        RateLimiter::for(LoginThrottle::NAME, LoginThrottle::limits(...));
+
+        Gate::policy(Activity::class, ActivityPolicy::class);
     }
 }

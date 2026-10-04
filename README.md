@@ -29,7 +29,7 @@ docker-compose.yml   MySQL + Mailpit for local development
 **Requirements:** PHP 8.3+, Composer 2, Node.js 20+, MySQL 8 (or Docker).
 
 ```bash
-# Optional: start MySQL + Mailpit
+# Start MySQL (host port 3307) + Mailpit (http://localhost:8025)
 docker compose up -d
 ```
 
@@ -38,7 +38,7 @@ cd backend
 composer install
 cp .env.example .env
 php artisan key:generate
-php artisan migrate
+php artisan migrate --seed   # demo logins: admin / support / tl / agent1 — password Demo@12345
 php artisan serve          # http://localhost:8000
 ```
 
@@ -51,7 +51,7 @@ npm run dev                # http://localhost:5173 (proxies /api to :8000)
 ## Roadmap
 
 - [x] **Phase 0:** monorepo setup, tooling, CI
-- [ ] **Phase 1:** database schema, authentication, roles & permissions
+- [x] **Phase 1:** database schema, authentication, roles & permissions
 - [ ] **Phase 2:** core REST API (accounts, clients, leads, orders & payments, approvals)
 - [ ] **Phase 3:** frontend foundation (app shell, auth, data tables, design system)
 - [ ] **Phase 4:** all v1 screens rebuilt

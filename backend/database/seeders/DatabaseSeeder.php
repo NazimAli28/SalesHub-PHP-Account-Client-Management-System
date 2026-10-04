@@ -2,11 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Enums\RoleName;
 use Illuminate\Database\Seeder;
 use Spatie\Activitylog\Support\ActivityLogStatus;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\PermissionRegistrar;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,12 +19,6 @@ class DatabaseSeeder extends Seeder
         $logStatus->disable();
 
         $this->call(RolesAndPermissionsSeeder::class);
-
-        // Make sure the four roles exist even while RolesAndPermissionsSeeder is a stub.
-        foreach (RoleName::cases() as $role) {
-            Role::firstOrCreate(['name' => $role->value, 'guard_name' => 'web']);
-        }
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         $this->call([
             TeamSeeder::class,
