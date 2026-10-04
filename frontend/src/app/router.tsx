@@ -48,8 +48,6 @@ function page(
   return route
 }
 
-const comingSoon = () => import('./pages/ComingSoonPage')
-
 export const routes: RouteObject[] = [
   {
     path: paths.login,
@@ -93,80 +91,114 @@ export const routes: RouteObject[] = [
         VIEW_ANY.leads,
       ),
 
-      // Placeholders until Phase 4. Guards match the sidebar (navigation.ts).
+      page(
+        paths.today,
+        () => import('@/features/today/pages/TodayPage'),
+        { crumb: 'Today' },
+        'dashboard.view',
+      ),
+
+      // Sales
       page(
         paths.clients,
-        comingSoon,
-        { crumb: 'Clients', description: 'Client records, retention and upsell tracking.' },
+        () => import('@/features/clients/pages/ClientsPage'),
+        { crumb: 'Clients' },
+        VIEW_ANY.clients,
+      ),
+      page(
+        `${paths.clients}/:clientId`,
+        () => import('@/features/clients/pages/ClientDetailPage'),
+        { crumb: 'Client' },
         VIEW_ANY.clients,
       ),
       page(
         paths.orders,
-        comingSoon,
-        { crumb: 'Orders', description: 'Orders, line items and delivery status.' },
+        () => import('@/features/orders/pages/OrdersPage'),
+        { crumb: 'Orders' },
+        VIEW_ANY.orders,
+      ),
+      page(
+        `${paths.orders}/:orderId`,
+        () => import('@/features/orders/pages/OrderDetailPage'),
+        { crumb: 'Order' },
         VIEW_ANY.orders,
       ),
       page(
         paths.payments,
-        comingSoon,
-        { crumb: 'Payments', description: 'Scheduled and received payments.' },
+        () => import('@/features/payments/pages/PaymentsPage'),
+        { crumb: 'Payments' },
         VIEW_ANY.orders,
       ),
+
+      // Accounts
       page(
         paths.platformAccounts,
-        comingSoon,
-        {
-          crumb: 'Platform accounts',
-          description: 'Shared platform-account inventory and standings.',
-        },
+        () => import('@/features/platform-accounts/pages/PlatformAccountsPage'),
+        { crumb: 'Platform accounts' },
+        VIEW_ANY.platformAccounts,
+      ),
+      page(
+        `${paths.platformAccounts}/:platformAccountId`,
+        () => import('@/features/platform-accounts/pages/PlatformAccountDetailPage'),
+        { crumb: 'Platform account' },
         VIEW_ANY.platformAccounts,
       ),
       page(
         paths.socialAccounts,
-        comingSoon,
-        { crumb: 'Social accounts', description: 'Social profiles linked to platform accounts.' },
+        () => import('@/features/social-accounts/pages/SocialAccountsPage'),
+        { crumb: 'Social accounts' },
         VIEW_ANY.socialAccounts,
       ),
+
+      // Workflow
       page(
         paths.approvals,
-        comingSoon,
-        { crumb: 'Approvals', description: 'Maker-checker review queue.' },
+        () => import('@/features/approvals/pages/ApprovalsPage'),
+        { crumb: 'Approvals' },
+        VIEW_ANY.approvals,
+      ),
+      page(
+        `${paths.approvals}/:approvalId`,
+        () => import('@/features/approvals/pages/ApprovalDetailPage'),
+        { crumb: 'Approval' },
         VIEW_ANY.approvals,
       ),
       page(
         paths.notifications,
-        comingSoon,
-        { crumb: 'Notifications', description: 'Everything that needs your attention.' },
+        () => import('@/features/notifications/pages/NotificationsPage'),
+        { crumb: 'Notifications' },
         'notifications.view',
       ),
+
+      // Administration
       page(
         paths.users,
-        comingSoon,
-        { crumb: 'Users', description: 'Team members, roles and access.' },
+        () => import('@/features/users/pages/UsersPage'),
+        { crumb: 'Users' },
         'users.view',
       ),
       page(
         paths.teams,
-        comingSoon,
-        { crumb: 'Teams', description: 'Sales teams, floors and shifts.' },
+        () => import('@/features/teams/pages/TeamsPage'),
+        { crumb: 'Teams' },
         'teams.view',
       ),
       page(
         paths.workstations,
-        comingSoon,
-        { crumb: 'Workstations', description: 'Office PCs and their assigned accounts.' },
+        () => import('@/features/workstations/pages/WorkstationsPage'),
+        { crumb: 'Workstations' },
         'workstations.view',
       ),
       page(
         paths.services,
-        comingSoon,
-        { crumb: 'Services', description: 'The design-services catalogue and base prices.' },
+        () => import('@/features/services/pages/ServicesPage'),
+        { crumb: 'Services' },
         'services.view',
       ),
       page(
         paths.auditLog,
-        comingSoon,
-        { crumb: 'Audit log', description: 'Who changed what, and when.' },
+        () => import('@/features/audit-log/pages/AuditLogPage'),
+        { crumb: 'Audit log' },
         'audit-log.view',
       ),
 

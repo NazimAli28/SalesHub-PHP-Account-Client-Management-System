@@ -4,6 +4,7 @@ export const paths = {
   dashboard: '/',
   profile: '/profile',
   forbidden: '/403',
+  today: '/today',
 
   leads: '/leads',
   clients: '/clients',
@@ -22,3 +23,11 @@ export const paths = {
 } as const
 
 export type AppPath = (typeof paths)[keyof typeof paths]
+
+/** Detail-page URLs. */
+export const detailPath = {
+  client: (id: number | string) => `${paths.clients}/${id}`,
+  order: (id: number | string) => `${paths.orders}/${id}`,
+  platformAccount: (id: number | string) => `${paths.platformAccounts}/${id}`,
+  approval: (id: number | string) => `${paths.approvals}/${id}`,
+} as const

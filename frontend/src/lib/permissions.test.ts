@@ -58,6 +58,6 @@ describe('filterNavigation', () => {
       createPermissionChecker(['dashboard.view']).satisfies,
     )
     expect(sections.map((section) => section.label)).toEqual(['Overview'])
-    expect(sections[0]?.items.map((item) => item.label)).toEqual(['Dashboard'])
+    expect(sections[0]?.items.map((item) => item.label)).toEqual(['Dashboard', 'Today'])
   })
 })

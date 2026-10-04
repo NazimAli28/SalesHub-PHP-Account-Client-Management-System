@@ -1,6 +1,7 @@
 import {
   BellIcon,
   BriefcaseBusinessIcon,
+  CalendarCheckIcon,
   ClipboardCheckIcon,
   CreditCardIcon,
   HistoryIcon,
@@ -45,6 +46,12 @@ export const NAVIGATION: NavSection[] = [
         label: 'Dashboard',
         path: paths.dashboard,
         icon: LayoutDashboardIcon,
+        permission: 'dashboard.view',
+      },
+      {
+        label: 'Today',
+        path: paths.today,
+        icon: CalendarCheckIcon,
         permission: 'dashboard.view',
       },
       {
