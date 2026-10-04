@@ -113,3 +113,16 @@ Reference files:
 - [ ] Keyboard only: tab through filters, headers, row menus and the form. Focus is visible and Escape closes overlays.
 - [ ] Light and dark themes both look right.
 - [ ] Reload keeps the filters, sort and page. Back/forward walk through page changes.
+
+## 9. Phase 5 patterns beyond list/detail screens
+
+Reference files for the pieces the checklist above does not cover. The permission list in `src/lib/permissions.ts` mirrors the API's 71 permissions, including `leads.import`, `clients.import` and `reports.export`.
+
+| Pattern | Reference | Rules |
+|---------|-----------|-------|
+| Dashboard with charts | `features/dashboard/pages/DashboardPage.tsx`, `components/*Chart.tsx`, `components/ui/chart.tsx` | Keep the range and filters in the URL. Wrap each chart in `ChartCard`, give it a `role="img"` label plus a `sr-only` text summary, and handle loading, error and empty states for every panel. Colour with `var(--chart-N)` tokens. |
+| Kanban board with drag and drop | `features/leads/board/*` | One infinite query per column. Make moves optimistic and roll back on error and on 202 (show the pending badge instead). Collect extra data in a dialog before the move (`LostReasonDialog`, `WonOrderDialog`). Always offer a keyboard path: the dnd-kit keyboard sensor with announcements, and a "Move to…" menu on the card. Read-only for users without update or request-change. |
+| Multi-step wizard | `features/imports/pages/ImportPage.tsx`, `steps.ts`, `components/*Step.tsx` | Keep step state in the page, one component per step, poll a long-running job with `refetchInterval` that stops when the job finishes. |
+| CSV download button | `features/imports/components/ExportCsvButton.tsx`, `download.ts` | Wrap in `<Can permission="reports.export">`, pass the list's current filters and sort, ignore paging. |
+| Security forms (OTP, password confirm) | `features/auth/components/OtpCodeField.tsx`, `features/profile/components/*` | Ask for the password in `ConfirmPasswordDialog` for sensitive actions, show recovery codes only in `RecoveryCodesPanel`, never store secrets in query cache longer than the dialog needs. jsdom needs `document.elementFromPoint`, which `src/test/setup.ts` stubs. |
+| Record search | `app/layouts/CommandMenu.tsx` | Debounce the term, disable cmdk's own filtering for server results, and keep screens listed below the records. |

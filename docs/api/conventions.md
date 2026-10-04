@@ -2,6 +2,8 @@
 
 Applies to every endpoint under `/api`. Companion to [module-guide.md](module-guide.md) and the architecture docs.
 
+Phase 5 feature endpoints (analytics, search, client notes and timeline, imports and exports, payment reminders): [features.md](features.md).
+
 ## Transport and auth
 
 - JSON in and out. Clients send `Accept: application/json`.

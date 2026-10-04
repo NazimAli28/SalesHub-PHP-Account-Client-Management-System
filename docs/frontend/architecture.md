@@ -107,11 +107,21 @@ user clicks a header / page / filter ──▶ setSearchParams ──▶ new URL
 | Path | Page | Guard |
 |------|------|-------|
 | `/login` | LoginPage | signed-out only |
-| `/` | Dashboard (placeholder for Phase 5) | `dashboard.view` |
-| `/leads` | **Leads list (reference implementation)** | any `leads.view-*` |
-| `/profile` | Profile + change password | signed in |
-| `/clients`, `/orders`, `/payments`, `/platform-accounts`, `/social-accounts`, `/approvals`, `/notifications`, `/users`, `/teams`, `/workstations`, `/services`, `/audit-log` | ComingSoon | matching view permission |
+| `/` | Dashboard: KPIs and charts from `GET /analytics/overview` (Phase 5) | `dashboard.view` |
+| `/leads` | **Leads list (reference implementation)** with a Table / Board toggle (`?view=`) | any `leads.view-*` |
+| `/imports` | CSV import wizard (leads, clients) | `leads.import` or `clients.import` |
+| `/profile` | Profile, change password, two-factor and browser sessions | signed in |
+| `/clients`, `/orders`, `/payments`, `/platform-accounts`, `/social-accounts`, `/approvals`, `/notifications`, `/users`, `/teams`, `/workstations`, `/services`, `/audit-log` | Feature screens (Phase 4; placeholders were replaced) | matching view permission |
 | `/403`, `*` | Forbidden, NotFound | signed in |
+
+### 5.1 Phase 5 features
+
+- **Dashboard** (`features/dashboard`). `useOverview` calls `GET /analytics/overview`. The range (`?range=7d|30d|90d|12m`, default 30d) and the team filter (`?team=`, only for users with `reports.view-all`) live in the URL, so a reload or shared link keeps them. Charts use Recharts through the shadcn wrapper `components/ui/chart.tsx` (theme tokens, light and dark) and the `--chart-*` theme tokens (so both themes work). Each chart has an accessible summary: the chart is `role="img"` with an `aria-label` and a `sr-only` text equivalent, and loading, error and empty states are handled per panel (`ChartCard`). Panels: KPI cards, revenue series, funnel, leaderboard, account health, upcoming payments.
+- **Leads board** (`features/leads/board`). The Leads page toggles Table and Board (`?view=`, last choice remembered in `localStorage`). The board has one infinite query per stage column (`board-api.ts`) and drag-and-drop with dnd-kit. Moves are optimistic through `PATCH /leads/{id}/stage`: a 200 keeps the move, a 202 (queued for approval) or any error puts the card back, and a queued card shows a pending badge. Moving to Lost opens `LostReasonDialog`; moving to Won opens `WonOrderDialog` to pick the order. Keyboard users drag with the dnd-kit keyboard sensor (with live announcements) or use each card's "Move to…" menu; users without `leads.update` or `leads.request-change` get a read-only board.
+- **Command palette** (`app/layouts/CommandMenu.tsx`). Ctrl+K / Cmd+K. Typing two or more characters queries `GET /search` (debounced) and lists clients, leads, orders and platform accounts above the screens list; cmdk filtering is off because the server filters.
+- **Client notes and timeline** (`features/clients`). `ClientNotes` (add, pin, edit, delete, driven by `can_edit` / `can_delete` from the API) and `ClientTimeline` (paginated activity feed) are tabs on the Client 360 page; data hooks are in `notes-api.ts`.
+- **Import and export** (`features/imports`). `/imports` is a stepper wizard: upload, map columns (suggested mapping from the API), preview (first 50 rows, validated by the server), run (starts the job and polls `GET /imports/{id}` while it is queued or processing), result (counts, the first errors and a download of the error CSV). `RecentImports` lists past imports. `ExportCsvButton` sits on the Leads and Clients lists, is shown only with `reports.export`, and downloads `GET /exports/{type}` with the current filters and sort (`download.ts`).
+- **Two-factor sign-in and sessions** (`features/auth`, `features/profile`). When login answers `{two_factor: true}`, `LoginForm` swaps to `TwoFactorChallengeForm` (6-digit `OtpCodeField`, or a recovery code). The profile page has a Security section: `TwoFactorCard` (QR code and secret, confirm, recovery codes via `RecoveryCodesPanel`, disable), `SessionsCard` (browsers list, sign out others) and `ConfirmPasswordDialog` for actions that need the password. When `/me` says `demo_mode`, `DemoModeNotice` explains why password and two-factor changes are off.
 
 ## 6. Design system
 
@@ -129,6 +139,7 @@ Route pages are split into their own chunks. Vendor code is split into long-live
 
 - `npm test` runs Vitest in jsdom. `src/test/setup.ts` starts an MSW server with default handlers (`src/test/handlers.ts`); override per test with `server.use(...)`. Unhandled requests fail the test.
 - `renderWithProviders(ui, { user, route })` renders with the real providers and a memory router, and seeds `/auth/me` with a fixture user (`makeUser(overrides, permissions)`). `renderRoutes(routes, ...)` renders a route tree.
+- jsdom lacks a few browser APIs: `src/test/setup.ts` stubs `matchMedia`, `ResizeObserver`, `scrollIntoView`, pointer capture and `document.elementFromPoint` (needed by the OTP input), so tests of those components need no per-file stubs.
 - Test behaviour through roles and labels (`getByRole('button', { name: 'Next page' })`), and assert URLs with `router.state.location`.
 - Fixtures use fictional names and `@example.com` addresses only.
 

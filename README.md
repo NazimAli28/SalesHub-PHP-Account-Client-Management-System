@@ -5,6 +5,18 @@
 
 SalesHub is a role-based sales operations platform. It covers account inventory, leads pipeline, client retention and payments, with a maker-checker approval workflow. Version 2 rebuilds it on a modern stack: a **Laravel REST API** plus a **React + TypeScript** single-page app.
 
+## Features
+
+- Role-based access (admin, support, team lead, sales executive) with row scoping and a maker-checker approval workflow
+- Shared platform-account inventory with audited credential reveal, social accounts, clients, orders and payments
+- Leads pipeline as a table or a drag-and-drop Kanban board (keyboard accessible, approval-aware)
+- Dashboard with revenue, funnel, leaderboard and account-health charts for any date range, scoped to what each role may see
+- Client 360 with pinned notes and an activity timeline
+- Ctrl+K command palette that searches clients, leads, orders and platform accounts
+- CSV import wizard (upload, map columns, preview, background run, error report) and CSV export of leads and clients
+- Daily payment reminders by notification bell and email
+- Optional two-factor sign-in (authenticator app and recovery codes) and a browser sessions list
+
 ## Tech stack
 
 | Layer | Technology |
@@ -43,6 +55,13 @@ php artisan migrate --seed   # demo logins: admin / support / tl / agent1 — pa
 php artisan serve          # http://localhost:8000
 ```
 
+Imports and payment reminders use the queue and the scheduler. Start these in two more terminals from `backend/` when you need them:
+
+```bash
+php artisan queue:work     # runs CSV imports and sends reminder notifications
+php artisan schedule:work  # runs payments:send-reminders daily at 08:00
+```
+
 ```bash
 cd frontend
 npm install
@@ -56,7 +75,7 @@ npm run dev                # http://localhost:5173 (proxies /api to :8000)
 - [x] **Phase 2:** core REST API (accounts, clients, leads, orders & payments, approvals)
 - [x] **Phase 3:** frontend foundation (app shell, auth, data tables, design system)
 - [x] **Phase 4:** all v1 screens rebuilt
-- [ ] **Phase 5:** analytics, Kanban pipeline, client 360, import wizard, notifications
+- [x] **Phase 5:** analytics dashboard, Kanban pipeline, client 360, import/export, payment reminders, two-factor sign-in
 - [ ] **Phase 6:** end-to-end tests, accessibility and security hardening
 - [ ] **Phase 7:** live demo deployment and v2.0 release
 

@@ -25,6 +25,9 @@ Sanctum **SPA cookie authentication** (session guard `web`, stateful API). The R
 | POST | `/api/auth/logout` | `auth:sanctum` | `Auth\LogoutController` |
 | GET | `/api/auth/me` | `auth:sanctum`, `active`, `ip.allowed` | `Auth\MeController` |
 | PUT | `/api/auth/password` | `auth:sanctum`, `active`, `ip.allowed`, `throttle:6,1` | `Auth\PasswordController` |
+| POST | `/api/auth/two-factor-challenge` | `throttle:20,1` | `Auth\TwoFactorChallengeController` (Phase 5, section 1.4) |
+| POST, DELETE | `/api/auth/two-factor`, `/api/auth/two-factor/confirm`, `/api/auth/two-factor/recovery-codes[/view]` | `auth:sanctum`, `active`, `ip.allowed`, `throttle:10,1` | `Auth\TwoFactorController` (Phase 5, section 1.4) |
+| GET, DELETE | `/api/auth/sessions`, `/api/auth/sessions/others` | `auth:sanctum`, `active`, `ip.allowed` (DELETE also `throttle:6,1`) | `Auth\SessionsController` (Phase 5, section 1.5) |
 
 All other API routes sit in a group with `auth:sanctum`, `active`, `ip.allowed`. Delete the scaffolded `GET /api/user` route.
 
@@ -42,6 +45,8 @@ Rules: `login` required string max 255; `password` required string; `remember` b
 4. `$request->session()->regenerate()`; clear the per-identifier limiter; `last_login_at = now()`, `last_login_ip = $request->ip()` (saved quietly, no activity entry); log `auth.login`.
 5. Return **200** with the same body as `/me`.
 
+Phase 5 change: after the password, active and IP checks, a user with two-factor sign-in on is not signed in. The controller starts a pending sign-in (section 1.4) and answers **200** `{"data": {"two_factor": true}}`. Steps 4 and 5 (`App\Actions\Auth\CompleteLogin`) then run in the challenge endpoint instead.
+
 **POST /api/auth/logout** — `Auth::guard('web')->logout()`, `session()->invalidate()`, `session()->regenerateToken()`, log `auth.logout`, return **204**.
 
 **GET /api/auth/me** — **200**:
@@ -54,7 +59,8 @@ Rules: `login` required string max 255; `password` required string; `remember` b
     "roles": ["sales_executive"],
     "permissions": ["leads.view-own", "leads.create", "leads.request-change", "..."],
     "team": { "id": 1, "name": "Unit 1 Alpha", "floor": 3, "shift": "evening" },
-    "workstation": { "id": 1, "code": "PC-01" }
+    "workstation": { "id": 1, "code": "PC-01" },
+    "two_factor_enabled": false, "demo_mode": false
   }
 }
 ```
@@ -75,6 +81,38 @@ Rules: `login` required string max 255; `password` required string; `remember` b
 | CSRF | Enforced on all stateful non-GET requests via `statefulApi()`; login included. |
 | Auth event logging | Activity log `auth` channel (data-model §7). Failed attempts store the submitted identifier, never the password. |
 | Responses | Never return `password`, `remember_token`, or encrypted columns in any Resource. |
+
+### 1.4 Two-factor sign-in (Phase 5)
+
+Optional TOTP (RFC 6238, 6 digits, 30 s) per user, using an authenticator app. Code lives in `App\Support\TwoFactorAuthenticator`, `App\Support\TwoFactorPendingLogin`, `Auth\TwoFactorController` and `Auth\TwoFactorChallengeController`.
+
+**Sign-in flow**
+
+1. `POST /api/auth/login` checks the password, active flag and IP allowlist as before. For a user with two-factor on it stores a pending sign-in in the session (`id`, `remember`, `at`), logs `auth.two_factor_challenged` and answers **200** `{"data": {"two_factor": true}}`. The session is still a guest. A new login attempt replaces any unfinished pending sign-in.
+2. `POST /api/auth/two-factor-challenge` with `{"code": "123456"}` or `{"recovery_code": "ABCDE-FGHIJ"}` (one of the two is required). The pending sign-in lives for **5 minutes** (`TwoFactorPendingLogin::TTL_SECONDS`); without a valid one the answer is **422** `{"code": "two_factor_expired"}`. Inactive users and IPs outside the allowlist are re-checked and get the same 403 bodies as login.
+3. Wrong or reused code: **422** with an error on `code` or `recovery_code`, logs `auth.two_factor_failed` (method only, never the code). After **5 wrong codes per minute for one user and IP** the endpoint answers **429** `{"code": "too_many_attempts", "retry_after": n}` with `Retry-After`. The route also has `throttle:20,1` per IP.
+4. Success: pending sign-in and lockout counter cleared, then `CompleteLogin` signs in, **regenerates the session**, updates `last_login_*` and logs `auth.login` with `two_factor: totp|recovery_code`. Returns **200** with the `/me` body. Using a recovery code also logs `auth.two_factor_recovery_code_used` with the number remaining.
+
+**Code checks.** A code is accepted within one 30-second step either side of now. **Replay protection:** the accepted time step is cached per user (`two-factor-timestep:{id}`, 5 minutes) and a code from that step or an older one is rejected. Recovery codes are 8 per set, formatted `XXXXX-XXXXX`, compared with `hash_equals` and removed when used.
+
+**Setup and management** (signed-in user; `throttle:10,1`). Password-confirming requests use `ConfirmPasswordRequest`: `{"password": "..."}`, wrong password is **422** on `password`.
+
+| Endpoint | Body | Result |
+|----------|------|--------|
+| `POST /api/auth/two-factor` | none | Creates a new secret (not active yet) and returns `{secret, otpauth_url, qr_code}` (`qr_code` is an SVG data URI). **409** `two_factor_already_enabled` if already on. Logs nothing until confirmed. |
+| `POST /api/auth/two-factor/confirm` | `code` | Verifies the first code, stores `two_factor_confirmed_at` and returns `{recovery_codes}` once. **409** `two_factor_already_enabled` or `two_factor_not_started`; **422** on a bad code. Logs `auth.two_factor_enabled`. |
+| `DELETE /api/auth/two-factor` | `password` | Clears secret, codes and confirmation (also cancels an unfinished setup). **204**. Logs `auth.two_factor_disabled` when it was on. |
+| `POST /api/auth/two-factor/recovery-codes/view` | `password` | Returns the unused codes. **409** `two_factor_not_enabled` when off. Logs `auth.two_factor_recovery_codes_viewed`. |
+| `POST /api/auth/two-factor/recovery-codes` | `password` | Replaces all codes with a new set and returns them. **409** `two_factor_not_enabled`. Logs `auth.two_factor_recovery_codes_regenerated`. |
+
+The secret and recovery codes are encrypted at rest (`encrypted` casts), hidden from serialization and only ever returned by the responses above. `/me` exposes only the boolean `two_factor_enabled`.
+
+**Demo mode.** With `DEMO_MODE=true` (`config('saleshub.demo_mode')`) the shared demo accounts cannot be locked: `POST /api/auth/two-factor` and `PUT /api/auth/password` answer **403** `{"code": "demo_mode"}` (`App\Actions\Auth\EnsureNotDemoMode`; the password request checks before validation). `/me` returns `demo_mode` so the SPA can explain it.
+
+### 1.5 Browser sessions (Phase 5)
+
+- `GET /api/auth/sessions` lists the user's browsers: `{id, ip_address, device, last_active_at, is_current}`, current first. It reads the `sessions` table, so it needs `SESSION_DRIVER=database` (the default here); with another driver it returns only the current session. Session IDs are bearer secrets, so `id` is a truncated HMAC (`hash_hmac('sha256', sessionId, APP_KEY)`), never the real ID. `device` is a short label parsed from the user agent (`DescribeUserAgent`).
+- `DELETE /api/auth/sessions/others` with `{"password": "..."}` (`throttle:6,1`) deletes every other session row for the user, rotates `remember_token` so remember-me cookies on other browsers stop working, logs `auth.sessions_revoked` with the count and returns `{"data": {"revoked": n}}`. There is no endpoint to revoke a single session.
 
 ## 2. Roles
 
@@ -157,6 +195,14 @@ Legend: A = admin, S = support, TL = team_lead, SE = sales_executive.
 | `notifications.view` | ✓ | ✓ | ✓ | ✓ |
 
 Rows with three permissions use the order all/team/own; "–" means not granted. The seeder defines the matrix as `array<RoleName, list<string>>` in `App\Support\PermissionMatrix` so tests can assert against the same source. Support may `users.update`/`deactivate` only users whose role is `team_lead` or `sales_executive` (enforced in `UserPolicy` via `users.manage-privileged`).
+
+**Totals (71 permissions).** Admin 71, support 61, team lead 37, sales executive 26. Phase 5 uses existing permissions rather than adding new ones beyond the import pair:
+- `leads.import` / `clients.import` (admin and support): upload and run CSV imports of that type (`ImportPolicy`, `StoreImportRequest`); the template download needs the same permission.
+- `reports.export` (admin, support, team lead): CSV exports (`GET /api/exports/{type}`), together with `viewAny` on the exported model so rows stay in the user's `visibleTo` scope.
+- `reports.view-all` / `view-team` / `view-own`: the analytics overview. The broadest tier decides the row scope (all, own team, or only the user's own records) and a `team_id` / `user_id` filter that reaches outside it is **403**.
+- `dashboard.view` shows the dashboard route in the SPA; client notes follow `clients.view-*` through `ClientNotePolicy`.
+
+Details of these endpoints are in `docs/api/features.md`.
 
 ## 4. Data scoping
 
@@ -251,6 +297,13 @@ Authorization
 27. Support cannot update/deactivate an admin or assign the admin role → 403; admin cannot delete self or deactivate the last admin → 403.
 28. `audit-log` index: admin 200, support 403.
 29. Sales exec `request-new` accounts → 202 approval of action `request_accounts`.
+
+Phase 5 (`tests/Feature/Auth/TwoFactor*Test.php`, `SessionsTest.php`)
+30. Login for a two-factor user returns `{two_factor: true}` and `/me` stays 401; a valid code or recovery code signs in, regenerates the session and consumes the recovery code.
+31. Wrong code → 422; 5 wrong codes → 429 with `Retry-After`; replayed code → 422; expired pending sign-in → 422 `two_factor_expired`.
+32. Setup, confirm, disable and recovery-code endpoints: password required where listed, 409 codes, secrets never in `/me` or activity properties.
+33. Sessions list hides real session IDs and marks the current one; revoking others deletes their rows and rotates `remember_token`.
+34. `DEMO_MODE=true`: enabling two-factor and changing the password both answer 403 `demo_mode`.
 
 ## 7. Open questions
 

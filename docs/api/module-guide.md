@@ -2,6 +2,8 @@
 
 Checklist for adding an API module (Clients, Orders, Payments, Platform Accounts, Social Accounts, ...). **Leads is the reference module**: when in doubt, copy it. Read [conventions.md](conventions.md) first.
 
+For the Phase 5 endpoints that are not plain CRUD modules (analytics, search, imports, exports), see [features.md](features.md).
+
 Placeholders below: `{Module}` = plural folder name (`Clients`), `{Model}` = model class (`Client`), `{models}` = URL segment (`clients`), `{alias}` = morph alias (`client`), `{perm}` = permission prefix (`clients`).
 
 ## 0. Ground rules for parallel work

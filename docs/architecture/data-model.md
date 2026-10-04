@@ -40,6 +40,9 @@ erDiagram
     users ||--o{ approval_requests : submits
     users ||--o{ approval_requests : reviews
     approval_requests }o--o| platform_accounts : "approvable (morph)"
+    clients ||--o{ client_notes : "has notes"
+    users ||--o{ client_notes : writes
+    users ||--o{ imports : uploads
     users ||--o{ activity_log : causes
     users ||--o{ notifications : receives
 ```
@@ -102,7 +105,7 @@ Column notation: `type` is the Laravel Blueprint method. `N` = nullable. All tab
 | remember_token | rememberToken | | existing |
 | deleted_at | softDeletes | | |
 
-Reserved for Phase 5 (do not add now): `two_factor_secret` text N, `two_factor_recovery_codes` text N, `two_factor_confirmed_at` timestamp N.
+Phase 5 adds (migration `2026_10_05_100002_add_two_factor_columns_to_users_table`): `two_factor_secret` text N (`encrypted` cast), `two_factor_recovery_codes` text N (`encrypted:array` cast; single-use codes are removed as they are used), `two_factor_confirmed_at` timestamp N (`datetime` cast). Two-factor is on only when the secret and the confirmed timestamp are both set (`User::hasTwoFactorEnabled()`). The secret and the recovery codes are in `$hidden` and not fillable; only the two-factor controllers write them, with `forceFill`.
 Indexes: `team_id`, `workstation_id` (FK indexes), `is_active`.
 Model `User`: casts `email_verified_at`/`last_login_at` datetime, `is_active` boolean, `password` hashed. Relationships: `team(): BelongsTo`, `workstation(): BelongsTo`, `ledTeam(): HasOne(Team, 'team_lead_id')`, `leads(): HasMany(Lead, 'owner_id')`, `orders(): HasMany(Order, 'owner_id')`, `clients(): HasMany(Client, 'owner_id')`, `approvalRequests(): HasMany(ApprovalRequest, 'requested_by_id')`. Fillable adds `username, team_id, workstation_id, avatar_path, is_active`. Uses `SoftDeletes`.
 
@@ -329,7 +332,44 @@ Install `spatie/laravel-activitylog` (latest major supporting Laravel 13) and pu
 
 ### 4.14 `notifications`
 
-Laravel default (`php artisan make:notifications-table`): uuid `id`, `type`, `notifiable` morphs, `data` text, `read_at`. Notification classes: `ApprovalSubmitted` (to reviewers), `ApprovalDecided` (to requester), `PaymentOverdue` (to owner + team lead, sent by daily scheduled command `payments:notify-overdue`), `AccountStandingChanged` (to users on the workstation). Channel: `database` only in Phase 1.
+Laravel default (`php artisan make:notifications-table`): uuid `id`, `type`, `notifiable` morphs, `data` text, `read_at`. Notification classes: `ApprovalSubmitted` (to reviewers), `ApprovalDecided` (to requester), `PaymentOverdue` (to owner + team lead, sent by daily scheduled command `payments:notify-overdue`), `AccountStandingChanged` (to users on the workstation). Channel: `database` only in Phase 1. Phase 5 adds `PaymentDueReminder` (queued; `database` and `mail`), sent by `payments:send-reminders` (see `docs/api/features.md`).
+
+### 4.15 `client_notes` (Phase 5)
+
+Migration `2026_10_05_100001_create_client_notes_table`. Free-text notes on a client, shown on Client 360 and merged into the client timeline. Additive, so they do not go through approvals.
+
+| Column | Type | Null/Default | Notes |
+|--------|------|--------------|-------|
+| id | id | | |
+| client_id | foreignId → clients | cascadeOnDelete | |
+| user_id | foreignId → users | cascadeOnDelete | author |
+| body | text | | at most 2,000 characters (`ClientNote::MAX_LENGTH`) |
+| is_pinned | boolean | default false | pinned notes sort first |
+| created_at / updated_at | timestamps | | |
+| deleted_at | softDeletes | | |
+
+Index `(client_id, is_pinned, created_at)`. Model `ClientNote`: cast `is_pinned => boolean`; `client(): BelongsTo`, `author(): BelongsTo(User, 'user_id')`; `Client::notes(): HasMany`. Morph alias `client_note`. `ClientNotePolicy`: anyone who can view the client reads, adds and pins notes; only the author edits the text; the author or a user with `clients.update` deletes. Factory `ClientNoteFactory`; `ClientNoteSeeder` adds 0 to 4 notes per client.
+
+### 4.16 `imports` (Phase 5)
+
+Migration `2026_10_05_100003_create_imports_table`. One row per uploaded CSV import (leads or clients). The file lives on the private `local` disk under `imports/`; `path` is never exposed by the API.
+
+| Column | Type | Null/Default | Notes |
+|--------|------|--------------|-------|
+| id | id | | |
+| user_id | foreignId → users | cascadeOnDelete | uploader |
+| type | string(20) | | `ImportType`: `leads`, `clients` |
+| status | string(20) | default `uploaded` | `ImportStatus`: `uploaded`, `queued`, `processing`, `completed`, `failed` |
+| original_filename | string | | |
+| path | string | | private disk path |
+| headers | json | | CSV header row (blank and duplicate names made unique) |
+| mapping | json | N | CSV header → field key or null; saved when the import starts |
+| total_rows, processed_rows, created_rows, failed_rows | unsignedInteger | default 0 | progress counters |
+| errors | json | N | at most 200 entries `{row, column, field, message}` (`Import::MAX_STORED_ERRORS`) |
+| started_at, finished_at | timestamp | N | |
+| created_at / updated_at | timestamps | | |
+
+Index `(user_id, created_at)`. Model `Import` is not activity-logged (progress writes are frequent); start and finish are logged explicitly under `import`. Casts: `type => ImportType`, `status => ImportStatus`, JSON columns to arrays, counters to integers, timestamps to datetime. `ImportStatus::isFinished()` is true for `completed` and `failed`; `ImportType::permission()` returns `leads.import` or `clients.import`. `ImportPolicy` and the endpoints are described in `docs/api/features.md`. Factory `ImportFactory`.
 
 ## 5. Money rules
 
@@ -404,9 +444,11 @@ Use spatie/laravel-activitylog. Models use `LogsActivity` with `logOnly($fillabl
 | log_name | Events | subject | properties |
 |----------|--------|---------|-----------|
 | `model` | created/updated/deleted/restored on User, Team, Workstation, PlatformAccount, SocialAccount, Client, Lead, Order, OrderItem, Payment, Service | the model | `old`/`attributes` (no secrets, no password hashes) |
-| `auth` | `login`, `logout`, `login_failed`, `login_locked_out`, `login_blocked_inactive`, `login_blocked_ip`, `password_changed` | User (null for unknown identifier) | `ip`, `user_agent`, `identifier` (failed only) |
+| `auth` | `login`, `logout`, `login_failed`, `login_locked_out`, `login_blocked_inactive`, `login_blocked_ip`, `password_changed`; Phase 5: `two_factor_challenged`, `two_factor_failed`, `two_factor_enabled`, `two_factor_disabled`, `two_factor_recovery_code_used`, `two_factor_recovery_codes_viewed`, `two_factor_recovery_codes_regenerated`, `sessions_revoked` | User (null for unknown identifier) | `ip`, `user_agent`, `identifier` (failed only) |
 | `security` | `credentials_revealed` | PlatformAccount or SocialAccount | `fields: ["discord_password"]`, `ip` — never values |
 | `approval` | `submitted`, `approved`, `rejected`, `cancelled`, `failed` | ApprovalRequest | `action`, `approvable_type`, `approvable_id` |
+| `import` | `started`, `completed` (Phase 5) | none | `import_id`, `type`, `rows`; completed adds `created`, `failed` |
+| `export` | `exported` (Phase 5) | none | `type`, `rows`, `filters`, `sort` |
 
 Approved changes are logged twice by design: once as `approval.approved` (causer = reviewer) and once as `model.updated` (causer = reviewer, property `approval_request_id`).
 
