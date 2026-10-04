@@ -6,6 +6,7 @@ import { PageHeader } from '@/components/layout/PageHeader'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/features/auth/AuthProvider'
 import { Can } from '@/features/auth/Can'
+import { ExportCsvButton } from '@/features/imports/components/ExportCsvButton'
 import { clientStatuses } from '@/lib/enums'
 import { CLIENT_LIST_CONFIG, useClients, useOwnerOptions } from '../api'
 import { ClientFormSheet } from '../components/ClientFormSheet'
@@ -38,12 +39,15 @@ export default function ClientsPage() {
         title="Clients"
         description="Everyone you sell to, with their orders, payments and follow-ups."
         actions={
-          <Can permission="clients.create">
-            <Button onClick={openCreate}>
-              <PlusIcon aria-hidden="true" />
-              New client
-            </Button>
-          </Can>
+          <>
+            <ExportCsvButton type="clients" params={table.params} />
+            <Can permission="clients.create">
+              <Button onClick={openCreate}>
+                <PlusIcon aria-hidden="true" />
+                New client
+              </Button>
+            </Can>
+          </>
         }
       />
 

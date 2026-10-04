@@ -8,6 +8,47 @@ export const loginSchema = z.object({
 
 export type LoginValues = z.infer<typeof loginSchema>
 
+/** Second sign-in step: a 6-digit code, or a recovery code when `useRecoveryCode` is on. */
+export const twoFactorChallengeSchema = z
+  .object({
+    useRecoveryCode: z.boolean(),
+    code: z.string(),
+    recovery_code: z.string(),
+  })
+  .superRefine((values, context) => {
+    if (values.useRecoveryCode) {
+      if (values.recovery_code.trim() === '') {
+        context.addIssue({
+          code: 'custom',
+          path: ['recovery_code'],
+          message: 'Enter one of your recovery codes.',
+        })
+      }
+    } else if (!/^\d{6}$/.test(values.code)) {
+      context.addIssue({
+        code: 'custom',
+        path: ['code'],
+        message: 'Enter the 6-digit code from your authenticator app.',
+      })
+    }
+  })
+
+export type TwoFactorChallengeValues = z.infer<typeof twoFactorChallengeSchema>
+
+/** A 6-digit authenticator code (two-factor setup). */
+export const otpCodeSchema = z.object({
+  code: z.string().regex(/^\d{6}$/, 'Enter the 6-digit code from your authenticator app.'),
+})
+
+export type OtpCodeValues = z.infer<typeof otpCodeSchema>
+
+/** Re-entering the current password before a sensitive change. */
+export const confirmPasswordSchema = z.object({
+  password: z.string().min(1, 'Enter your password.'),
+})
+
+export type ConfirmPasswordValues = z.infer<typeof confirmPasswordSchema>
+
 /** Mirrors the backend's Password::defaults(): 10+ chars, mixed case, a number and a symbol. */
 export const newPasswordSchema = z
   .string()

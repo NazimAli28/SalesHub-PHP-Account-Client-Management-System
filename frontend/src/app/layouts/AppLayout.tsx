@@ -51,7 +51,8 @@ export function AppLayout() {
         Skip to content
       </a>
       <AppSidebar />
-      <SidebarInset>
+      {/* min-w-0 lets wide content (the leads board, tables) scroll inside the page, not widen it. */}
+      <SidebarInset className="min-w-0">
         {/* Thin progress bar while a lazy route chunk loads. */}
         <div
           aria-hidden="true"
@@ -74,7 +75,7 @@ export function AppLayout() {
           id="main-content"
           ref={mainRef}
           tabIndex={-1}
-          className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 outline-none sm:px-6 lg:px-8"
+          className="mx-auto w-full max-w-7xl min-w-0 flex-1 px-4 py-6 outline-none sm:px-6 lg:px-8"
         >
           <Suspense fallback={<PageSkeleton />}>
             <Outlet />

@@ -45,6 +45,9 @@ Only `VITE_*` variables reach the browser, so never put secrets in them.
 | Sales          | Leads, Clients (+ **Client 360**), Orders (+ detail), Payments | Server-side tables with URL-synced filters; order line items with live totals; payment schedule and mark-paid     |
 | Accounts       | Platform accounts (+ detail), Social accounts                  | Write-only credentials; audited reveal panel that auto-hides after 30 s                                           |
 | Administration | Users, Teams, Workstations, Services, Audit log                | Role rules mirrored in the UI; redacted audit diffs                                                               |
+| Insights       | Dashboard                                                      | KPIs with period comparison and revenue, funnel, leaderboard and account-health charts; range and team in the URL |
+| Pipeline       | Leads **Board**, Client notes and timeline, **Import**         | Drag-and-drop Kanban with keyboard moves and approval-aware rollback; CSV import wizard and CSV export buttons    |
+| Account        | Profile **Security**                                           | Two-factor setup with recovery codes, browser sessions list; Ctrl+K search across records                         |
 
 Every screen respects the user's permissions: navigation items, routes and row actions are hidden or guarded, and edits that need approval say "Send for approval" and handle the API's `202 Accepted`.
 

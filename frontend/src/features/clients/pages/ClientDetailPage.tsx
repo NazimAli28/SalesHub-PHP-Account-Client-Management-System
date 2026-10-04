@@ -32,6 +32,8 @@ import { formatRelative } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { useClient, useDeleteClient } from '../api'
 import { ClientFormSheet } from '../components/ClientFormSheet'
+import { ClientNotes } from '../components/ClientNotes'
+import { ClientTimeline } from '../components/ClientTimeline'
 import { KpiCard } from '../components/KpiCard'
 import { clientDisplayName, type ClientDetail } from '../types'
 
@@ -200,6 +202,7 @@ export default function ClientDetailPage() {
             </TabsTrigger>
             <TabsTrigger value="leads">Leads ({leads.length})</TabsTrigger>
             <TabsTrigger value="notes">Notes</TabsTrigger>
+            <TabsTrigger value="activity">Activity</TabsTrigger>
           </TabsList>
 
           <TabsContent value="orders">
@@ -213,6 +216,9 @@ export default function ClientDetailPage() {
           </TabsContent>
           <TabsContent value="notes">
             <NotesTab client={client} />
+          </TabsContent>
+          <TabsContent value="activity">
+            <ClientTimeline clientId={client.id} enabled />
           </TabsContent>
         </Tabs>
       </div>
@@ -438,13 +444,24 @@ function LeadsTab({ leads }: { leads: Lead[] }) {
 }
 
 function NotesTab({ client }: { client: ClientDetail }) {
+  return (
+    <div className="space-y-4">
+      <ClientNotes clientId={client.id} />
+      <ProfileNotes client={client} />
+    </div>
+  )
+}
+
+/** Free-text fields from the client record (edited through the Edit sheet). */
+function ProfileNotes({ client }: { client: ClientDetail }) {
   const hasContent =
     client.notes || client.next_upsell_plan || client.lost_note || client.expected_upsell_on
-  if (!hasContent && client.nurturing_rating === null) {
-    return <EmptyState title="No notes yet" description="Edit the client to add notes." />
-  }
+  if (!hasContent && client.nurturing_rating === null) return null
   return (
     <Card>
+      <CardHeader>
+        <CardTitle>Profile notes</CardTitle>
+      </CardHeader>
       <CardContent>
         <dl className="divide-y">
           <Detail label="Nurturing">

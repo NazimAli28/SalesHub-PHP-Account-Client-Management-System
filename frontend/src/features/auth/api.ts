@@ -58,19 +58,63 @@ export function useMeQuery() {
   return useQuery(meQueryOptions)
 }
 
-export async function login(payload: LoginPayload): Promise<Me> {
+/**
+ * Fields `MeResource` gained with two-factor sign-in. Optional here until the OpenAPI types are
+ * regenerated; read them through `accountSecurity()`.
+ */
+export interface AccountSecurityFields {
+  two_factor_enabled?: boolean
+  /** Public demo: shared accounts, so password changes and two-factor setup are switched off. */
+  demo_mode?: boolean
+}
+
+export function accountSecurity(user: Me): { twoFactorEnabled: boolean; demoMode: boolean } {
+  const fields = user as Me & AccountSecurityFields
+  return {
+    twoFactorEnabled: fields.two_factor_enabled === true,
+    demoMode: fields.demo_mode === true,
+  }
+}
+
+/** Login either signs in directly or asks for the second factor first. */
+export type LoginResult = { twoFactor: false; me: Me } | { twoFactor: true }
+
+export async function login(payload: LoginPayload): Promise<LoginResult> {
   // Fresh CSRF cookie before login: the session is regenerated on sign-in.
   await ensureCsrfCookie(true)
-  const response = await api.post<Envelope<Me>>('/auth/login', payload, {
+  const response = await api.post<Envelope<Me | { two_factor: true }>>('/auth/login', payload, {
     skipUnauthorizedHandler: true,
   })
-  return response.data
+  if ('two_factor' in response.data && response.data.two_factor === true) {
+    return { twoFactor: true }
+  }
+  return { twoFactor: false, me: response.data as Me }
 }
 
 export function useLogin() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: login,
+    onSuccess: (result) => {
+      if (!result.twoFactor) resetSession(queryClient, result.me)
+    },
+  })
+}
+
+/** Either the 6-digit authenticator code or one recovery code. */
+export type TwoFactorChallengePayload = { code: string } | { recovery_code: string }
+
+export async function twoFactorChallenge(payload: TwoFactorChallengePayload): Promise<Me> {
+  const response = await api.post<Envelope<Me>>('/auth/two-factor-challenge', payload, {
+    skipUnauthorizedHandler: true,
+  })
+  return response.data
+}
+
+export function useTwoFactorChallenge() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: twoFactorChallenge,
     onSuccess: (me) => resetSession(queryClient, me),
   })
 }

@@ -14,8 +14,11 @@ const EMPTY: ChangePasswordValues = {
   password_confirmation: '',
 }
 
-/** PUT /api/auth/password. The API signs out the user's other sessions on success. */
-export function ChangePasswordForm() {
+/**
+ * PUT /api/auth/password. The API signs out the user's other sessions on success.
+ * `disabled` (public demo mode) locks the whole form; the API refuses the change anyway.
+ */
+export function ChangePasswordForm({ disabled = false }: { disabled?: boolean }) {
   const form = useForm<ChangePasswordValues>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: EMPTY,
@@ -34,37 +37,39 @@ export function ChangePasswordForm() {
       onSubmit={form.handleSubmit((values) => mutation.mutate(values))}
       className="max-w-md"
     >
-      <FieldGroup>
-        <FormRootError form={form} />
-        <PasswordField
-          control={form.control}
-          name="current_password"
-          label="Current password"
-          autoComplete="current-password"
-          required
-        />
-        <PasswordField
-          control={form.control}
-          name="password"
-          label="New password"
-          autoComplete="new-password"
-          description="At least 10 characters, with upper- and lowercase letters, a number and a symbol."
-          required
-        />
-        <PasswordField
-          control={form.control}
-          name="password_confirmation"
-          label="Confirm new password"
-          autoComplete="new-password"
-          required
-        />
-        <div>
-          <Button type="submit" disabled={mutation.isPending}>
-            {mutation.isPending ? <Spinner /> : null}
-            Update password
-          </Button>
-        </div>
-      </FieldGroup>
+      <fieldset disabled={disabled} className="min-w-0">
+        <FieldGroup>
+          <FormRootError form={form} />
+          <PasswordField
+            control={form.control}
+            name="current_password"
+            label="Current password"
+            autoComplete="current-password"
+            required
+          />
+          <PasswordField
+            control={form.control}
+            name="password"
+            label="New password"
+            autoComplete="new-password"
+            description="At least 10 characters, with upper- and lowercase letters, a number and a symbol."
+            required
+          />
+          <PasswordField
+            control={form.control}
+            name="password_confirmation"
+            label="Confirm new password"
+            autoComplete="new-password"
+            required
+          />
+          <div>
+            <Button type="submit" disabled={disabled || mutation.isPending}>
+              {mutation.isPending ? <Spinner /> : null}
+              Update password
+            </Button>
+          </div>
+        </FieldGroup>
+      </fieldset>
     </form>
   )
 }

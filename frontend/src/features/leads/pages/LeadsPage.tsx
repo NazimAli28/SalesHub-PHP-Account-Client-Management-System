@@ -1,10 +1,12 @@
 import { useCallback, useMemo, useState } from 'react'
-import { DownloadIcon, PlusIcon, TargetIcon } from 'lucide-react'
+import { DownloadIcon, KanbanIcon, PlusIcon, TableIcon, TargetIcon } from 'lucide-react'
 import type { Lead } from '@/api/types'
 import { DataTable, DataTableFacetedFilter, useDataTableParams } from '@/components/data-table'
 import { EmptyState } from '@/components/layout/EmptyState'
 import { PageHeader } from '@/components/layout/PageHeader'
+import { ExportCsvButton } from '@/features/imports/components/ExportCsvButton'
 import { Button } from '@/components/ui/button'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useAuth } from '@/features/auth/AuthProvider'
 import { Can } from '@/features/auth/Can'
 import { downloadCsv } from '@/lib/csv'
@@ -12,6 +14,8 @@ import { leadStages } from '@/lib/enums'
 import { LEAD_LIST_CONFIG, useLeads, useOwnerOptions } from '../api'
 import { getLeadColumns } from '../components/lead-columns'
 import { LeadFormSheet } from '../components/LeadFormSheet'
+import { LeadBoardView } from '../board/LeadBoardView'
+import { useLeadsView, type LeadsView } from '../board/view-preference'
 
 function exportLeads(leads: Lead[]) {
   downloadCsv('leads.csv', [
@@ -43,9 +47,10 @@ function exportLeads(leads: Lead[]) {
  * URL state (useDataTableParams) -> query hook -> memoised columns -> <DataTable>.
  */
 export default function LeadsPage() {
-  const { can } = useAuth()
+  const { can, canAny } = useAuth()
+  const canEdit = canAny(['leads.update', 'leads.request-change'])
   const table = useDataTableParams(LEAD_LIST_CONFIG)
-  const leads = useLeads(table.params)
+  const [view, setView] = useLeadsView()
   const owners = useOwnerOptions({ enabled: can('users.view') })
 
   // The sheet serves both create (lead = null) and edit.
@@ -64,63 +69,30 @@ export default function LeadsPage() {
         title="Leads"
         description="Every conversation in the pipeline, from first message to won or lost."
         actions={
-          <Can permission="leads.create">
-            <Button onClick={openCreate}>
-              <PlusIcon aria-hidden="true" />
-              New lead
-            </Button>
-          </Can>
+          <>
+            <ViewSwitch view={view} onChange={setView} />
+            <ExportCsvButton type="leads" params={table.params} />
+            <Can permission="leads.create">
+              <Button onClick={openCreate}>
+                <PlusIcon aria-hidden="true" />
+                New lead
+              </Button>
+            </Can>
+          </>
         }
       />
 
-      <DataTable
-        label="Leads"
-        columns={columns}
-        query={leads}
-        state={table}
-        searchPlaceholder="Search client, email or message…"
-        filters={
-          <>
-            <DataTableFacetedFilter
-              state={table}
-              filterKey="stage"
-              title="Stage"
-              options={leadStages.options}
-            />
-            {can('users.view') ? (
-              <DataTableFacetedFilter
-                state={table}
-                filterKey="owner"
-                title="Owner"
-                options={owners.data ?? []}
-                isLoading={owners.isPending}
-              />
-            ) : null}
-          </>
-        }
-        enableRowSelection
-        bulkActions={(rows) => (
-          <Button variant="outline" size="sm" onClick={() => exportLeads(rows)}>
-            <DownloadIcon aria-hidden="true" />
-            Export CSV
-          </Button>
-        )}
-        emptyState={
-          <EmptyState
-            icon={TargetIcon}
-            title="No leads yet"
-            description="Leads you create, or that are assigned to you, show up here."
-            action={
-              <Can permission="leads.create">
-                <Button size="sm" onClick={openCreate}>
-                  <PlusIcon aria-hidden="true" />
-                  New lead
-                </Button>
-              </Can>
-            }
-          />
-        }
-      />
+      {view === 'board' ? (
+        <LeadBoardView
+          table={table}
+          ownerOptions={owners.data}
+          ownersLoading={owners.isPending}
+          showOwnerFilter={can('users.view')}
+          onOpen={canEdit ? openEdit : undefined}
+        />
+      ) : (
+        <LeadsTableView table={table} owners={owners} columns={columns} onCreate={openCreate} />
+      )}
 
       <LeadFormSheet
         open={sheet.open}
@@ -128,5 +100,90 @@ export default function LeadsPage() {
         onOpenChange={(open) => setSheet((current) => ({ ...current, open }))}
       />
     </div>
+  )
+}
+
+function ViewSwitch({ view, onChange }: { view: LeadsView; onChange: (view: LeadsView) => void }) {
+  return (
+    <ToggleGroup
+      type="single"
+      variant="outline"
+      value={view}
+      // Radix reports an empty value when the active item is clicked again; keep the view.
+      onValueChange={(value) => value && onChange(value as LeadsView)}
+      aria-label="Leads view"
+    >
+      <ToggleGroupItem value="table" aria-label="Table view">
+        <TableIcon aria-hidden="true" />
+        Table
+      </ToggleGroupItem>
+      <ToggleGroupItem value="board" aria-label="Board view">
+        <KanbanIcon aria-hidden="true" />
+        Board
+      </ToggleGroupItem>
+    </ToggleGroup>
+  )
+}
+
+interface LeadsTableViewProps {
+  table: ReturnType<typeof useDataTableParams>
+  owners: ReturnType<typeof useOwnerOptions>
+  columns: ReturnType<typeof getLeadColumns>
+  onCreate: () => void
+}
+
+function LeadsTableView({ table, owners, columns, onCreate }: LeadsTableViewProps) {
+  const { can } = useAuth()
+  const leads = useLeads(table.params)
+
+  return (
+    <DataTable
+      label="Leads"
+      columns={columns}
+      query={leads}
+      state={table}
+      searchPlaceholder="Search client, email or message…"
+      filters={
+        <>
+          <DataTableFacetedFilter
+            state={table}
+            filterKey="stage"
+            title="Stage"
+            options={leadStages.options}
+          />
+          {can('users.view') ? (
+            <DataTableFacetedFilter
+              state={table}
+              filterKey="owner"
+              title="Owner"
+              options={owners.data ?? []}
+              isLoading={owners.isPending}
+            />
+          ) : null}
+        </>
+      }
+      enableRowSelection
+      bulkActions={(rows) => (
+        <Button variant="outline" size="sm" onClick={() => exportLeads(rows)}>
+          <DownloadIcon aria-hidden="true" />
+          Export CSV
+        </Button>
+      )}
+      emptyState={
+        <EmptyState
+          icon={TargetIcon}
+          title="No leads yet"
+          description="Leads you create, or that are assigned to you, show up here."
+          action={
+            <Can permission="leads.create">
+              <Button size="sm" onClick={onCreate}>
+                <PlusIcon aria-hidden="true" />
+                New lead
+              </Button>
+            </Can>
+          }
+        />
+      }
+    />
   )
 }

@@ -60,6 +60,33 @@ describe('NotificationsPage', () => {
     )
   })
 
+  it('links a payment reminder to its order', async () => {
+    server.use(
+      http.get('*/api/notifications', () =>
+        HttpResponse.json(
+          paginate([
+            makeNotification('p', {
+              type: 'PaymentDueReminder',
+              data: {
+                payment_id: 3,
+                order_id: 42,
+                order_number: 'SH-2026-00042',
+                overdue: true,
+                message: 'Payment of $150.00 was due and is overdue.',
+              },
+            }),
+          ]),
+        ),
+      ),
+    )
+    renderWithProviders(<NotificationsPage />, { route: '/notifications', user: makeUser() })
+
+    expect(await screen.findByRole('link', { name: /is overdue/ })).toHaveAttribute(
+      'href',
+      '/orders/42',
+    )
+  })
+
   it('requests only unread notifications when the filter is on', async () => {
     const urls: URL[] = []
     server.use(

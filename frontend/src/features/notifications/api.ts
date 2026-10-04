@@ -24,7 +24,7 @@ export function useUnreadNotificationsCount({ enabled = true }: { enabled?: bool
 // List and mutations
 // ---------------------------------------------------------------------------
 
-/** Payload built by the backend notification classes (approval requested / decided). */
+/** Payload built by the backend notification classes (approval requested / decided, payment due reminder). */
 export interface NotificationData {
   approval_request_id?: number
   action?: string
@@ -34,6 +34,12 @@ export interface NotificationData {
   message?: string
   reviewed_by?: string | null
   review_comment?: string | null
+  /** PaymentDueReminder */
+  payment_id?: number
+  order_id?: number
+  order_number?: string
+  due_date?: string
+  overdue?: boolean
   [key: string]: unknown
 }
 

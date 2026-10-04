@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { isToday, isYesterday } from 'date-fns'
 import {
+  BanknoteIcon,
   BellIcon,
   CheckCheckIcon,
   CheckIcon,
@@ -39,6 +40,14 @@ function groupOf(notification: AppNotification): Group {
 }
 
 function iconFor(notification: AppNotification): { icon: LucideIcon; className: string } {
+  if (notification.type === 'PaymentDueReminder') {
+    return {
+      icon: BanknoteIcon,
+      className: notification.data.overdue
+        ? 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300'
+        : 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
+    }
+  }
   switch (notification.data.status) {
     case 'approved':
       return {
@@ -68,6 +77,12 @@ function NotificationItem({
 }) {
   const { icon: Icon, className } = iconFor(notification)
   const approvalId = notification.data.approval_request_id
+  const orderId = notification.data.order_id
+  const href = approvalId
+    ? detailPath.approval(approvalId)
+    : orderId
+      ? detailPath.order(orderId)
+      : null
   const message = notification.data.message ?? 'You have a new notification.'
   const comment = notification.data.review_comment
 
@@ -95,9 +110,9 @@ function NotificationItem({
 
   return (
     <li className="flex items-start gap-2 p-3">
-      {approvalId ? (
+      {href ? (
         <Link
-          to={detailPath.approval(approvalId)}
+          to={href}
           className="hover:bg-muted/50 -m-1 flex min-w-0 flex-1 items-start gap-3 rounded-md p-1"
           onClick={() => {
             if (!notification.is_read) onRead(notification.id)
@@ -156,7 +171,7 @@ export default function NotificationsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Notifications"
-        description="Decisions on your requests and new requests waiting for your review."
+        description="Decisions on your requests, requests waiting for your review and payment reminders."
         actions={
           <Button
             variant="outline"

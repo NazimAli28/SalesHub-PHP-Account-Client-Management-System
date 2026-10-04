@@ -28,6 +28,8 @@ globalThis.ResizeObserver ??= class {
 Element.prototype.scrollIntoView ??= () => {}
 Element.prototype.hasPointerCapture ??= () => false
 Element.prototype.releasePointerCapture ??= () => {}
+// input-otp probes for password-manager badges with elementFromPoint.
+document.elementFromPoint ??= () => null
 
 function clearCookies() {
   for (const cookie of document.cookie.split(';')) {

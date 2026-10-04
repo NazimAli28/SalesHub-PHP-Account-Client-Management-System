@@ -12,13 +12,16 @@ import { useCountdown } from '@/hooks/use-countdown'
 import { useLogin } from '../api'
 import { loginSchema, type LoginValues } from '../schemas'
 import { DemoLogins } from './DemoLogins'
+import { TwoFactorChallengeForm } from './TwoFactorChallengeForm'
 
 /**
  * Sign-in form. On success the `/auth/me` cache is filled, and <RedirectIfAuthenticated> on the
- * login route sends the user on to `?redirect=` (or the dashboard).
+ * login route sends the user on to `?redirect=` (or the dashboard). Accounts with two-factor
+ * sign-in get a second step (<TwoFactorChallengeForm>) before that happens.
  */
 export function LoginForm() {
   const login = useLogin()
+  const [step, setStep] = useState<'password' | 'two-factor'>('password')
   const [lockedUntil, setLockedUntil] = useState<number | null>(null)
   const secondsLeft = useCountdown(lockedUntil)
   const locked = secondsLeft > 0
@@ -31,6 +34,9 @@ export function LoginForm() {
   const submit = (values: LoginValues) => {
     form.clearErrors('root')
     login.mutate(values, {
+      onSuccess: (result) => {
+        if (result.twoFactor) setStep('two-factor')
+      },
       onError: (error) => {
         if (!isApiError(error)) {
           form.setError('root.server', { message: 'Something went wrong. Please try again.' })
@@ -49,6 +55,18 @@ export function LoginForm() {
         form.setError('root.server', { message: error.message })
       },
     })
+  }
+
+  if (step === 'two-factor') {
+    return (
+      <TwoFactorChallengeForm
+        onRestart={(message) => {
+          setStep('password')
+          form.resetField('password')
+          if (message) form.setError('root.server', { message })
+        }}
+      />
+    )
   }
 
   const pending = login.isPending

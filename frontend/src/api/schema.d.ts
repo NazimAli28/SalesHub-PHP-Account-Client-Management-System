@@ -4,4438 +4,6017 @@
  */
 
 export interface paths {
-  '/platform-accounts/request-new': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post: operations['platform-accounts.request-new']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/approvals/{approval}/approve': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post: operations['approvals.approve']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/approvals/{approval}/reject': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post: operations['approvals.reject']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/approvals/{approval}/cancel': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post: operations['approvals.cancel']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/approvals': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['approvals.index']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/approvals/pending-count': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Badge counts: `reviewable` = pending requests the user may decide, `own` = the user's own pending requests */
-    get: operations['approvals.pending-count']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/approvals/{approval}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /** Detail with the before/after diff and `can: {review, cancel}` */
-    get: operations['approvals.show']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/audit-log': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['audit-log.index']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/clients': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['clients.index']
-    put?: never
-    /**
-     * @description ⚠️ Cannot generate request documentation: Cannot evaluate validation rules (2 evaluators failed):
-     *       [FormRequestRulesEvaluator] App\Http\Requests\Clients\StoreClientRequest::clientAttributeRules(): Argument #1 ($user) must be of type App\Models\User, null given, called in D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Clients\StoreClientRequest.php on line 29 (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Clients\Concerns\ClientRules.php:20)
-     *       [NodeRulesEvaluator] Undefined array key "discord_username" (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\vendor\nikic\php-parser\lib\PhpParser\ConstExprEvaluator.php:141)
-     */
-    post: operations['clients.store']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/clients/{client}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Client 360: leads, orders with balance, upcoming and overdue payments, and counts, all limited to what
-     *     the user can see (a sales executive sees the client's leads and orders they own)
-     */
-    get: operations['clients.show']
-    /**
-     * 200 with the client (direct write) or 202 with the queued approval request
-     * @description ⚠️ Cannot generate request documentation: Cannot evaluate validation rules (2 evaluators failed):
-     *       [FormRequestRulesEvaluator] App\Http\Requests\Clients\UpdateClientRequest::clientAttributeRules(): Argument #1 ($user) must be of type App\Models\User, null given, called in D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Clients\UpdateClientRequest.php on line 32 (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Clients\Concerns\ClientRules.php:20)
-     *       [NodeRulesEvaluator] Undefined array key "discord_username" (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\vendor\nikic\php-parser\lib\PhpParser\ConstExprEvaluator.php:141)
-     */
-    put: operations['clients.update']
-    post?: never
-    /** 204 (direct delete) or 202 with the queued approval request */
-    delete: operations['clients.destroy']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/leads': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['leads.index']
-    put?: never
-    /**
-     * @description ⚠️ Cannot generate request documentation: Cannot evaluate validation rules (2 evaluators failed):
-     *       [FormRequestRulesEvaluator] App\Http\Requests\Leads\StoreLeadRequest::leadAttributeRules(): Argument #1 ($user) must be of type App\Models\User, null given, called in D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Leads\StoreLeadRequest.php on line 35 (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Leads\Concerns\LeadRules.php:25)
-     *       [NodeRulesEvaluator] App\Rules\VisibleTo::__construct(): Argument #2 ($user) must be of type App\Models\User, null given, called in D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\vendor\dedoc\scramble\src\Support\OperationExtensions\RulesEvaluator\NodeRulesEvaluator.php(274) : eval()'d code on line 1 (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Rules\VisibleTo.php:25)
-     */
-    post: operations['leads.store']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/leads/{lead}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['leads.show']
-    /**
-     * 200 with the lead (direct write) or 202 with the queued approval request
-     * @description ⚠️ Cannot generate request documentation: Cannot evaluate validation rules (2 evaluators failed):
-     *       [FormRequestRulesEvaluator] App\Http\Requests\Leads\UpdateLeadRequest::leadAttributeRules(): Argument #1 ($user) must be of type App\Models\User, null given, called in D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Leads\UpdateLeadRequest.php on line 34 (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Leads\Concerns\LeadRules.php:25)
-     *       [NodeRulesEvaluator] App\Rules\VisibleTo::__construct(): Argument #2 ($user) must be of type App\Models\User, null given, called in D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\vendor\dedoc\scramble\src\Support\OperationExtensions\RulesEvaluator\NodeRulesEvaluator.php(274) : eval()'d code on line 1 (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Rules\VisibleTo.php:25)
-     */
-    put: operations['leads.update']
-    post?: never
-    /** 204 (direct delete) or 202 with the queued approval request */
-    delete: operations['leads.destroy']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/leads/{lead}/owner': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch: operations['leads.owner']
-    trace?: never
-  }
-  '/leads/{lead}/stage': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch: operations['leads.stage']
-    trace?: never
-  }
-  '/auth/login': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post: operations['auth.login']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/auth/logout': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post: operations['auth.logout']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/payments/{payment}/mark-paid': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post: operations['payments.mark-paid']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/auth/me': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['auth.me']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/notifications': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['notifications.index']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/notifications/unread-count': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['notifications.unread-count']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/notifications/read-all': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post: operations['notifications.read-all']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/notifications/{notification}/read': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    /**
-     * The envelope is built by hand: a resource with its own `data` key (the notification payload)
-     *     is not wrapped in `data` by Laravel
-     */
-    patch: operations['notifications.read']
-    trace?: never
-  }
-  '/orders': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['orders.index']
-    put?: never
-    /**
-     * @description ⚠️ Cannot generate request documentation: Cannot evaluate validation rules (2 evaluators failed):
-     *       [FormRequestRulesEvaluator] App\Http\Requests\Orders\StoreOrderRequest::orderAttributeRules(): Argument #1 ($user) must be of type App\Models\User, null given, called in D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Orders\StoreOrderRequest.php on line 37 (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Orders\Concerns\OrderRules.php:19)
-     *       [NodeRulesEvaluator] App\Rules\VisibleTo::__construct(): Argument #2 ($user) must be of type App\Models\User, null given, called in D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\vendor\dedoc\scramble\src\Support\OperationExtensions\RulesEvaluator\NodeRulesEvaluator.php(274) : eval()'d code on line 1 (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Rules\VisibleTo.php:25)
-     */
-    post: operations['orders.store']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/orders/{order}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['orders.show']
-    /**
-     * 200 with the order (direct write) or 202 with the queued approval request
-     * @description ⚠️ Cannot generate request documentation: Cannot evaluate validation rules (2 evaluators failed):
-     *       [FormRequestRulesEvaluator] App\Http\Requests\Orders\UpdateOrderRequest::orderAttributeRules(): Argument #1 ($user) must be of type App\Models\User, null given, called in D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Orders\UpdateOrderRequest.php on line 33 (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Orders\Concerns\OrderRules.php:19)
-     *       [NodeRulesEvaluator] Undefined array key "closer_id" (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\vendor\nikic\php-parser\lib\PhpParser\ConstExprEvaluator.php:141)
-     */
-    put: operations['orders.update']
-    post?: never
-    /** 204 (direct delete) or 202 with the queued approval request */
-    delete: operations['orders.destroy']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/orders/{order}/items': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post: operations['orders.items.store']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/orders/{order}/items/{item}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put: operations['orders.items.update']
-    post?: never
-    delete: operations['orders.items.destroy']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/orders/{order}/payments': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['orders.payments.index']
-    put?: never
-    post: operations['orders.payments.store']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/auth/password': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put: operations['auth.password']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/payments': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['payments.index']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/payments/{payment}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['payments.show']
-    /** 200 with the payment (direct write) or 202 with the queued approval request */
-    put: operations['payments.update']
-    post?: never
-    /** 204 (direct delete) or 202 with the queued approval request */
-    delete: operations['payments.destroy']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/platform-accounts': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['platform-accounts.index']
-    put?: never
-    post: operations['platform-accounts.store']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/platform-accounts/{platformAccount}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['platform-accounts.show']
-    /** 200 with the account (direct write) or 202 with the queued approval request */
-    put: operations['platform-accounts.update']
-    post?: never
-    /** 204 (direct delete) or 202 with the queued approval request */
-    delete: operations['platform-accounts.destroy']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/platform-accounts/{platformAccount}/assign': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch: operations['platform-accounts.assign']
-    trace?: never
-  }
-  '/platform-accounts/{platformAccount}/reveal': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post: operations['platform-accounts.reveal']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/platform-accounts/{platformAccount}/standing': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch: operations['platform-accounts.standing']
-    trace?: never
-  }
-  '/services': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['services.index']
-    put?: never
-    post: operations['services.store']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/services/{service}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['services.show']
-    /**
-     * @description ⚠️ Cannot generate request documentation: Cannot evaluate validation rules (2 evaluators failed):
-     *       [FormRequestRulesEvaluator] App\Http\Requests\Services\UpdateServiceRequest::service(): Return value must be of type App\Models\Service, null returned (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Services\UpdateServiceRequest.php:41)
-     *       [NodeRulesEvaluator] Undefined array key "name" (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\vendor\nikic\php-parser\lib\PhpParser\ConstExprEvaluator.php:141)
-     */
-    put: operations['services.update']
-    post?: never
-    delete: operations['services.destroy']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/social-accounts': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['social-accounts.index']
-    put?: never
-    /**
-     * @description ⚠️ Cannot generate request documentation: Cannot evaluate validation rules (2 evaluators failed):
-     *       [FormRequestRulesEvaluator] App\Http\Requests\SocialAccounts\StoreSocialAccountRequest::socialAccountAttributeRules(): Argument #1 ($user) must be of type App\Models\User, null given, called in D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\SocialAccounts\StoreSocialAccountRequest.php on line 32 (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\SocialAccounts\Concerns\SocialAccountRules.php:22)
-     *       [NodeRulesEvaluator] Undefined array key "platform_account_id" (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\vendor\nikic\php-parser\lib\PhpParser\ConstExprEvaluator.php:141)
-     */
-    post: operations['social-accounts.store']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/social-accounts/{socialAccount}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['social-accounts.show']
-    /**
-     * 200 with the account (direct write) or 202 with the queued approval request
-     * @description ⚠️ Cannot generate request documentation: Cannot evaluate validation rules (2 evaluators failed):
-     *       [FormRequestRulesEvaluator] App\Http\Requests\SocialAccounts\UpdateSocialAccountRequest::socialAccountAttributeRules(): Argument #1 ($user) must be of type App\Models\User, null given, called in D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\SocialAccounts\UpdateSocialAccountRequest.php on line 35 (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\SocialAccounts\Concerns\SocialAccountRules.php:22)
-     *       [NodeRulesEvaluator] Undefined array key "platform_account_id" (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\vendor\nikic\php-parser\lib\PhpParser\ConstExprEvaluator.php:141)
-     */
-    put: operations['social-accounts.update']
-    post?: never
-    /** 204 (direct delete) or 202 with the queued approval request */
-    delete: operations['social-accounts.destroy']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/social-accounts/{socialAccount}/reveal': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post: operations['social-accounts.reveal']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/teams': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['teams.index']
-    put?: never
-    post: operations['teams.store']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/teams/{team}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['teams.show']
-    /**
-     * @description ⚠️ Cannot generate request documentation: Cannot evaluate validation rules (2 evaluators failed):
-     *       [FormRequestRulesEvaluator] App\Http\Requests\Teams\UpdateTeamRequest::team(): Return value must be of type App\Models\Team, null returned (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Teams\UpdateTeamRequest.php:38)
-     *       [NodeRulesEvaluator] Undefined array key "name" (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\vendor\nikic\php-parser\lib\PhpParser\ConstExprEvaluator.php:141)
-     */
-    put: operations['teams.update']
-    post?: never
-    delete: operations['teams.destroy']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/users': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['users.index']
-    put?: never
-    post: operations['users.store']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/users/{user}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['users.show']
-    /**
-     * @description ⚠️ Cannot generate request documentation: Cannot evaluate validation rules (2 evaluators failed):
-     *       [FormRequestRulesEvaluator] App\Http\Requests\Users\UpdateUserRequest::target(): Return value must be of type App\Models\User, null returned (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Users\UpdateUserRequest.php:74)
-     *       [NodeRulesEvaluator] Undefined array key "name" (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\vendor\nikic\php-parser\lib\PhpParser\ConstExprEvaluator.php:141)
-     */
-    put: operations['users.update']
-    post?: never
-    delete: operations['users.destroy']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/users/{user}/deactivate': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch: operations['users.deactivate']
-    trace?: never
-  }
-  '/users/{user}/activate': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch: operations['users.activate']
-    trace?: never
-  }
-  '/workstations': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['workstations.index']
-    put?: never
-    post: operations['workstations.store']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/workstations/{workstation}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get: operations['workstations.show']
-    /**
-     * @description ⚠️ Cannot generate request documentation: Cannot evaluate validation rules (2 evaluators failed):
-     *       [FormRequestRulesEvaluator] App\Http\Requests\Workstations\UpdateWorkstationRequest::workstation(): Return value must be of type App\Models\Workstation, null returned (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\app\Http\Requests\Workstations\UpdateWorkstationRequest.php:59)
-     *       [NodeRulesEvaluator] Undefined array key "code" (at D:\Projects\SalesHub-PHP-Account-Client-Management-System\backend\vendor\nikic\php-parser\lib\PhpParser\ConstExprEvaluator.php:141)
-     */
-    put: operations['workstations.update']
-    post?: never
-    delete: operations['workstations.destroy']
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
+    "/platform-accounts/request-new": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["platform-accounts.request-new"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/{approval}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["approvals.approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/{approval}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["approvals.reject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/{approval}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["approvals.cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["approvals.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/pending-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Badge counts: `reviewable` = pending requests the user may decide, `own` = the user's own pending requests */
+        get: operations["approvals.pending-count"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/{approval}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Detail with the before/after diff and `can: {review, cancel}` */
+        get: operations["approvals.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audit-log": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["audit-log.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/clients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["clients.index"];
+        put?: never;
+        post: operations["clients.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/clients/{client}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Client 360: leads, orders with balance, upcoming and overdue payments, and counts, all limited to what
+         *     the user can see (a sales executive sees the client's leads and orders they own)
+         */
+        get: operations["clients.show"];
+        /** 200 with the client (direct write) or 202 with the queued approval request */
+        put: operations["clients.update"];
+        post?: never;
+        /** 204 (direct delete) or 202 with the queued approval request */
+        delete: operations["clients.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/clients/{client}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["clients.notes.index"];
+        put?: never;
+        post: operations["clients.notes.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/clients/{client}/notes/{note}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["clients.notes.destroy"];
+        options?: never;
+        head?: never;
+        patch: operations["clients.notes.update"];
+        trace?: never;
+    };
+    "/clients/{client}/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["clients.timeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/exports/{type}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["exports.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/imports/templates/{type}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["imports.template"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/imports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Own imports, newest first; admins see everyone's */
+        get: operations["imports.index"];
+        put?: never;
+        post: operations["imports.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/imports/{import}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["imports.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/imports/{import}/errors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The failed rows (at most the stored errors) as a CSV with an extra "Error" column */
+        get: operations["imports.errors"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/imports/{import}/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["imports.preview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/imports/{import}/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["imports.start"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/leads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["leads.index"];
+        put?: never;
+        post: operations["leads.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/leads/{lead}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["leads.show"];
+        /** 200 with the lead (direct write) or 202 with the queued approval request */
+        put: operations["leads.update"];
+        post?: never;
+        /** 204 (direct delete) or 202 with the queued approval request */
+        delete: operations["leads.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/leads/{lead}/owner": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["leads.owner"];
+        trace?: never;
+    };
+    "/leads/{lead}/stage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["leads.stage"];
+        trace?: never;
+    };
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["auth.login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["auth.logout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/payments/{payment}/mark-paid": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["payments.mark-paid"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["auth.me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["notifications.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notifications/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["notifications.unread-count"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notifications/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["notifications.read-all"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notifications/{notification}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * The envelope is built by hand: a resource with its own `data` key (the notification payload)
+         *     is not wrapped in `data` by Laravel
+         */
+        patch: operations["notifications.read"];
+        trace?: never;
+    };
+    "/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["orders.index"];
+        put?: never;
+        post: operations["orders.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/{order}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["orders.show"];
+        /** 200 with the order (direct write) or 202 with the queued approval request */
+        put: operations["orders.update"];
+        post?: never;
+        /** 204 (direct delete) or 202 with the queued approval request */
+        delete: operations["orders.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/{order}/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["orders.items.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/{order}/items/{item}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["orders.items.update"];
+        post?: never;
+        delete: operations["orders.items.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orders/{order}/payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["orders.payments.index"];
+        put?: never;
+        post: operations["orders.payments.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analytics/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["analytics.overview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["auth.password"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["payments.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/payments/{payment}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["payments.show"];
+        /** 200 with the payment (direct write) or 202 with the queued approval request */
+        put: operations["payments.update"];
+        post?: never;
+        /** 204 (direct delete) or 202 with the queued approval request */
+        delete: operations["payments.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/platform-accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform-accounts.index"];
+        put?: never;
+        post: operations["platform-accounts.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/platform-accounts/{platformAccount}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["platform-accounts.show"];
+        /** 200 with the account (direct write) or 202 with the queued approval request */
+        put: operations["platform-accounts.update"];
+        post?: never;
+        /** 204 (direct delete) or 202 with the queued approval request */
+        delete: operations["platform-accounts.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/platform-accounts/{platformAccount}/assign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["platform-accounts.assign"];
+        trace?: never;
+    };
+    "/platform-accounts/{platformAccount}/reveal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["platform-accounts.reveal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/platform-accounts/{platformAccount}/standing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["platform-accounts.standing"];
+        trace?: never;
+    };
+    "/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["search"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/services": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["services.index"];
+        put?: never;
+        post: operations["services.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/services/{service}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["services.show"];
+        put: operations["services.update"];
+        post?: never;
+        delete: operations["services.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** GET /api/auth/sessions */
+        get: operations["sessions.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/sessions/others": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** DELETE /api/auth/sessions/others {password}: sign out every other browser */
+        delete: operations["sessions.destroyOthers"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/social-accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["social-accounts.index"];
+        put?: never;
+        post: operations["social-accounts.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/social-accounts/{socialAccount}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["social-accounts.show"];
+        /** 200 with the account (direct write) or 202 with the queued approval request */
+        put: operations["social-accounts.update"];
+        post?: never;
+        /** 204 (direct delete) or 202 with the queued approval request */
+        delete: operations["social-accounts.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/social-accounts/{socialAccount}/reveal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["social-accounts.reveal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/teams": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teams.index"];
+        put?: never;
+        post: operations["teams.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/teams/{team}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["teams.show"];
+        put: operations["teams.update"];
+        post?: never;
+        delete: operations["teams.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/two-factor": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** POST /api/auth/two-factor: start (or restart) setup with a new secret. Not active until confirmed */
+        post: operations["twoFactor.store"];
+        /** DELETE /api/auth/two-factor {password}: turn two-factor sign-in off (also cancels an unfinished setup) */
+        delete: operations["twoFactor.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/two-factor/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** POST /api/auth/two-factor/confirm: prove the authenticator works; returns the recovery codes once */
+        post: operations["twoFactor.confirm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/two-factor/recovery-codes/view": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** POST /api/auth/two-factor/recovery-codes/view {password}: show the unused recovery codes */
+        post: operations["twoFactor.recoveryCodes"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/two-factor/recovery-codes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** POST /api/auth/two-factor/recovery-codes {password}: replace every recovery code with a new set */
+        post: operations["twoFactor.regenerateRecoveryCodes"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/two-factor-challenge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["auth.twoFactorChallenge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["users.index"];
+        put?: never;
+        post: operations["users.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{user}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["users.show"];
+        put: operations["users.update"];
+        post?: never;
+        delete: operations["users.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{user}/deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["users.deactivate"];
+        trace?: never;
+    };
+    "/users/{user}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["users.activate"];
+        trace?: never;
+    };
+    "/workstations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["workstations.index"];
+        put?: never;
+        post: operations["workstations.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workstations/{workstation}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["workstations.show"];
+        put: operations["workstations.update"];
+        post?: never;
+        delete: operations["workstations.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
-export type webhooks = Record<string, never>
+export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /**
-     * AccountStanding
-     * @enum {string}
-     */
-    AccountStanding: 'active' | 'limited' | 'spam' | 'violation' | 'disabled'
-    /** ActivityResource */
-    ActivityResource: {
-      id: number
-      log_name: string | null
-      event: string | null
-      description: string
-      causer_id: number | null
-      causer: components['schemas']['UserSummaryResource'] | null
-      subject: {
-        type: string | null
-        id: number | null
-        label: string | null
-      } | null
-      properties: unknown[]
-      attribute_changes: unknown[]
-      created_at: string
-    }
-    /** ApprovalRequestResource */
-    ApprovalRequestResource: {
-      id: number
-      action: {
-        value: string
-        label: string
-      } | null
-      status: {
-        value: string
-        label: string
-      } | null
-      approvable: {
-        type: string | null
-        id: number | null
-      } | null
-      fields: string[]
-      payload: unknown[]
-      before: unknown[] | null
-      after: unknown[] | null
-      diff: {
-        field: string
-        before: string
-        after: string
-      }[]
-      reason: string | null
-      requester?: components['schemas']['UserSummaryResource']
-      reviewer?: components['schemas']['UserSummaryResource'] | null
-      reviewed_at: string
-      review_comment: string | null
-      applied_at: string
-      failure_message: string | null
-      created_at: string
-      updated_at: string
-      can?: {
-        review: string
-        cancel: boolean
-      }
-    }
-    /** ApproveApprovalRequest */
-    ApproveApprovalRequest: {
-      comment?: string | null
-    }
-    /**
-     * AssignPlatformAccountRequest
-     * @description Direct write only (`platform-accounts.assign`). `workstation_id: null` unassigns the account.
-     */
-    AssignPlatformAccountRequest: {
-      workstation_id: number | null
-    }
-    /**
-     * ChangePlatformAccountStandingRequest
-     * @description Support/admin change the standing directly; team leads and sales executives request it.
-     */
-    ChangePlatformAccountStandingRequest: {
-      standing: components['schemas']['AccountStanding']
-      reason?: string | null
-    }
-    /** ClientDetailResource */
-    ClientDetailResource: {
-      id: number
-      discord_username: string
-      name: string | null
-      email: string | null
-      payment_name: string | null
-      country: string | null
-      status: {
-        value: string
-        label: string
-      } | null
-      nurturing_rating: number | null
-      next_upsell_plan: string | null
-      expected_upsell_on: string | null
-      lost_note: string | null
-      notes: string | null
-      owner_id: number | null
-      lifetime_value?: {
-        amount_cents: number
-        /** @constant */
-        currency: 'USD'
-        formatted: string
-      } | null
-      owner?: components['schemas']['UserSummaryResource'] | null
-      leads?: components['schemas']['LeadResource'][]
-      orders?: components['schemas']['OrderSummaryResource'][]
-      pending_change?: {
-        id: string
-        action: {
-          value: string
-          label: string
-        } | null
-        fields: string
-        requested_by: components['schemas']['UserSummaryResource']
-        requested_at: string
-      } | null
-      created_at: string
-      updated_at: string
-      counts: {
-        leads: number
-        orders: number
-        open_orders: number
-        overdue_payments: number
-      }
-      upcoming_payments?: components['schemas']['PaymentSummaryResource'][]
-      overdue_payments?: components['schemas']['PaymentSummaryResource'][]
-    }
-    /** ClientResource */
-    ClientResource: {
-      id: number
-      discord_username: string
-      name: string | null
-      email: string | null
-      payment_name: string | null
-      country: string | null
-      status: {
-        value: string
-        label: string
-      } | null
-      nurturing_rating: number | null
-      next_upsell_plan: string | null
-      expected_upsell_on: string | null
-      lost_note: string | null
-      notes: string | null
-      owner_id: number | null
-      lifetime_value?: {
-        amount_cents: number
-        /** @constant */
-        currency: 'USD'
-        formatted: string
-      } | null
-      owner?: components['schemas']['UserSummaryResource'] | null
-      leads?: components['schemas']['LeadResource'][]
-      orders?: components['schemas']['OrderResource'][]
-      pending_change?: {
-        id: string
-        action: {
-          value: string
-          label: string
-        } | null
-        fields: string
-        requested_by: components['schemas']['UserSummaryResource']
-        requested_at: string
-      } | null
-      created_at: string
-      updated_at: string
-    }
-    /** ClientSummaryResource */
-    ClientSummaryResource: {
-      id: number
-      discord_username: string
-      name: string | null
-      status: {
-        value: string
-        label: string
-      } | null
-    }
-    /** JsonResource */
-    JsonResource: string
-    /**
-     * LeadLostReason
-     * @enum {string}
-     */
-    LeadLostReason: 'no_response' | 'price' | 'chose_competitor' | 'not_ready' | 'spam' | 'other'
-    /** LeadResource */
-    LeadResource: {
-      id: number
-      stage: {
-        value: string
-        label: string
-      } | null
-      stage_changed_at: string
-      contacted_on: string | null
-      estimated_value: {
-        amount_cents: number | null
-        currency: string
-        formatted: string
-      } | null
-      last_message: string | null
-      next_follow_up_on: string | null
-      lost_reason: {
-        value: string
-        label: string
-      } | null
-      lost_note: string | null
-      client_id: number
-      owner_id: number
-      closer_id: number | null
-      platform_account_id: number | null
-      order_id: number | null
-      client?: components['schemas']['ClientSummaryResource']
-      owner?: components['schemas']['UserSummaryResource']
-      closer?: components['schemas']['UserSummaryResource'] | null
-      platform_account?: components['schemas']['PlatformAccountSummaryResource'] | null
-      services?: components['schemas']['ServiceSummaryResource'][]
-      pending_change?: {
-        id: string
-        action: {
-          value: string
-          label: string
-        } | null
-        fields: string
-        requested_by: components['schemas']['UserSummaryResource']
-        requested_at: string
-      } | null
-      created_at: string
-      updated_at: string
-    }
-    /**
-     * LeadStage
-     * @enum {string}
-     */
-    LeadStage:
-      'new' | 'engaged' | 'portfolio_shared' | 'quoted' | 'payment_pending' | 'won' | 'lost'
-    /** LoginRequest */
-    LoginRequest: {
-      login: string
-      password: string
-      remember?: boolean
-    }
-    /**
-     * MarkPaymentPaidRequest
-     * @description POST /api/payments/{payment}/mark-paid. Same update-vs-queue rule as an update: support/admin/team lead record the
-     *     payment directly, a sales executive queues it for approval.
-     */
-    MarkPaymentPaidRequest: {
-      /** Format: date-time */
-      paid_at?: string | null
-      method?: components['schemas']['PaymentMethod'] | null
-      reference?: string | null
-      notes?: string | null
-      reason?: string | null
-    }
-    /** MeResource */
-    MeResource: {
-      id: number
-      name: string
-      username: string | null
-      email: string
-      avatar_url: string | null
-      is_active: boolean
-      team_id: number | null
-      workstation_id: number | null
-      last_login_at: string | null
-      roles: string[]
-      team: {
-        id: number
-        name: string
-        floor: number
-        shift: string
-      } | null
-      workstation: {
-        id: number
-        code: string
-      } | null
-      created_at: string | null
-      updated_at: string | null
-      permissions: unknown[]
-    }
-    /**
-     * MoveLeadStageRequest
-     * @description Kanban stage move. `lost` needs lost_reason; `won` needs the order (visible, same client).
-     */
-    MoveLeadStageRequest: {
-      stage: components['schemas']['LeadStage']
-      lost_reason?: components['schemas']['LeadLostReason'] | null
-      lost_note?: string | null
-      order_id?: number | null
-      reason?: string | null
-    }
-    /** NotificationResource */
-    NotificationResource: {
-      id: string
-      type: string
-      data: unknown[]
-      is_read: boolean
-      read_at: string
-      created_at: string
-    }
-    /** OrderItemResource */
-    OrderItemResource: {
-      id: number
-      order_id: number
-      service_id: number
-      description: string | null
-      quantity: number
-      unit_price: {
-        amount_cents: number
-        currency: string
-        formatted: string
-      } | null
-      line_total: {
-        amount_cents: number
-        currency: string
-        formatted: string
-      } | null
-      service?: components['schemas']['ServiceSummaryResource']
-    }
-    /** OrderResource */
-    OrderResource: {
-      id: number
-      order_number: string
-      type: {
-        value: string
-        label: string
-      } | null
-      status: {
-        value: string
-        label: string
-      } | null
-      currency: string
-      subtotal: {
-        amount_cents: number
-        currency: string
-        formatted: string
-      } | null
-      discount: {
-        amount_cents: number
-        currency: string
-        formatted: string
-      } | null
-      total: {
-        amount_cents: number
-        currency: string
-        formatted: string
-      } | null
-      amount_paid: {
-        amount_cents: number
-        currency: string
-        formatted: string
-      } | null
-      balance: {
-        amount_cents: number
-        currency: string
-        formatted: string
-      } | null
-      overdue_payments_count: number
-      ordered_on: string | null
-      delivered_at: string
-      notes: string | null
-      client_id: number
-      owner_id: number
-      closer_id: number | null
-      team_id: number | null
-      platform_account_id: number | null
-      parent_order_id: number | null
-      client?: components['schemas']['ClientSummaryResource']
-      owner?: components['schemas']['UserSummaryResource']
-      closer?: components['schemas']['UserSummaryResource'] | null
-      platform_account?: components['schemas']['PlatformAccountSummaryResource'] | null
-      parent?: components['schemas']['OrderSummaryResource'] | null
-      items?: components['schemas']['OrderItemResource'][]
-      payments?: components['schemas']['PaymentResource'][]
-      pending_change?: {
-        id: string
-        action: {
-          value: string
-          label: string
-        } | null
-        fields: string
-        requested_by: components['schemas']['UserSummaryResource']
-        requested_at: string
-      } | null
-      created_at: string
-      updated_at: string
-    }
-    /** OrderSummaryResource */
-    OrderSummaryResource: {
-      id: number
-      order_number: string
-      type: {
-        value: string
-        label: string
-      } | null
-      status: {
-        value: string
-        label: string
-      } | null
-      client_id: number
-      client?: components['schemas']['ClientSummaryResource']
-      ordered_on: string | null
-      total: {
-        amount_cents: number
-        currency: string
-        formatted: string
-      } | null
-      amount_paid: {
-        amount_cents: number
-        currency: string
-        formatted: string
-      } | null
-      balance: {
-        amount_cents: number
-        currency: string
-        formatted: string
-      } | null
-      overdue_payments_count: number
-    }
-    /**
-     * PaymentMethod
-     * @enum {string}
-     */
-    PaymentMethod: 'paypal' | 'stripe' | 'wise' | 'bank_transfer' | 'other'
-    /** PaymentResource */
-    PaymentResource: {
-      id: number
-      order_id: number
-      sequence: number
-      amount: {
-        amount_cents: number
-        currency: string
-        formatted: string
-      } | null
-      currency: string
-      due_date: string | null
-      status: {
-        value: string
-        label: string
-      } | null
-      is_overdue: boolean
-      paid_at: string
-      method: {
-        value: string
-        label: string
-      } | null
-      reference: string | null
-      notes: string | null
-      recorded_by_id: number | null
-      order?: components['schemas']['OrderSummaryResource']
-      recorded_by?: components['schemas']['UserSummaryResource'] | null
-      pending_change?: {
-        id: string
-        action: {
-          value: string
-          label: string
-        } | null
-        fields: string
-        requested_by: components['schemas']['UserSummaryResource']
-        requested_at: string
-      } | null
-      created_at: string
-      updated_at: string
-    }
-    /** PaymentSummaryResource */
-    PaymentSummaryResource: {
-      id: number
-      order_id: number
-      order_number?: string
-      sequence: number
-      amount: {
-        amount_cents: number
-        currency: string
-        formatted: string
-      } | null
-      due_date: string | null
-      status: {
-        value: string
-        label: string
-      } | null
-      is_overdue: boolean
-    }
-    /** PlatformAccountResource */
-    PlatformAccountResource: {
-      id: number
-      email: string
-      discord_email: string | null
-      discord_username: string | null
-      discord_created_on: string | null
-      recovery_email: string | null
-      batch_date: string | null
-      standing: {
-        value: string
-        label: string
-      } | null
-      standing_changed_at: string
-      notes: string | null
-      has_email_password: boolean
-      has_discord_password: boolean
-      has_recovery_phone: boolean
-      has_phone_holder_name: boolean
-      workstation_id: number | null
-      assigned_at: string
-      workstation?: components['schemas']['WorkstationSummaryResource'] | null
-      social_accounts_count?: number
-      social_accounts?: components['schemas']['SocialAccountResource'][]
-      pending_change?: {
-        id: string
-        action: {
-          value: string
-          label: string
-        } | null
-        fields: string
-        requested_by: components['schemas']['UserSummaryResource']
-        requested_at: string
-      } | null
-      created_at: string
-      updated_at: string
-    }
-    /** PlatformAccountSummaryResource */
-    PlatformAccountSummaryResource: {
-      id: number
-      email: string
-      discord_username: string | null
-      standing: {
-        value: string
-        label: string
-      } | null
-    }
-    /**
-     * ReassignLeadRequest
-     * @description Change a lead's owner (`leads.reassign`; direct only, never queued).
-     */
-    ReassignLeadRequest: {
-      owner_id: number
-    }
-    /** RejectApprovalRequest */
-    RejectApprovalRequest: {
-      comment: string
-    }
-    /**
-     * RequestAccountsRequest
-     * @description "Request new platform accounts" for a workstation in the user's scope (defaults to their own seat).
-     */
-    RequestAccountsRequest: {
-      workstation_id?: number | null
-      quantity: number
-      note?: string | null
-      reason?: string | null
-    }
-    /** RevealPlatformAccountCredentialsRequest */
-    RevealPlatformAccountCredentialsRequest: {
-      fields: ('email_password' | 'discord_password' | 'recovery_phone' | 'phone_holder_name')[]
-    }
-    /** RevealSocialAccountCredentialsRequest */
-    RevealSocialAccountCredentialsRequest: {
-      fields: 'password'[]
-    }
-    /**
-     * RoleName
-     * @enum {string}
-     */
-    RoleName: 'admin' | 'support' | 'team_lead' | 'sales_executive'
-    /**
-     * ServiceCategory
-     * @enum {string}
-     */
-    ServiceCategory: 'branding' | 'emotes' | 'overlays' | 'packages' | 'animation' | 'other'
-    /** ServiceResource */
-    ServiceResource: {
-      id: number
-      name: string
-      slug: string
-      category: {
-        value: string
-        label: string
-      } | null
-      description: string | null
-      base_price: {
-        amount_cents: number
-        currency: string
-        formatted: string
-      } | null
-      is_active: boolean
-      created_at: string
-      updated_at: string
-    }
-    /** ServiceSummaryResource */
-    ServiceSummaryResource: {
-      id: number
-      name: string
-      slug: string
-      category: {
-        value: string
-        label: string
-      } | null
-      base_price: {
-        amount_cents: number
-        currency: string
-        formatted: string
-      } | null
-    }
-    /**
-     * Shift
-     * @enum {string}
-     */
-    Shift: 'morning' | 'evening' | 'night'
-    /** SocialAccountResource */
-    SocialAccountResource: {
-      id: number
-      platform: {
-        value: string
-        label: string
-      } | null
-      username: string
-      login_email: string | null
-      created_on: string | null
-      is_in_use: boolean
-      has_password: string
-      platform_account_id: number
-      platform_account?: components['schemas']['PlatformAccountSummaryResource']
-      pending_change?: {
-        id: string
-        action: {
-          value: string
-          label: string
-        } | null
-        fields: string
-        requested_by: components['schemas']['UserSummaryResource']
-        requested_at: string
-      } | null
-      created_at: string
-      updated_at: string
-    }
-    /**
-     * StoreOrderItemRequest
-     * @description POST /api/orders/{order}/items. Item edits are direct writes: only roles that may update the order.
-     */
-    StoreOrderItemRequest: {
-      service_id: number
-      quantity?: number
-      unit_price_cents?: number | null
-      description?: string | null
-    }
-    /**
-     * StorePaymentRequest
-     * @description POST /api/orders/{order}/payments: schedules an installment (always status `scheduled`).
-     */
-    StorePaymentRequest: {
-      amount_cents: number
-      /** Format: date */
-      due_date: string
-      currency?: string
-      method?: components['schemas']['PaymentMethod'] | null
-      reference?: string | null
-      notes?: string | null
-    }
-    /**
-     * StorePlatformAccountRequest
-     * @description Creating a platform account is a direct, support/admin-only write. Credentials are accepted here (write-only).
-     */
-    StorePlatformAccountRequest: {
-      /** Format: email */
-      email: string
-      email_password: string
-      /** Format: email */
-      discord_email?: string | null
-      discord_username?: string | null
-      discord_password: string
-      /** Format: date */
-      discord_created_on?: string | null
-      /** Format: email */
-      recovery_email?: string | null
-      recovery_phone?: string | null
-      phone_holder_name?: string | null
-      /** Format: date */
-      batch_date: string
-      workstation_id?: number | null
-      standing?: components['schemas']['AccountStanding']
-      notes?: string | null
-    }
-    /**
-     * StoreServiceRequest
-     * @description `slug` is optional and defaults to the slugified name.
-     */
-    StoreServiceRequest: {
-      name: string
-      slug?: string
-      category: components['schemas']['ServiceCategory']
-      description?: string | null
-      base_price_cents: number
-      currency?: string
-      is_active?: boolean
-    }
-    /** StoreTeamRequest */
-    StoreTeamRequest: {
-      name: string
-      floor: number
-      shift: components['schemas']['Shift']
-      team_lead_id?: number | null
-    }
-    /**
-     * StoreUserRequest
-     * @description Creates a user with exactly one role. Support may only create team leads and sales executives.
-     */
-    StoreUserRequest: {
-      name: string
-      username: string
-      /** Format: email */
-      email: string
-      password: string
-      role: components['schemas']['RoleName']
-      team_id?: number | null
-      workstation_id?: number | null
-      is_active?: boolean
-    }
-    /** StoreWorkstationRequest */
-    StoreWorkstationRequest: {
-      code: string
-      team_id: number
-      label?: string | null
-      is_active?: boolean
-    }
-    /** TeamResource */
-    TeamResource: {
-      id: number
-      name: string
-      display_name: string
-      floor: number
-      shift: {
-        value: string
-        label: string
-      } | null
-      team_lead_id: number | null
-      team_lead?: components['schemas']['UserSummaryResource'] | null
-      members_count?: number
-      workstations_count?: number
-      members?: components['schemas']['UserSummaryResource'][]
-      workstations?: components['schemas']['WorkstationResource'][]
-      created_at: string
-      updated_at: string
-    }
-    /** TeamSummaryResource */
-    TeamSummaryResource: {
-      id: number
-      name: string
-      floor: number
-      shift: {
-        value: string
-        label: string
-      } | null
-    }
-    /**
-     * UpdateOrderItemRequest
-     * @description PUT/PATCH /api/orders/{order}/items/{item}: partial update, direct write only.
-     *     `unit_price_cents` null is not allowed here (the price is already stored).
-     */
-    UpdateOrderItemRequest: {
-      service_id?: number
-      quantity?: number
-      unit_price_cents?: number | null
-      description?: string | null
-    }
-    /** UpdatePasswordRequest */
-    UpdatePasswordRequest: {
-      current_password: string
-      password: string
-      password_confirmation: string
-    }
-    /**
-     * UpdatePaymentRequest
-     * @description PUT and PATCH are both partial updates. A paid payment can only be edited directly by support or admin
-     *     (PaymentPolicy::update); a team lead or sales executive queues the edit for approval. Use mark-paid to record a payment.
-     */
-    UpdatePaymentRequest: {
-      order_id?: string
-      sequence?: string
-      currency?: string
-      paid_at?: string
-      recorded_by_id?: string
-      amount_cents?: number
-      /** Format: date */
-      due_date?: string
-      /** @enum {string} */
-      status?: 'scheduled' | 'void'
-      method?: components['schemas']['PaymentMethod'] | null
-      reference?: string | null
-      notes?: string | null
-      reason?: string | null
-    }
-    /**
-     * UpdatePlatformAccountRequest
-     * @description PUT and PATCH are both partial updates, used for the direct write and for the approval payload alike.
-     *     Credentials are accepted only from users who may write directly (support/admin); a queued change never carries them.
-     *     Workstation and standing have their own endpoints (assign, standing).
-     */
-    UpdatePlatformAccountRequest: {
-      /** Format: email */
-      email?: string
-      /** Format: email */
-      discord_email?: string | null
-      discord_username?: string | null
-      /** Format: date */
-      discord_created_on?: string | null
-      /** Format: email */
-      recovery_email?: string | null
-      /** Format: date */
-      batch_date?: string
-      notes?: string | null
-      workstation_id?: string
-      standing?: string
-      reason?: string | null
-      email_password?: string
-      discord_password?: string
-      recovery_phone?: string
-      phone_holder_name?: string
-    }
-    /** UserResource */
-    UserResource: {
-      id: number
-      name: string
-      username: string | null
-      email: string
-      avatar_url: string | null
-      is_active: boolean
-      team_id: number | null
-      workstation_id: number | null
-      last_login_at: string | null
-      roles: string[]
-      team: {
-        id: number
-        name: string
-        floor: number
-        shift: string
-      } | null
-      workstation: {
-        id: number
-        code: string
-      } | null
-      created_at: string | null
-      updated_at: string | null
-    }
-    /** UserSummaryResource */
-    UserSummaryResource: {
-      id: number
-      name: string
-      username: string | null
-    }
-    /** WorkstationResource */
-    WorkstationResource: {
-      id: number
-      code: string
-      label: string | null
-      is_active: boolean
-      team_id: number
-      team?: components['schemas']['TeamSummaryResource']
-      users_count?: number
-      platform_accounts_count?: number
-      users?: components['schemas']['UserSummaryResource'][]
-      created_at: string
-      updated_at: string
-    }
-    /** WorkstationSummaryResource */
-    WorkstationSummaryResource: {
-      id: number
-      code: string
-      label: string | null
-      team_id: number
-      team?: {
-        id: number
-        name: string
-      }
-    }
-  }
-  responses: {
-    /** @description Validation error */
-    ValidationException: {
-      headers: {
-        [name: string]: unknown
-      }
-      content: {
-        'application/json': {
-          /** @description Errors overview. */
-          message: string
-          /** @description A detailed description of each field that failed validation. */
-          errors: {
-            [key: string]: string[]
-          }
-        }
-      }
-    }
-    /** @description Unauthenticated */
-    AuthenticationException: {
-      headers: {
-        [name: string]: unknown
-      }
-      content: {
-        'application/json': {
-          /** @description Error overview. */
-          message: string
-        }
-      }
-    }
-    /** @description Authorization error */
-    AuthorizationException: {
-      headers: {
-        [name: string]: unknown
-      }
-      content: {
-        'application/json': {
-          /** @description Error overview. */
-          message: string
-        }
-      }
-    }
-    /** @description Not found */
-    ModelNotFoundException: {
-      headers: {
-        [name: string]: unknown
-      }
-      content: {
-        'application/json': {
-          /** @description Error overview. */
-          message: string
-        }
-      }
-    }
-  }
-  parameters: never
-  requestBodies: never
-  headers: never
-  pathItems: never
+    schemas: {
+        /**
+         * AccountStanding
+         * @enum {string}
+         */
+        AccountStanding: "active" | "limited" | "spam" | "violation" | "disabled";
+        /** ActivityResource */
+        ActivityResource: {
+            id: number;
+            log_name: string | null;
+            event: string | null;
+            description: string;
+            causer_id: number | null;
+            causer: components["schemas"]["UserSummaryResource"] | null;
+            subject: {
+                type: string | null;
+                id: number | null;
+                label: string | null;
+            } | null;
+            properties: unknown[];
+            attribute_changes: unknown[];
+            created_at: string;
+        };
+        /** ApprovalRequestResource */
+        ApprovalRequestResource: {
+            id: number;
+            action: {
+                value: string;
+                label: string;
+            } | null;
+            status: {
+                value: string;
+                label: string;
+            } | null;
+            approvable: {
+                type: string | null;
+                id: number | null;
+            } | null;
+            fields: string[];
+            payload: unknown[];
+            before: unknown[] | null;
+            after: unknown[] | null;
+            diff: {
+                field: string;
+                before: string;
+                after: string;
+            }[];
+            reason: string | null;
+            requester?: components["schemas"]["UserSummaryResource"];
+            reviewer?: components["schemas"]["UserSummaryResource"] | null;
+            reviewed_at: string;
+            review_comment: string | null;
+            applied_at: string;
+            failure_message: string | null;
+            created_at: string;
+            updated_at: string;
+            can?: {
+                review: string;
+                cancel: boolean;
+            };
+        };
+        /** ApproveApprovalRequest */
+        ApproveApprovalRequest: {
+            comment?: string | null;
+        };
+        /**
+         * AssignPlatformAccountRequest
+         * @description Direct write only (`platform-accounts.assign`). `workstation_id: null` unassigns the account.
+         */
+        AssignPlatformAccountRequest: {
+            workstation_id: number | null;
+        };
+        /**
+         * ChangePlatformAccountStandingRequest
+         * @description Support/admin change the standing directly; team leads and sales executives request it.
+         */
+        ChangePlatformAccountStandingRequest: {
+            standing: components["schemas"]["AccountStanding"];
+            reason?: string | null;
+        };
+        /** ClientDetailResource */
+        ClientDetailResource: {
+            id: number;
+            discord_username: string;
+            name: string | null;
+            email: string | null;
+            payment_name: string | null;
+            country: string | null;
+            status: {
+                value: string;
+                label: string;
+            } | null;
+            nurturing_rating: number | null;
+            next_upsell_plan: string | null;
+            expected_upsell_on: string | null;
+            lost_note: string | null;
+            notes: string | null;
+            owner_id: number | null;
+            lifetime_value?: {
+                amount_cents: number;
+                /** @constant */
+                currency: "USD";
+                formatted: string;
+            } | null;
+            owner?: components["schemas"]["UserSummaryResource"] | null;
+            leads?: components["schemas"]["LeadResource"][];
+            orders?: components["schemas"]["OrderSummaryResource"][];
+            pending_change?: {
+                id: string;
+                action: {
+                    value: string;
+                    label: string;
+                } | null;
+                fields: string;
+                requested_by: components["schemas"]["UserSummaryResource"];
+                requested_at: string;
+            } | null;
+            created_at: string;
+            updated_at: string;
+            counts: {
+                leads: number;
+                orders: number;
+                open_orders: number;
+                overdue_payments: number;
+            };
+            upcoming_payments?: components["schemas"]["PaymentSummaryResource"][];
+            overdue_payments?: components["schemas"]["PaymentSummaryResource"][];
+        };
+        /** ClientNoteResource */
+        ClientNoteResource: {
+            id: string;
+            client_id: string;
+            body: string;
+            is_pinned: string;
+            author?: components["schemas"]["UserSummaryResource"];
+            can_edit: string;
+            can_delete: string;
+            created_at: string;
+            updated_at: string;
+        };
+        /** ClientResource */
+        ClientResource: {
+            id: number;
+            discord_username: string;
+            name: string | null;
+            email: string | null;
+            payment_name: string | null;
+            country: string | null;
+            status: {
+                value: string;
+                label: string;
+            } | null;
+            nurturing_rating: number | null;
+            next_upsell_plan: string | null;
+            expected_upsell_on: string | null;
+            lost_note: string | null;
+            notes: string | null;
+            owner_id: number | null;
+            lifetime_value?: {
+                amount_cents: number;
+                /** @constant */
+                currency: "USD";
+                formatted: string;
+            } | null;
+            owner?: components["schemas"]["UserSummaryResource"] | null;
+            leads?: components["schemas"]["LeadResource"][];
+            orders?: components["schemas"]["OrderResource"][];
+            pending_change?: {
+                id: string;
+                action: {
+                    value: string;
+                    label: string;
+                } | null;
+                fields: string;
+                requested_by: components["schemas"]["UserSummaryResource"];
+                requested_at: string;
+            } | null;
+            created_at: string;
+            updated_at: string;
+        };
+        /**
+         * ClientStatus
+         * @enum {string}
+         */
+        ClientStatus: "active" | "nurturing" | "dormant" | "lost";
+        /** ClientSummaryResource */
+        ClientSummaryResource: {
+            id: number;
+            discord_username: string;
+            name: string | null;
+            status: {
+                value: string;
+                label: string;
+            } | null;
+        };
+        /** ClientTimelineItemResource */
+        ClientTimelineItemResource: {
+            [key: string]: unknown;
+        };
+        /**
+         * ConfirmPasswordRequest
+         * @description Sensitive account actions (disable 2FA, recovery codes, sign out other sessions) re-check the password.
+         */
+        ConfirmPasswordRequest: {
+            password: string;
+        };
+        /** ImportResource */
+        ImportResource: {
+            id: string;
+            type: {
+                value: string;
+                label: string;
+            } | null;
+            status: {
+                value: string;
+                label: string;
+            } | null;
+            original_filename: string;
+            headers: string;
+            mapping: string;
+            fields: unknown[];
+            total_rows: string;
+            processed_rows: string;
+            created_rows: string;
+            failed_rows: string;
+            errors?: string | string[];
+            user?: components["schemas"]["UserSummaryResource"];
+            started_at: string;
+            finished_at: string;
+            created_at: string;
+        };
+        /**
+         * ImportType
+         * @enum {string}
+         */
+        ImportType: "leads" | "clients";
+        /** JsonResource */
+        JsonResource: string;
+        /**
+         * LeadLostReason
+         * @enum {string}
+         */
+        LeadLostReason: "no_response" | "price" | "chose_competitor" | "not_ready" | "spam" | "other";
+        /** LeadResource */
+        LeadResource: {
+            id: number;
+            stage: {
+                value: string;
+                label: string;
+            } | null;
+            stage_changed_at: string;
+            contacted_on: string | null;
+            estimated_value: {
+                amount_cents: number | null;
+                currency: string;
+                formatted: string;
+            } | null;
+            last_message: string | null;
+            next_follow_up_on: string | null;
+            lost_reason: {
+                value: string;
+                label: string;
+            } | null;
+            lost_note: string | null;
+            client_id: number;
+            owner_id: number;
+            closer_id: number | null;
+            platform_account_id: number | null;
+            order_id: number | null;
+            client?: components["schemas"]["ClientSummaryResource"];
+            owner?: components["schemas"]["UserSummaryResource"];
+            closer?: components["schemas"]["UserSummaryResource"] | null;
+            platform_account?: components["schemas"]["PlatformAccountSummaryResource"] | null;
+            services?: components["schemas"]["ServiceSummaryResource"][];
+            pending_change?: {
+                id: string;
+                action: {
+                    value: string;
+                    label: string;
+                } | null;
+                fields: string;
+                requested_by: components["schemas"]["UserSummaryResource"];
+                requested_at: string;
+            } | null;
+            created_at: string;
+            updated_at: string;
+        };
+        /**
+         * LeadStage
+         * @enum {string}
+         */
+        LeadStage: "new" | "engaged" | "portfolio_shared" | "quoted" | "payment_pending" | "won" | "lost";
+        /** LoginRequest */
+        LoginRequest: {
+            login: string;
+            password: string;
+            remember?: boolean;
+        };
+        /**
+         * MarkPaymentPaidRequest
+         * @description POST /api/payments/{payment}/mark-paid. Same update-vs-queue rule as an update: support/admin/team lead record the
+         *     payment directly, a sales executive queues it for approval.
+         */
+        MarkPaymentPaidRequest: {
+            /** Format: date-time */
+            paid_at?: string | null;
+            method?: components["schemas"]["PaymentMethod"] | null;
+            reference?: string | null;
+            notes?: string | null;
+            reason?: string | null;
+        };
+        /** MeResource */
+        MeResource: {
+            id: number;
+            name: string;
+            username: string | null;
+            email: string;
+            avatar_url: string | null;
+            is_active: boolean;
+            team_id: number | null;
+            workstation_id: number | null;
+            last_login_at: string | null;
+            roles: string[];
+            team: {
+                id: number;
+                name: string;
+                floor: number;
+                shift: string;
+            } | null;
+            workstation: {
+                id: number;
+                code: string;
+            } | null;
+            created_at: string | null;
+            updated_at: string | null;
+            permissions: unknown[];
+            two_factor_enabled: boolean;
+            /** @description Public demo: shared accounts, so password changes and 2FA are switched off. */
+            demo_mode: boolean;
+        };
+        /**
+         * MoveLeadStageRequest
+         * @description Kanban stage move. `lost` needs lost_reason; `won` needs the order (visible, same client).
+         */
+        MoveLeadStageRequest: {
+            stage: components["schemas"]["LeadStage"];
+            lost_reason?: components["schemas"]["LeadLostReason"] | null;
+            lost_note?: string | null;
+            order_id?: number | null;
+            reason?: string | null;
+        };
+        /** NotificationResource */
+        NotificationResource: {
+            id: string;
+            type: string;
+            data: unknown[];
+            is_read: boolean;
+            read_at: string;
+            created_at: string;
+        };
+        /** OrderItemResource */
+        OrderItemResource: {
+            id: number;
+            order_id: number;
+            service_id: number;
+            description: string | null;
+            quantity: number;
+            unit_price: {
+                amount_cents: number;
+                currency: string;
+                formatted: string;
+            } | null;
+            line_total: {
+                amount_cents: number;
+                currency: string;
+                formatted: string;
+            } | null;
+            service?: components["schemas"]["ServiceSummaryResource"];
+        };
+        /** OrderResource */
+        OrderResource: {
+            id: number;
+            order_number: string;
+            type: {
+                value: string;
+                label: string;
+            } | null;
+            status: {
+                value: string;
+                label: string;
+            } | null;
+            currency: string;
+            subtotal: {
+                amount_cents: number;
+                currency: string;
+                formatted: string;
+            } | null;
+            discount: {
+                amount_cents: number;
+                currency: string;
+                formatted: string;
+            } | null;
+            total: {
+                amount_cents: number;
+                currency: string;
+                formatted: string;
+            } | null;
+            amount_paid: {
+                amount_cents: number;
+                currency: string;
+                formatted: string;
+            } | null;
+            balance: {
+                amount_cents: number;
+                currency: string;
+                formatted: string;
+            } | null;
+            overdue_payments_count: number;
+            ordered_on: string | null;
+            delivered_at: string;
+            notes: string | null;
+            client_id: number;
+            owner_id: number;
+            closer_id: number | null;
+            team_id: number | null;
+            platform_account_id: number | null;
+            parent_order_id: number | null;
+            client?: components["schemas"]["ClientSummaryResource"];
+            owner?: components["schemas"]["UserSummaryResource"];
+            closer?: components["schemas"]["UserSummaryResource"] | null;
+            platform_account?: components["schemas"]["PlatformAccountSummaryResource"] | null;
+            parent?: components["schemas"]["OrderSummaryResource"] | null;
+            items?: components["schemas"]["OrderItemResource"][];
+            payments?: components["schemas"]["PaymentResource"][];
+            pending_change?: {
+                id: string;
+                action: {
+                    value: string;
+                    label: string;
+                } | null;
+                fields: string;
+                requested_by: components["schemas"]["UserSummaryResource"];
+                requested_at: string;
+            } | null;
+            created_at: string;
+            updated_at: string;
+        };
+        /**
+         * OrderStatus
+         * @enum {string}
+         */
+        OrderStatus: "pending_payment" | "in_progress" | "delivered" | "completed" | "cancelled" | "refunded";
+        /** OrderSummaryResource */
+        OrderSummaryResource: {
+            id: number;
+            order_number: string;
+            type: {
+                value: string;
+                label: string;
+            } | null;
+            status: {
+                value: string;
+                label: string;
+            } | null;
+            client_id: number;
+            client?: components["schemas"]["ClientSummaryResource"];
+            ordered_on: string | null;
+            total: {
+                amount_cents: number;
+                currency: string;
+                formatted: string;
+            } | null;
+            amount_paid: {
+                amount_cents: number;
+                currency: string;
+                formatted: string;
+            } | null;
+            balance: {
+                amount_cents: number;
+                currency: string;
+                formatted: string;
+            } | null;
+            overdue_payments_count: number;
+        };
+        /** OverviewResource */
+        OverviewResource: {
+            range: {
+                from: string;
+                to: string;
+                previous_from: string;
+                previous_to: string;
+                bucket: string;
+                days: string;
+            };
+            currency: string;
+            kpis: {
+                revenue_collected: {
+                    value: {
+                        amount_cents: number;
+                        currency: string;
+                        formatted: string;
+                    };
+                    previous: {
+                        amount_cents: number;
+                        currency: string;
+                        formatted: string;
+                    };
+                    change_pct: string;
+                };
+                won_value: {
+                    value: {
+                        amount_cents: number;
+                        currency: string;
+                        formatted: string;
+                    };
+                    previous: {
+                        amount_cents: number;
+                        currency: string;
+                        formatted: string;
+                    };
+                    change_pct: string;
+                };
+                won_count: string;
+                new_leads: string;
+                conversion_rate: string;
+                average_order_value: {
+                    value: {
+                        amount_cents: number;
+                        currency: string;
+                        formatted: string;
+                    };
+                    previous: {
+                        amount_cents: number;
+                        currency: string;
+                        formatted: string;
+                    };
+                    change_pct: string;
+                };
+                overdue_payments: {
+                    count: string;
+                    amount: {
+                        amount_cents: string;
+                        currency: string;
+                        formatted: string;
+                    };
+                };
+                pending_approvals: string;
+                active_clients: string;
+            };
+            funnel: unknown[];
+            revenue_series: string;
+            leaderboard: unknown[] | null;
+            account_health: unknown[] | null;
+            upcoming_payments: unknown[];
+        };
+        /**
+         * PaymentMethod
+         * @enum {string}
+         */
+        PaymentMethod: "paypal" | "stripe" | "wise" | "bank_transfer" | "other";
+        /** PaymentResource */
+        PaymentResource: {
+            id: number;
+            order_id: number;
+            sequence: number;
+            amount: {
+                amount_cents: number;
+                currency: string;
+                formatted: string;
+            } | null;
+            currency: string;
+            due_date: string | null;
+            status: {
+                value: string;
+                label: string;
+            } | null;
+            is_overdue: boolean;
+            paid_at: string;
+            method: {
+                value: string;
+                label: string;
+            } | null;
+            reference: string | null;
+            notes: string | null;
+            recorded_by_id: number | null;
+            order?: components["schemas"]["OrderSummaryResource"];
+            recorded_by?: components["schemas"]["UserSummaryResource"] | null;
+            pending_change?: {
+                id: string;
+                action: {
+                    value: string;
+                    label: string;
+                } | null;
+                fields: string;
+                requested_by: components["schemas"]["UserSummaryResource"];
+                requested_at: string;
+            } | null;
+            created_at: string;
+            updated_at: string;
+        };
+        /** PaymentSummaryResource */
+        PaymentSummaryResource: {
+            id: number;
+            order_id: number;
+            order_number?: string;
+            sequence: number;
+            amount: {
+                amount_cents: number;
+                currency: string;
+                formatted: string;
+            } | null;
+            due_date: string | null;
+            status: {
+                value: string;
+                label: string;
+            } | null;
+            is_overdue: boolean;
+        };
+        /** PlatformAccountResource */
+        PlatformAccountResource: {
+            id: number;
+            email: string;
+            discord_email: string | null;
+            discord_username: string | null;
+            discord_created_on: string | null;
+            recovery_email: string | null;
+            batch_date: string | null;
+            standing: {
+                value: string;
+                label: string;
+            } | null;
+            standing_changed_at: string;
+            notes: string | null;
+            has_email_password: boolean;
+            has_discord_password: boolean;
+            has_recovery_phone: boolean;
+            has_phone_holder_name: boolean;
+            workstation_id: number | null;
+            assigned_at: string;
+            workstation?: components["schemas"]["WorkstationSummaryResource"] | null;
+            social_accounts_count?: number;
+            social_accounts?: components["schemas"]["SocialAccountResource"][];
+            pending_change?: {
+                id: string;
+                action: {
+                    value: string;
+                    label: string;
+                } | null;
+                fields: string;
+                requested_by: components["schemas"]["UserSummaryResource"];
+                requested_at: string;
+            } | null;
+            created_at: string;
+            updated_at: string;
+        };
+        /** PlatformAccountSummaryResource */
+        PlatformAccountSummaryResource: {
+            id: number;
+            email: string;
+            discord_username: string | null;
+            standing: {
+                value: string;
+                label: string;
+            } | null;
+        };
+        /**
+         * ReassignLeadRequest
+         * @description Change a lead's owner (`leads.reassign`; direct only, never queued).
+         */
+        ReassignLeadRequest: {
+            owner_id: number;
+        };
+        /** RejectApprovalRequest */
+        RejectApprovalRequest: {
+            comment: string;
+        };
+        /**
+         * RequestAccountsRequest
+         * @description "Request new platform accounts" for a workstation in the user's scope (defaults to their own seat).
+         */
+        RequestAccountsRequest: {
+            workstation_id?: number | null;
+            quantity: number;
+            note?: string | null;
+            reason?: string | null;
+        };
+        /** RevealPlatformAccountCredentialsRequest */
+        RevealPlatformAccountCredentialsRequest: {
+            fields: ("email_password" | "discord_password" | "recovery_phone" | "phone_holder_name")[];
+        };
+        /** RevealSocialAccountCredentialsRequest */
+        RevealSocialAccountCredentialsRequest: {
+            fields: "password"[];
+        };
+        /**
+         * RoleName
+         * @enum {string}
+         */
+        RoleName: "admin" | "support" | "team_lead" | "sales_executive";
+        /**
+         * ServiceCategory
+         * @enum {string}
+         */
+        ServiceCategory: "branding" | "emotes" | "overlays" | "packages" | "animation" | "other";
+        /** ServiceResource */
+        ServiceResource: {
+            id: number;
+            name: string;
+            slug: string;
+            category: {
+                value: string;
+                label: string;
+            } | null;
+            description: string | null;
+            base_price: {
+                amount_cents: number;
+                currency: string;
+                formatted: string;
+            } | null;
+            is_active: boolean;
+            created_at: string;
+            updated_at: string;
+        };
+        /** ServiceSummaryResource */
+        ServiceSummaryResource: {
+            id: number;
+            name: string;
+            slug: string;
+            category: {
+                value: string;
+                label: string;
+            } | null;
+            base_price: {
+                amount_cents: number;
+                currency: string;
+                formatted: string;
+            } | null;
+        };
+        /**
+         * Shift
+         * @enum {string}
+         */
+        Shift: "morning" | "evening" | "night";
+        /** SocialAccountResource */
+        SocialAccountResource: {
+            id: number;
+            platform: {
+                value: string;
+                label: string;
+            } | null;
+            username: string;
+            login_email: string | null;
+            created_on: string | null;
+            is_in_use: boolean;
+            has_password: string;
+            platform_account_id: number;
+            platform_account?: components["schemas"]["PlatformAccountSummaryResource"];
+            pending_change?: {
+                id: string;
+                action: {
+                    value: string;
+                    label: string;
+                } | null;
+                fields: string;
+                requested_by: components["schemas"]["UserSummaryResource"];
+                requested_at: string;
+            } | null;
+            created_at: string;
+            updated_at: string;
+        };
+        /**
+         * SocialPlatform
+         * @enum {string}
+         */
+        SocialPlatform: "instagram" | "x" | "behance" | "dribbble" | "artstation" | "tiktok" | "youtube" | "facebook" | "pinterest" | "other";
+        /** StoreClientNoteRequest */
+        StoreClientNoteRequest: {
+            body: string;
+            is_pinned?: boolean;
+        };
+        /**
+         * StoreClientRequest
+         * @description Creating a client is always a direct write (sales executives included).
+         */
+        StoreClientRequest: {
+            discord_username: string;
+            name?: string | null;
+            /** Format: email */
+            email?: string | null;
+            payment_name?: string | null;
+            country?: string | null;
+            owner_id?: number | null;
+            status?: components["schemas"]["ClientStatus"];
+            nurturing_rating?: number | null;
+            next_upsell_plan?: string | null;
+            /** Format: date */
+            expected_upsell_on?: string | null;
+            lost_note?: string | null;
+            notes?: string | null;
+        };
+        /** StoreImportRequest */
+        StoreImportRequest: {
+            type: components["schemas"]["ImportType"];
+            /**
+             * Format: binary
+             * @description Maximum file size: 2048 kilobytes.
+             */
+            file: string;
+        };
+        /**
+         * StoreLeadRequest
+         * @description Creating a lead is always a direct write (sales executives included).
+         *     Either link a visible client (`client_id`) or create one inline (`client.discord_username`, ...).
+         */
+        StoreLeadRequest: {
+            client_id?: number;
+            client?: {
+                discord_username: string;
+                name: string | null;
+                /** Format: email */
+                email: string | null;
+            };
+            /** @description Visible users only: a sales executive can only own their own leads, a team lead picks a teammate. */
+            owner_id?: number | null;
+            closer_id?: number | null;
+            platform_account_id?: number | null;
+            /** @enum {string} */
+            stage?: "new" | "engaged" | "portfolio_shared" | "quoted" | "payment_pending" | "lost";
+            /** Format: date */
+            contacted_on?: string;
+            estimated_value_cents?: number | null;
+            currency?: string;
+            last_message?: string | null;
+            /** Format: date */
+            next_follow_up_on?: string | null;
+            lost_reason?: components["schemas"]["LeadLostReason"] | null;
+            lost_note?: string | null;
+            service_ids?: number[];
+        };
+        /**
+         * StoreOrderItemRequest
+         * @description POST /api/orders/{order}/items. Item edits are direct writes: only roles that may update the order.
+         */
+        StoreOrderItemRequest: {
+            service_id: number;
+            quantity?: number;
+            unit_price_cents?: number | null;
+            description?: string | null;
+        };
+        /**
+         * StoreOrderRequest
+         * @description Creating an order is always a direct write (sales executives included). Items are required; an item without
+         *     `unit_price_cents` uses the service base price. An optional `lead_id` marks that lead as won.
+         */
+        StoreOrderRequest: {
+            client_id: number;
+            owner_id?: number | null;
+            closer_id?: number | null;
+            platform_account_id?: number | null;
+            parent_order_id?: number | null;
+            lead_id?: number | null;
+            status?: components["schemas"]["OrderStatus"];
+            currency?: string;
+            discount_cents?: number;
+            /** Format: date */
+            ordered_on?: string;
+            notes?: string | null;
+            items: {
+                service_id: number;
+                quantity?: number;
+                unit_price_cents?: number | null;
+                description?: string | null;
+            }[];
+        };
+        /**
+         * StorePaymentRequest
+         * @description POST /api/orders/{order}/payments: schedules an installment (always status `scheduled`).
+         */
+        StorePaymentRequest: {
+            amount_cents: number;
+            /** Format: date */
+            due_date: string;
+            currency?: string;
+            method?: components["schemas"]["PaymentMethod"] | null;
+            reference?: string | null;
+            notes?: string | null;
+        };
+        /**
+         * StorePlatformAccountRequest
+         * @description Creating a platform account is a direct, support/admin-only write. Credentials are accepted here (write-only).
+         */
+        StorePlatformAccountRequest: {
+            /** Format: email */
+            email: string;
+            email_password: string;
+            /** Format: email */
+            discord_email?: string | null;
+            discord_username?: string | null;
+            discord_password: string;
+            /** Format: date */
+            discord_created_on?: string | null;
+            /** Format: email */
+            recovery_email?: string | null;
+            recovery_phone?: string | null;
+            phone_holder_name?: string | null;
+            /** Format: date */
+            batch_date: string;
+            workstation_id?: number | null;
+            standing?: components["schemas"]["AccountStanding"];
+            notes?: string | null;
+        };
+        /**
+         * StoreServiceRequest
+         * @description `slug` is optional and defaults to the slugified name.
+         */
+        StoreServiceRequest: {
+            name: string;
+            slug?: string;
+            category: components["schemas"]["ServiceCategory"];
+            description?: string | null;
+            base_price_cents: number;
+            currency?: string;
+            is_active?: boolean;
+        };
+        /**
+         * StoreSocialAccountRequest
+         * @description Creating a social account is a direct write for support, admin and sales executives (own workstation's accounts only).
+         *     The password is write-only.
+         */
+        StoreSocialAccountRequest: {
+            platform_account_id: number;
+            platform: components["schemas"]["SocialPlatform"];
+            username: string;
+            /** Format: email */
+            login_email?: string | null;
+            password: string;
+            /** Format: date */
+            created_on?: string | null;
+            is_in_use?: boolean;
+        };
+        /** StoreTeamRequest */
+        StoreTeamRequest: {
+            name: string;
+            floor: number;
+            shift: components["schemas"]["Shift"];
+            team_lead_id?: number | null;
+        };
+        /**
+         * StoreUserRequest
+         * @description Creates a user with exactly one role. Support may only create team leads and sales executives.
+         */
+        StoreUserRequest: {
+            name: string;
+            username: string;
+            /** Format: email */
+            email: string;
+            password: string;
+            role: components["schemas"]["RoleName"];
+            team_id?: number | null;
+            workstation_id?: number | null;
+            is_active?: boolean;
+        };
+        /** StoreWorkstationRequest */
+        StoreWorkstationRequest: {
+            code: string;
+            team_id: number;
+            label?: string | null;
+            is_active?: boolean;
+        };
+        /** TeamResource */
+        TeamResource: {
+            id: number;
+            name: string;
+            display_name: string;
+            floor: number;
+            shift: {
+                value: string;
+                label: string;
+            } | null;
+            team_lead_id: number | null;
+            team_lead?: components["schemas"]["UserSummaryResource"] | null;
+            members_count?: number;
+            workstations_count?: number;
+            members?: components["schemas"]["UserSummaryResource"][];
+            workstations?: components["schemas"]["WorkstationResource"][];
+            created_at: string;
+            updated_at: string;
+        };
+        /** TeamSummaryResource */
+        TeamSummaryResource: {
+            id: number;
+            name: string;
+            floor: number;
+            shift: {
+                value: string;
+                label: string;
+            } | null;
+        };
+        /** TwoFactorChallengeRequest */
+        TwoFactorChallengeRequest: {
+            code?: string | null;
+            recovery_code?: string | null;
+        };
+        /** TwoFactorCodeRequest */
+        TwoFactorCodeRequest: {
+            code: string;
+        };
+        /**
+         * UpdateClientNoteRequest
+         * @description `is_pinned` may be changed by anyone who can view the client; `body` only by the author.
+         */
+        UpdateClientNoteRequest: {
+            body?: string;
+            is_pinned?: boolean;
+        };
+        /**
+         * UpdateClientRequest
+         * @description PUT and PATCH are both partial updates. Validates direct writes and approval payloads alike.
+         */
+        UpdateClientRequest: {
+            discord_username?: string;
+            name?: string | null;
+            /** Format: email */
+            email?: string | null;
+            payment_name?: string | null;
+            country?: string | null;
+            owner_id?: number | null;
+            status?: components["schemas"]["ClientStatus"];
+            nurturing_rating?: number | null;
+            next_upsell_plan?: string | null;
+            /** Format: date */
+            expected_upsell_on?: string | null;
+            lost_note?: string | null;
+            notes?: string | null;
+            reason?: string | null;
+        };
+        /**
+         * UpdateLeadRequest
+         * @description PUT and PATCH are both partial updates. Used for the direct write and for the approval payload alike,
+         *     so a queued change is validated exactly like a direct one.
+         */
+        UpdateLeadRequest: {
+            client_id?: number;
+            owner_id?: string;
+            order_id?: string;
+            closer_id?: number | null;
+            platform_account_id?: number | null;
+            /** @enum {string} */
+            stage?: "new" | "engaged" | "portfolio_shared" | "quoted" | "payment_pending" | "lost";
+            /** Format: date */
+            contacted_on?: string;
+            estimated_value_cents?: number | null;
+            currency?: string;
+            last_message?: string | null;
+            /** Format: date */
+            next_follow_up_on?: string | null;
+            lost_reason?: components["schemas"]["LeadLostReason"] | null;
+            lost_note?: string | null;
+            service_ids?: number[];
+            reason?: string | null;
+        };
+        /**
+         * UpdateOrderItemRequest
+         * @description PUT/PATCH /api/orders/{order}/items/{item}: partial update, direct write only.
+         *     `unit_price_cents` null is not allowed here (the price is already stored).
+         */
+        UpdateOrderItemRequest: {
+            service_id?: number;
+            quantity?: number;
+            unit_price_cents?: number | null;
+            description?: string | null;
+        };
+        /**
+         * UpdateOrderRequest
+         * @description PUT and PATCH are both partial updates. Used for the direct write and for the approval payload alike.
+         *     Items are edited through /orders/{order}/items; client, owner, currency and the totals never change here.
+         */
+        UpdateOrderRequest: {
+            client_id?: string;
+            owner_id?: string;
+            currency?: string;
+            type?: string;
+            parent_order_id?: string;
+            team_id?: string;
+            items?: string;
+            subtotal_cents?: string;
+            total_cents?: string;
+            closer_id?: number | null;
+            platform_account_id?: number | null;
+            status?: components["schemas"]["OrderStatus"];
+            discount_cents?: number;
+            /** Format: date */
+            ordered_on?: string;
+            /** Format: date-time */
+            delivered_at?: string | null;
+            notes?: string | null;
+            reason?: string | null;
+        };
+        /** UpdatePasswordRequest */
+        UpdatePasswordRequest: {
+            current_password: string;
+            password: string;
+            password_confirmation: string;
+        };
+        /**
+         * UpdatePaymentRequest
+         * @description PUT and PATCH are both partial updates. A paid payment can only be edited directly by support or admin
+         *     (PaymentPolicy::update); a team lead or sales executive queues the edit for approval. Use mark-paid to record a payment.
+         */
+        UpdatePaymentRequest: {
+            order_id?: string;
+            sequence?: string;
+            currency?: string;
+            paid_at?: string;
+            recorded_by_id?: string;
+            amount_cents?: number;
+            /** Format: date */
+            due_date?: string;
+            /** @enum {string} */
+            status?: "scheduled" | "void";
+            method?: components["schemas"]["PaymentMethod"] | null;
+            reference?: string | null;
+            notes?: string | null;
+            reason?: string | null;
+        };
+        /**
+         * UpdatePlatformAccountRequest
+         * @description PUT and PATCH are both partial updates, used for the direct write and for the approval payload alike.
+         *     Credentials are accepted only from users who may write directly (support/admin); a queued change never carries them.
+         *     Workstation and standing have their own endpoints (assign, standing).
+         */
+        UpdatePlatformAccountRequest: {
+            /** Format: email */
+            email?: string;
+            /** Format: email */
+            discord_email?: string | null;
+            discord_username?: string | null;
+            /** Format: date */
+            discord_created_on?: string | null;
+            /** Format: email */
+            recovery_email?: string | null;
+            /** Format: date */
+            batch_date?: string;
+            notes?: string | null;
+            workstation_id?: string;
+            standing?: string;
+            reason?: string | null;
+            email_password?: string;
+            discord_password?: string;
+            recovery_phone?: string;
+            phone_holder_name?: string;
+        };
+        /** UpdateServiceRequest */
+        UpdateServiceRequest: {
+            name?: string;
+            slug?: string;
+            category?: components["schemas"]["ServiceCategory"];
+            description?: string | null;
+            base_price_cents?: number;
+            currency?: string;
+            is_active?: boolean;
+        };
+        /**
+         * UpdateSocialAccountRequest
+         * @description PUT and PATCH are both partial updates, used for the direct write and for the approval payload alike.
+         *     The password is accepted only from users who may write directly (support/admin); a queued change never carries it.
+         */
+        UpdateSocialAccountRequest: {
+            platform_account_id?: number;
+            platform?: components["schemas"]["SocialPlatform"];
+            username?: string;
+            /** Format: email */
+            login_email?: string | null;
+            password?: string;
+            /** Format: date */
+            created_on?: string | null;
+            is_in_use?: boolean;
+            reason?: string | null;
+        };
+        /** UpdateTeamRequest */
+        UpdateTeamRequest: {
+            name?: string;
+            floor?: number;
+            shift?: components["schemas"]["Shift"];
+            team_lead_id?: number | null;
+        };
+        /**
+         * UpdateUserRequest
+         * @description PUT and PATCH are partial. Activation goes through the dedicated deactivate/activate endpoints.
+         */
+        UpdateUserRequest: {
+            name?: string;
+            username?: string;
+            /** Format: email */
+            email?: string;
+            password?: string;
+            role?: components["schemas"]["RoleName"];
+            team_id?: number | null;
+            workstation_id?: number | null;
+            is_active?: string;
+        };
+        /** UpdateWorkstationRequest */
+        UpdateWorkstationRequest: {
+            code?: string;
+            team_id?: number;
+            label?: string | null;
+            is_active?: boolean;
+        };
+        /** UserResource */
+        UserResource: {
+            id: number;
+            name: string;
+            username: string | null;
+            email: string;
+            avatar_url: string | null;
+            is_active: boolean;
+            team_id: number | null;
+            workstation_id: number | null;
+            last_login_at: string | null;
+            roles: string[];
+            team: {
+                id: number;
+                name: string;
+                floor: number;
+                shift: string;
+            } | null;
+            workstation: {
+                id: number;
+                code: string;
+            } | null;
+            created_at: string | null;
+            updated_at: string | null;
+        };
+        /** UserSummaryResource */
+        UserSummaryResource: {
+            id: number;
+            name: string;
+            username: string | null;
+        };
+        /** WorkstationResource */
+        WorkstationResource: {
+            id: number;
+            code: string;
+            label: string | null;
+            is_active: boolean;
+            team_id: number;
+            team?: components["schemas"]["TeamSummaryResource"];
+            users_count?: number;
+            platform_accounts_count?: number;
+            users?: components["schemas"]["UserSummaryResource"][];
+            created_at: string;
+            updated_at: string;
+        };
+        /** WorkstationSummaryResource */
+        WorkstationSummaryResource: {
+            id: number;
+            code: string;
+            label: string | null;
+            team_id: number;
+            team?: {
+                id: number;
+                name: string;
+            };
+        };
+    };
+    responses: {
+        /** @description Validation error */
+        ValidationException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Errors overview. */
+                    message: string;
+                    /** @description A detailed description of each field that failed validation. */
+                    errors: {
+                        [key: string]: string[];
+                    };
+                };
+            };
+        };
+        /** @description Unauthenticated */
+        AuthenticationException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Error overview. */
+                    message: string;
+                };
+            };
+        };
+        /** @description Authorization error */
+        AuthorizationException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Error overview. */
+                    message: string;
+                };
+            };
+        };
+        /** @description Not found */
+        ModelNotFoundException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Error overview. */
+                    message: string;
+                };
+            };
+        };
+    };
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
-export type $defs = Record<string, never>
+export type $defs = Record<string, never>;
 export interface operations {
-  'platform-accounts.request-new': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RequestAccountsRequest']
-      }
-    }
-    responses: {
-      /** @description `ApprovalRequestResource` */
-      202: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ApprovalRequestResource']
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'approvals.approve': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The approval ID */
-        approval: number
-      }
-      cookie?: never
-    }
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['ApproveApprovalRequest']
-      }
-    }
-    responses: {
-      /** @description `ApprovalRequestResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ApprovalRequestResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            /** @description Error overview. */
-            message: string
-          }
-        }
-      }
-      422: components['responses']['ValidationException']
-    }
-  }
-  'approvals.reject': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The approval ID */
-        approval: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RejectApprovalRequest']
-      }
-    }
-    responses: {
-      /** @description `ApprovalRequestResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ApprovalRequestResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            /** @description Error overview. */
-            message: string
-          }
-        }
-      }
-      422: components['responses']['ValidationException']
-    }
-  }
-  'approvals.cancel': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The approval ID */
-        approval: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `ApprovalRequestResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ApprovalRequestResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      /** @description Conflict */
-      409: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            /** @description Error overview. */
-            message: string
-          }
-        }
-      }
-    }
-  }
-  'approvals.index': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Paginated set of `ApprovalRequestResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ApprovalRequestResource'][]
-            links: {
-              first: string | null
-              last: string | null
-              prev: string | null
-              next: string | null
-            }
-            meta: {
-              current_page: number
-              from: number | null
-              last_page: number
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null
-                label: string
-                active: boolean
-              }[]
-              /** @description Base path for paginator generated URLs. */
-              path: string | null
-              /** @description Number of items shown per page. */
-              per_page: number
-              /** @description Number of the last item in the slice. */
-              to: number | null
-              /** @description Total number of items being paginated. */
-              total: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-    }
-  }
-  'approvals.pending-count': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: {
-              reviewable: number
-              own: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-    }
-  }
-  'approvals.show': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The approval ID */
-        approval: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `ApprovalRequestResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ApprovalRequestResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'audit-log.index': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Paginated set of `ActivityResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ActivityResource'][]
-            links: {
-              first: string | null
-              last: string | null
-              prev: string | null
-              next: string | null
-            }
-            meta: {
-              current_page: number
-              from: number | null
-              last_page: number
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null
-                label: string
-                active: boolean
-              }[]
-              /** @description Base path for paginator generated URLs. */
-              path: string | null
-              /** @description Number of items shown per page. */
-              per_page: number
-              /** @description Number of the last item in the slice. */
-              to: number | null
-              /** @description Total number of items being paginated. */
-              total: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-    }
-  }
-  'clients.index': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Paginated set of `ClientResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ClientResource'][]
-            links: {
-              first: string | null
-              last: string | null
-              prev: string | null
-              next: string | null
-            }
-            meta: {
-              current_page: number
-              from: number | null
-              last_page: number
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null
-                label: string
-                active: boolean
-              }[]
-              /** @description Base path for paginator generated URLs. */
-              path: string | null
-              /** @description Number of items shown per page. */
-              per_page: number
-              /** @description Number of the last item in the slice. */
-              to: number | null
-              /** @description Total number of items being paginated. */
-              total: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-    }
-  }
-  'clients.store': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `ClientResource` */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ClientResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'clients.show': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The client ID */
-        client: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `ClientDetailResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ClientDetailResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'clients.update': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `JsonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                data: components['schemas']['JsonResource']
-              }
-            | Record<string, never>
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'clients.destroy': {
-    parameters: {
-      query?: {
-        reason?: string | null
-      }
-      header?: never
-      path: {
-        /** @description The client ID */
-        client: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `JsonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                data: components['schemas']['JsonResource']
-              }
-            | Record<string, never>
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'leads.index': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Paginated set of `LeadResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['LeadResource'][]
-            links: {
-              first: string | null
-              last: string | null
-              prev: string | null
-              next: string | null
-            }
-            meta: {
-              current_page: number
-              from: number | null
-              last_page: number
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null
-                label: string
-                active: boolean
-              }[]
-              /** @description Base path for paginator generated URLs. */
-              path: string | null
-              /** @description Number of items shown per page. */
-              per_page: number
-              /** @description Number of the last item in the slice. */
-              to: number | null
-              /** @description Total number of items being paginated. */
-              total: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-    }
-  }
-  'leads.store': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `LeadResource` */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['LeadResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'leads.show': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The lead ID */
-        lead: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `LeadResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['LeadResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'leads.update': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `JsonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                data: components['schemas']['JsonResource']
-              }
-            | Record<string, never>
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'leads.destroy': {
-    parameters: {
-      query?: {
-        reason?: string | null
-      }
-      header?: never
-      path: {
-        /** @description The lead ID */
-        lead: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `JsonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                data: components['schemas']['JsonResource']
-              }
-            | Record<string, never>
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'leads.owner': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The lead ID */
-        lead: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ReassignLeadRequest']
-      }
-    }
-    responses: {
-      /** @description `LeadResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['LeadResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'leads.stage': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The lead ID */
-        lead: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['MoveLeadStageRequest']
-      }
-    }
-    responses: {
-      /** @description `JsonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                data: components['schemas']['JsonResource']
-              }
-            | Record<string, never>
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'auth.login': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['LoginRequest']
-      }
-    }
-    responses: {
-      /** @description `MeResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['MeResource']
-          }
-        }
-      }
-      /** @description An error */
-      400: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            /**
-             * @description Error overview.
-             * @example Sign-in requires a browser session request.
-             */
-            message: string
-          }
-        }
-      }
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                /** @constant */
-                message: 'Sign-in is only allowed from the office network.'
-                /** @constant */
-                code: 'ip_not_allowed'
-              }
-            | {
-                /** @constant */
-                message: 'This account has been deactivated. Contact an administrator.'
-                /** @constant */
-                code: 'account_inactive'
-              }
-        }
-      }
-      422: components['responses']['ValidationException']
-    }
-  }
-  'auth.logout': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      401: components['responses']['AuthenticationException']
-    }
-  }
-  'payments.mark-paid': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The payment ID */
-        payment: number
-      }
-      cookie?: never
-    }
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['MarkPaymentPaidRequest']
-      }
-    }
-    responses: {
-      /** @description `JsonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                data: components['schemas']['JsonResource']
-              }
-            | Record<string, never>
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'auth.me': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `MeResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['MeResource']
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-    }
-  }
-  'notifications.index': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Paginated set of `NotificationResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['NotificationResource'][]
-            links: {
-              first: string | null
-              last: string | null
-              prev: string | null
-              next: string | null
-            }
-            meta: {
-              current_page: number
-              from: number | null
-              last_page: number
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null
-                label: string
-                active: boolean
-              }[]
-              /** @description Base path for paginator generated URLs. */
-              path: string | null
-              /** @description Number of items shown per page. */
-              per_page: number
-              /** @description Number of the last item in the slice. */
-              to: number | null
-              /** @description Total number of items being paginated. */
-              total: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-    }
-  }
-  'notifications.unread-count': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: {
-              unread: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-    }
-  }
-  'notifications.read-all': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: {
-              updated: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-    }
-  }
-  'notifications.read': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        notification: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: unknown[]
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      /** @description An error */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            /**
-             * @description Error overview.
-             * @example This action is unauthorized.
-             */
-            message: string
-          }
-        }
-      }
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'orders.index': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Paginated set of `OrderResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['OrderResource'][]
-            links: {
-              first: string | null
-              last: string | null
-              prev: string | null
-              next: string | null
-            }
-            meta: {
-              current_page: number
-              from: number | null
-              last_page: number
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null
-                label: string
-                active: boolean
-              }[]
-              /** @description Base path for paginator generated URLs. */
-              path: string | null
-              /** @description Number of items shown per page. */
-              per_page: number
-              /** @description Number of the last item in the slice. */
-              to: number | null
-              /** @description Total number of items being paginated. */
-              total: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-    }
-  }
-  'orders.store': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `OrderResource` */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['OrderResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'orders.show': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The order ID */
-        order: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `OrderResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['OrderResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'orders.update': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `JsonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                data: components['schemas']['JsonResource']
-              }
-            | Record<string, never>
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'orders.destroy': {
-    parameters: {
-      query?: {
-        reason?: string | null
-      }
-      header?: never
-      path: {
-        /** @description The order ID */
-        order: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `JsonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                data: components['schemas']['JsonResource']
-              }
-            | Record<string, never>
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'orders.items.store': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The order ID */
-        order: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StoreOrderItemRequest']
-      }
-    }
-    responses: {
-      /** @description `OrderResource` */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['OrderResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'orders.items.update': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The order ID */
-        order: number
-        /** @description The item ID */
-        item: number
-      }
-      cookie?: never
-    }
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['UpdateOrderItemRequest']
-      }
-    }
-    responses: {
-      /** @description `OrderResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['OrderResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'orders.items.destroy': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The order ID */
-        order: number
-        /** @description The item ID */
-        item: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `OrderResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['OrderResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'orders.payments.index': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The order ID */
-        order: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Paginated set of `PaymentResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['PaymentResource'][]
-            links: {
-              first: string | null
-              last: string | null
-              prev: string | null
-              next: string | null
-            }
-            meta: {
-              current_page: number
-              from: number | null
-              last_page: number
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null
-                label: string
-                active: boolean
-              }[]
-              /** @description Base path for paginator generated URLs. */
-              path: string | null
-              /** @description Number of items shown per page. */
-              per_page: number
-              /** @description Number of the last item in the slice. */
-              to: number | null
-              /** @description Total number of items being paginated. */
-              total: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'orders.payments.store': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The order ID */
-        order: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StorePaymentRequest']
-      }
-    }
-    responses: {
-      /** @description `PaymentResource` */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['PaymentResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'auth.password': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['UpdatePasswordRequest']
-      }
-    }
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      401: components['responses']['AuthenticationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'payments.index': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Paginated set of `PaymentResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['PaymentResource'][]
-            links: {
-              first: string | null
-              last: string | null
-              prev: string | null
-              next: string | null
-            }
-            meta: {
-              current_page: number
-              from: number | null
-              last_page: number
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null
-                label: string
-                active: boolean
-              }[]
-              /** @description Base path for paginator generated URLs. */
-              path: string | null
-              /** @description Number of items shown per page. */
-              per_page: number
-              /** @description Number of the last item in the slice. */
-              to: number | null
-              /** @description Total number of items being paginated. */
-              total: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-    }
-  }
-  'payments.show': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The payment ID */
-        payment: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `PaymentResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['PaymentResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'payments.update': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The payment ID */
-        payment: number
-      }
-      cookie?: never
-    }
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['UpdatePaymentRequest']
-      }
-    }
-    responses: {
-      /** @description `JsonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                data: components['schemas']['JsonResource']
-              }
-            | Record<string, never>
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'payments.destroy': {
-    parameters: {
-      query?: {
-        reason?: string | null
-      }
-      header?: never
-      path: {
-        /** @description The payment ID */
-        payment: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `JsonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                data: components['schemas']['JsonResource']
-              }
-            | Record<string, never>
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'platform-accounts.index': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Paginated set of `PlatformAccountResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['PlatformAccountResource'][]
-            links: {
-              first: string | null
-              last: string | null
-              prev: string | null
-              next: string | null
-            }
-            meta: {
-              current_page: number
-              from: number | null
-              last_page: number
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null
-                label: string
-                active: boolean
-              }[]
-              /** @description Base path for paginator generated URLs. */
-              path: string | null
-              /** @description Number of items shown per page. */
-              per_page: number
-              /** @description Number of the last item in the slice. */
-              to: number | null
-              /** @description Total number of items being paginated. */
-              total: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-    }
-  }
-  'platform-accounts.store': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StorePlatformAccountRequest']
-      }
-    }
-    responses: {
-      /** @description `PlatformAccountResource` */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['PlatformAccountResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'platform-accounts.show': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The platform account ID */
-        platformAccount: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `PlatformAccountResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['PlatformAccountResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'platform-accounts.update': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The platform account ID */
-        platformAccount: number
-      }
-      cookie?: never
-    }
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['UpdatePlatformAccountRequest']
-      }
-    }
-    responses: {
-      /** @description `JsonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                data: components['schemas']['JsonResource']
-              }
-            | Record<string, never>
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'platform-accounts.destroy': {
-    parameters: {
-      query?: {
-        reason?: string | null
-      }
-      header?: never
-      path: {
-        /** @description The platform account ID */
-        platformAccount: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `JsonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                data: components['schemas']['JsonResource']
-              }
-            | Record<string, never>
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'platform-accounts.assign': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The platform account ID */
-        platformAccount: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['AssignPlatformAccountRequest']
-      }
-    }
-    responses: {
-      /** @description `PlatformAccountResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['PlatformAccountResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'platform-accounts.reveal': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The platform account ID */
-        platformAccount: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RevealPlatformAccountCredentialsRequest']
-      }
-    }
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: string
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'platform-accounts.standing': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The platform account ID */
-        platformAccount: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ChangePlatformAccountStandingRequest']
-      }
-    }
-    responses: {
-      /** @description `PlatformAccountResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['PlatformAccountResource'] & Record<string, never>
-          }
-        }
-      }
-      /** @description `ApprovalRequestResource` */
-      202: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ApprovalRequestResource']
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'services.index': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Paginated set of `ServiceResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ServiceResource'][]
-            links: {
-              first: string | null
-              last: string | null
-              prev: string | null
-              next: string | null
-            }
-            meta: {
-              current_page: number
-              from: number | null
-              last_page: number
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null
-                label: string
-                active: boolean
-              }[]
-              /** @description Base path for paginator generated URLs. */
-              path: string | null
-              /** @description Number of items shown per page. */
-              per_page: number
-              /** @description Number of the last item in the slice. */
-              to: number | null
-              /** @description Total number of items being paginated. */
-              total: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-    }
-  }
-  'services.store': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StoreServiceRequest']
-      }
-    }
-    responses: {
-      /** @description `ServiceResource` */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ServiceResource']
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'services.show': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The service ID */
-        service: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `ServiceResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ServiceResource']
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'services.update': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `ServiceResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['ServiceResource']
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'services.destroy': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The service ID */
-        service: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'social-accounts.index': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Paginated set of `SocialAccountResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['SocialAccountResource'][]
-            links: {
-              first: string | null
-              last: string | null
-              prev: string | null
-              next: string | null
-            }
-            meta: {
-              current_page: number
-              from: number | null
-              last_page: number
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null
-                label: string
-                active: boolean
-              }[]
-              /** @description Base path for paginator generated URLs. */
-              path: string | null
-              /** @description Number of items shown per page. */
-              per_page: number
-              /** @description Number of the last item in the slice. */
-              to: number | null
-              /** @description Total number of items being paginated. */
-              total: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-    }
-  }
-  'social-accounts.store': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `SocialAccountResource` */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['SocialAccountResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'social-accounts.show': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The social account ID */
-        socialAccount: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `SocialAccountResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['SocialAccountResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'social-accounts.update': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `JsonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                data: components['schemas']['JsonResource']
-              }
-            | Record<string, never>
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'social-accounts.destroy': {
-    parameters: {
-      query?: {
-        reason?: string | null
-      }
-      header?: never
-      path: {
-        /** @description The social account ID */
-        socialAccount: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `JsonResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json':
-            | {
-                data: components['schemas']['JsonResource']
-              }
-            | Record<string, never>
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'social-accounts.reveal': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The social account ID */
-        socialAccount: number
-      }
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RevealSocialAccountCredentialsRequest']
-      }
-    }
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: string
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'teams.index': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Paginated set of `TeamResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['TeamResource'][]
-            links: {
-              first: string | null
-              last: string | null
-              prev: string | null
-              next: string | null
-            }
-            meta: {
-              current_page: number
-              from: number | null
-              last_page: number
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null
-                label: string
-                active: boolean
-              }[]
-              /** @description Base path for paginator generated URLs. */
-              path: string | null
-              /** @description Number of items shown per page. */
-              per_page: number
-              /** @description Number of the last item in the slice. */
-              to: number | null
-              /** @description Total number of items being paginated. */
-              total: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-    }
-  }
-  'teams.store': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StoreTeamRequest']
-      }
-    }
-    responses: {
-      /** @description `TeamResource` */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['TeamResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'teams.show': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The team ID */
-        team: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `TeamResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['TeamResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'teams.update': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `TeamResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['TeamResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'teams.destroy': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The team ID */
-        team: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'users.index': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Paginated set of `UserResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['UserResource'][]
-            links: {
-              first: string | null
-              last: string | null
-              prev: string | null
-              next: string | null
-            }
-            meta: {
-              current_page: number
-              from: number | null
-              last_page: number
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null
-                label: string
-                active: boolean
-              }[]
-              /** @description Base path for paginator generated URLs. */
-              path: string | null
-              /** @description Number of items shown per page. */
-              per_page: number
-              /** @description Number of the last item in the slice. */
-              to: number | null
-              /** @description Total number of items being paginated. */
-              total: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-    }
-  }
-  'users.store': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StoreUserRequest']
-      }
-    }
-    responses: {
-      /** @description `UserResource` */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['UserResource']
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'users.show': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The user ID */
-        user: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `UserResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['UserResource']
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'users.update': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `UserResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['UserResource']
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'users.destroy': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The user ID */
-        user: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'users.deactivate': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The user ID */
-        user: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `UserResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['UserResource']
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'users.activate': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The user ID */
-        user: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `UserResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['UserResource']
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'workstations.index': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Paginated set of `WorkstationResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['WorkstationResource'][]
-            links: {
-              first: string | null
-              last: string | null
-              prev: string | null
-              next: string | null
-            }
-            meta: {
-              current_page: number
-              from: number | null
-              last_page: number
-              /** @description Generated paginator links. */
-              links: {
-                url: string | null
-                label: string
-                active: boolean
-              }[]
-              /** @description Base path for paginator generated URLs. */
-              path: string | null
-              /** @description Number of items shown per page. */
-              per_page: number
-              /** @description Number of the last item in the slice. */
-              to: number | null
-              /** @description Total number of items being paginated. */
-              total: number
-            }
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-    }
-  }
-  'workstations.store': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['StoreWorkstationRequest']
-      }
-    }
-    responses: {
-      /** @description `WorkstationResource` */
-      201: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['WorkstationResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'workstations.show': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The workstation ID */
-        workstation: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `WorkstationResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['WorkstationResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
-  'workstations.update': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description `WorkstationResource` */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': {
-            data: components['schemas']['WorkstationResource'] & Record<string, never>
-          }
-        }
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      422: components['responses']['ValidationException']
-    }
-  }
-  'workstations.destroy': {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        /** @description The workstation ID */
-        workstation: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown
-        }
-        content?: never
-      }
-      401: components['responses']['AuthenticationException']
-      403: components['responses']['AuthorizationException']
-      404: components['responses']['ModelNotFoundException']
-    }
-  }
+    "platform-accounts.request-new": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RequestAccountsRequest"];
+            };
+        };
+        responses: {
+            /** @description `ApprovalRequestResource` */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ApprovalRequestResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "approvals.approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The approval ID */
+                approval: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ApproveApprovalRequest"];
+            };
+        };
+        responses: {
+            /** @description `ApprovalRequestResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ApprovalRequestResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "approvals.reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The approval ID */
+                approval: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RejectApprovalRequest"];
+            };
+        };
+        responses: {
+            /** @description `ApprovalRequestResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ApprovalRequestResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "approvals.cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The approval ID */
+                approval: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `ApprovalRequestResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ApprovalRequestResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "approvals.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `ApprovalRequestResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ApprovalRequestResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "approvals.pending-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            reviewable: number;
+                            own: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "approvals.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The approval ID */
+                approval: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `ApprovalRequestResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ApprovalRequestResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "audit-log.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `ActivityResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ActivityResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "clients.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `ClientResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ClientResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "clients.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoreClientRequest"];
+            };
+        };
+        responses: {
+            /** @description `ClientResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ClientResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "clients.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The client ID */
+                client: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `ClientDetailResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ClientDetailResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "clients.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The client ID */
+                client: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateClientRequest"];
+            };
+        };
+        responses: {
+            /** @description `JsonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["JsonResource"];
+                    } | Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "clients.destroy": {
+        parameters: {
+            query?: {
+                reason?: string | null;
+            };
+            header?: never;
+            path: {
+                /** @description The client ID */
+                client: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `JsonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["JsonResource"];
+                    } | Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "clients.notes.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The client ID */
+                client: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `ClientNoteResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ClientNoteResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "clients.notes.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The client ID */
+                client: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoreClientNoteRequest"];
+            };
+        };
+        responses: {
+            /** @description `ClientNoteResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ClientNoteResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "clients.notes.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The client ID */
+                client: number;
+                /** @description The note ID */
+                note: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "clients.notes.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The client ID */
+                client: number;
+                /** @description The note ID */
+                note: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateClientNoteRequest"];
+            };
+        };
+        responses: {
+            /** @description `ClientNoteResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ClientNoteResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "clients.timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The client ID */
+                client: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `ClientTimelineItemResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ClientTimelineItemResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "exports.show": {
+        parameters: {
+            query?: {
+                filter?: string;
+                sort?: string;
+            };
+            header?: never;
+            path: {
+                /** @description The type ID */
+                type: components["schemas"]["ImportType"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    "Transfer-Encoding": "chunked";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv; charset=UTF-8": string;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "imports.template": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The type ID */
+                type: components["schemas"]["ImportType"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    "Content-Disposition"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv; charset=UTF-8": string;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "imports.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `ImportResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ImportResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "imports.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["StoreImportRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "imports.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The import ID */
+                import: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `ImportResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ImportResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "imports.errors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The import ID */
+                import: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    "Transfer-Encoding": "chunked";
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv; charset=UTF-8": string;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "imports.preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The import ID */
+                import: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    mapping?: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            rows: {
+                                row: string;
+                                values: string;
+                                valid: boolean;
+                                errors: string;
+                            }[];
+                            summary: {
+                                total_rows: string;
+                                checked: number;
+                                valid: number;
+                                invalid: number;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description An error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example This import has already been started.
+                         */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "imports.start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The import ID */
+                import: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    mapping?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description `ImportResource` */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ImportResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description An error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example This import has already been started.
+                         */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "leads.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `LeadResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["LeadResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "leads.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["StoreLeadRequest"];
+            };
+        };
+        responses: {
+            /** @description `LeadResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["LeadResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "leads.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lead ID */
+                lead: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `LeadResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["LeadResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "leads.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lead ID */
+                lead: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateLeadRequest"];
+            };
+        };
+        responses: {
+            /** @description `JsonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["JsonResource"];
+                    } | Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "leads.destroy": {
+        parameters: {
+            query?: {
+                reason?: string | null;
+            };
+            header?: never;
+            path: {
+                /** @description The lead ID */
+                lead: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `JsonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["JsonResource"];
+                    } | Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "leads.owner": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lead ID */
+                lead: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReassignLeadRequest"];
+            };
+        };
+        responses: {
+            /** @description `LeadResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["LeadResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "leads.stage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The lead ID */
+                lead: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MoveLeadStageRequest"];
+            };
+        };
+        responses: {
+            /** @description `JsonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["JsonResource"];
+                    } | Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "auth.login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginRequest"];
+            };
+        };
+        responses: {
+            /** @description `MeResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["MeResource"];
+                    } | {
+                        data: {
+                            two_factor: boolean;
+                        };
+                    };
+                };
+            };
+            /** @description An error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example Sign-in requires a browser session request.
+                         */
+                        message: string;
+                    };
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Sign-in is only allowed from the office network.";
+                        /** @constant */
+                        code: "ip_not_allowed";
+                    } | {
+                        /** @constant */
+                        message: "This account has been deactivated. Contact an administrator.";
+                        /** @constant */
+                        code: "account_inactive";
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "auth.logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "payments.mark-paid": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The payment ID */
+                payment: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["MarkPaymentPaidRequest"];
+            };
+        };
+        responses: {
+            /** @description `JsonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["JsonResource"];
+                    } | Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "auth.me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `MeResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["MeResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "notifications.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `NotificationResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["NotificationResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "notifications.unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            unread: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "notifications.read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            updated: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "notifications.read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                notification: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: unknown[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example This action is unauthorized.
+                         */
+                        message: string;
+                    };
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "orders.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `OrderResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["OrderResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "orders.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoreOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description `OrderResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["OrderResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "orders.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The order ID */
+                order: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `OrderResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["OrderResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "orders.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The order ID */
+                order: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description `JsonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["JsonResource"];
+                    } | Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "orders.destroy": {
+        parameters: {
+            query?: {
+                reason?: string | null;
+            };
+            header?: never;
+            path: {
+                /** @description The order ID */
+                order: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `JsonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["JsonResource"];
+                    } | Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "orders.items.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The order ID */
+                order: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoreOrderItemRequest"];
+            };
+        };
+        responses: {
+            /** @description `OrderResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["OrderResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "orders.items.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The order ID */
+                order: number;
+                /** @description The item ID */
+                item: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateOrderItemRequest"];
+            };
+        };
+        responses: {
+            /** @description `OrderResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["OrderResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "orders.items.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The order ID */
+                order: number;
+                /** @description The item ID */
+                item: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `OrderResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["OrderResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "orders.payments.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The order ID */
+                order: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `PaymentResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PaymentResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "orders.payments.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The order ID */
+                order: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StorePaymentRequest"];
+            };
+        };
+        responses: {
+            /** @description `PaymentResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PaymentResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "analytics.overview": {
+        parameters: {
+            query?: {
+                from?: string | null;
+                to?: string | null;
+                team_id?: number | null;
+                user_id?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `OverviewResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["OverviewResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "auth.password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePasswordRequest"];
+            };
+        };
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "payments.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `PaymentResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PaymentResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "payments.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The payment ID */
+                payment: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `PaymentResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PaymentResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "payments.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The payment ID */
+                payment: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdatePaymentRequest"];
+            };
+        };
+        responses: {
+            /** @description `JsonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["JsonResource"];
+                    } | Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "payments.destroy": {
+        parameters: {
+            query?: {
+                reason?: string | null;
+            };
+            header?: never;
+            path: {
+                /** @description The payment ID */
+                payment: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `JsonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["JsonResource"];
+                    } | Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "platform-accounts.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `PlatformAccountResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformAccountResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "platform-accounts.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StorePlatformAccountRequest"];
+            };
+        };
+        responses: {
+            /** @description `PlatformAccountResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformAccountResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "platform-accounts.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform account ID */
+                platformAccount: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `PlatformAccountResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformAccountResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "platform-accounts.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform account ID */
+                platformAccount: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdatePlatformAccountRequest"];
+            };
+        };
+        responses: {
+            /** @description `JsonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["JsonResource"];
+                    } | Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "platform-accounts.destroy": {
+        parameters: {
+            query?: {
+                reason?: string | null;
+            };
+            header?: never;
+            path: {
+                /** @description The platform account ID */
+                platformAccount: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `JsonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["JsonResource"];
+                    } | Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "platform-accounts.assign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform account ID */
+                platformAccount: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignPlatformAccountRequest"];
+            };
+        };
+        responses: {
+            /** @description `PlatformAccountResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformAccountResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "platform-accounts.reveal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform account ID */
+                platformAccount: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevealPlatformAccountCredentialsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "platform-accounts.standing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The platform account ID */
+                platformAccount: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePlatformAccountStandingRequest"];
+            };
+        };
+        responses: {
+            /** @description `PlatformAccountResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["PlatformAccountResource"] & Record<string, never>;
+                    };
+                };
+            };
+            /** @description `ApprovalRequestResource` */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ApprovalRequestResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    search: {
+        parameters: {
+            query: {
+                q: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            key: string;
+                            label: string;
+                            hits: string;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "services.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `ServiceResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ServiceResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "services.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoreServiceRequest"];
+            };
+        };
+        responses: {
+            /** @description `ServiceResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ServiceResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "services.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The service ID */
+                service: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `ServiceResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ServiceResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "services.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The service ID */
+                service: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateServiceRequest"];
+            };
+        };
+        responses: {
+            /** @description `ServiceResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ServiceResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "services.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The service ID */
+                service: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "sessions.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            ip_address: string;
+                            device: string;
+                            last_active_at: string;
+                            is_current: boolean;
+                        }[];
+                    } | {
+                        data: [
+                            {
+                                id: string;
+                                ip_address: string | null;
+                                device: string;
+                                last_active_at: string;
+                                is_current: boolean;
+                            }
+                        ];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "sessions.destroyOthers": {
+        parameters: {
+            query: {
+                password: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            revoked: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "social-accounts.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `SocialAccountResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["SocialAccountResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "social-accounts.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoreSocialAccountRequest"];
+            };
+        };
+        responses: {
+            /** @description `SocialAccountResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["SocialAccountResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "social-accounts.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The social account ID */
+                socialAccount: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `SocialAccountResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["SocialAccountResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "social-accounts.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The social account ID */
+                socialAccount: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateSocialAccountRequest"];
+            };
+        };
+        responses: {
+            /** @description `JsonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["JsonResource"];
+                    } | Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "social-accounts.destroy": {
+        parameters: {
+            query?: {
+                reason?: string | null;
+            };
+            header?: never;
+            path: {
+                /** @description The social account ID */
+                socialAccount: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `JsonResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["JsonResource"];
+                    } | Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "social-accounts.reveal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The social account ID */
+                socialAccount: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevealSocialAccountCredentialsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "teams.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `TeamResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TeamResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "teams.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoreTeamRequest"];
+            };
+        };
+        responses: {
+            /** @description `TeamResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TeamResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "teams.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The team ID */
+                team: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `TeamResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TeamResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "teams.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The team ID */
+                team: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateTeamRequest"];
+            };
+        };
+        responses: {
+            /** @description `TeamResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TeamResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "teams.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The team ID */
+                team: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "twoFactor.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            secret: string;
+                            otpauth_url: string;
+                            qr_code: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Two-factor sign-in is already on.";
+                        /** @constant */
+                        code: "two_factor_already_enabled";
+                    };
+                };
+            };
+        };
+    };
+    "twoFactor.destroy": {
+        parameters: {
+            query: {
+                password: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "twoFactor.confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TwoFactorCodeRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            recovery_codes: unknown[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Start two-factor setup first.";
+                        /** @constant */
+                        code: "two_factor_not_started";
+                    } | {
+                        /** @constant */
+                        message: "Two-factor sign-in is already on.";
+                        /** @constant */
+                        code: "two_factor_already_enabled";
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "twoFactor.recoveryCodes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmPasswordRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            recovery_codes: unknown[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Two-factor sign-in is off.";
+                        /** @constant */
+                        code: "two_factor_not_enabled";
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "twoFactor.regenerateRecoveryCodes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmPasswordRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            recovery_codes: unknown[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @constant */
+                        message: "Two-factor sign-in is off.";
+                        /** @constant */
+                        code: "two_factor_not_enabled";
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "auth.twoFactorChallenge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["TwoFactorChallengeRequest"];
+            };
+        };
+        responses: {
+            /** @description `MeResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["MeResource"];
+                    };
+                };
+            };
+            /** @description An error */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example Sign-in requires a browser session request.
+                         */
+                        message: string;
+                    };
+                };
+            };
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        message: "Sign-in is only allowed from the office network." | "This account has been deactivated. Contact an administrator.";
+                        /** @enum {string} */
+                        code: "ip_not_allowed" | "account_inactive";
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            429: {
+                headers: {
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        /** @constant */
+                        code: "too_many_attempts";
+                        retry_after: number | null;
+                    };
+                };
+            };
+        };
+    };
+    "users.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `UserResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["UserResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "users.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoreUserRequest"];
+            };
+        };
+        responses: {
+            /** @description `UserResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["UserResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "users.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The user ID */
+                user: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `UserResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["UserResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "users.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The user ID */
+                user: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateUserRequest"];
+            };
+        };
+        responses: {
+            /** @description `UserResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["UserResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "users.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The user ID */
+                user: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "users.deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The user ID */
+                user: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `UserResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["UserResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "users.activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The user ID */
+                user: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `UserResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["UserResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "workstations.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paginated set of `WorkstationResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["WorkstationResource"][];
+                        links: {
+                            first: string | null;
+                            last: string | null;
+                            prev: string | null;
+                            next: string | null;
+                        };
+                        meta: {
+                            current_page: number;
+                            from: number | null;
+                            last_page: number;
+                            /** @description Generated paginator links. */
+                            links: {
+                                url: string | null;
+                                label: string;
+                                active: boolean;
+                            }[];
+                            /** @description Base path for paginator generated URLs. */
+                            path: string | null;
+                            /** @description Number of items shown per page. */
+                            per_page: number;
+                            /** @description Number of the last item in the slice. */
+                            to: number | null;
+                            /** @description Total number of items being paginated. */
+                            total: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "workstations.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StoreWorkstationRequest"];
+            };
+        };
+        responses: {
+            /** @description `WorkstationResource` */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["WorkstationResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "workstations.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The workstation ID */
+                workstation: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `WorkstationResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["WorkstationResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "workstations.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The workstation ID */
+                workstation: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateWorkstationRequest"];
+            };
+        };
+        responses: {
+            /** @description `WorkstationResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["WorkstationResource"] & Record<string, never>;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "workstations.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The workstation ID */
+                workstation: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
 }

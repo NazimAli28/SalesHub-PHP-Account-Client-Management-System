@@ -4,10 +4,14 @@ import { RelativeTime } from '@/components/data-display/RelativeTime'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { accountSecurity } from '@/features/auth/api'
 import { useAuth } from '@/features/auth/AuthProvider'
 import { initials } from '@/lib/format'
 import { roleLabel } from '@/lib/roles'
 import { ChangePasswordForm } from '../components/ChangePasswordForm'
+import { DemoModeNotice } from '../components/DemoModeNotice'
+import { SessionsCard } from '../components/SessionsCard'
+import { TwoFactorCard } from '../components/TwoFactorCard'
 
 function Detail({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -21,6 +25,7 @@ function Detail({ label, children }: { label: string; children: ReactNode }) {
 export default function ProfilePage() {
   const { user } = useAuth()
   if (!user) return null
+  const { twoFactorEnabled, demoMode } = accountSecurity(user)
 
   return (
     <div className="space-y-6">
@@ -69,10 +74,26 @@ export default function ProfilePage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ChangePasswordForm />
+            <ChangePasswordForm disabled={demoMode} />
           </CardContent>
         </Card>
       </div>
+
+      <section aria-labelledby="security-title" className="space-y-4">
+        <div className="space-y-1">
+          <h2 id="security-title" className="text-lg font-semibold tracking-tight">
+            Security
+          </h2>
+          <p className="text-muted-foreground text-sm">
+            Two-step verification and the browsers signed in to your account.
+          </p>
+        </div>
+        {demoMode ? <DemoModeNotice /> : null}
+        <div className="grid gap-6 lg:grid-cols-2">
+          <TwoFactorCard enabled={twoFactorEnabled} demoMode={demoMode} />
+          <SessionsCard />
+        </div>
+      </section>
     </div>
   )
 }

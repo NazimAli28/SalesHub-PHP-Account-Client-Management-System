@@ -1,12 +1,15 @@
 import type { Lead, Me, Paginated } from '@/api/types'
+import type { AccountSecurityFields } from '@/features/auth/api'
 import { PERMISSIONS, type Permission } from '@/lib/permissions'
 
 /** Fictional users only. */
 export function makeUser(
-  overrides: Partial<Me> = {},
+  overrides: Partial<Me & Required<AccountSecurityFields>> = {},
   permissions: readonly Permission[] = PERMISSIONS,
 ): Me {
+  const security: Required<AccountSecurityFields> = { two_factor_enabled: false, demo_mode: false }
   return {
+    ...security,
     id: 1,
     name: 'Robin Vale',
     username: 'admin',

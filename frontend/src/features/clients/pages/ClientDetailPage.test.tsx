@@ -1,13 +1,17 @@
 import { screen, within } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { makeClientDetail } from '@/features/orders/test-data'
-import { makeUser, SALES_EXECUTIVE_PERMISSIONS } from '@/test/fixtures'
+import { makeUser, paginate, SALES_EXECUTIVE_PERMISSIONS } from '@/test/fixtures'
 import { renderWithProviders } from '@/test/render'
 import { server } from '@/test/server'
 import ClientDetailPage from './ClientDetailPage'
 
 function useClient(detail = makeClientDetail(5)) {
-  server.use(http.get('*/api/clients/5', () => HttpResponse.json({ data: detail })))
+  server.use(
+    http.get('*/api/clients/5', () => HttpResponse.json({ data: detail })),
+    http.get('*/api/clients/5/notes', () => HttpResponse.json(paginate([]))),
+    http.get('*/api/clients/5/timeline', () => HttpResponse.json(paginate([]))),
+  )
 }
 
 const render = (user = makeUser()) =>
