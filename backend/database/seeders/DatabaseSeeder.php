@@ -2,24 +2,48 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Enums\RoleName;
 use Illuminate\Database\Seeder;
+use Spatie\Activitylog\Support\ActivityLogStatus;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
-     * Seed the application's database.
+     * Seed the application's database (reproducible: fixed Faker seed, dates relative to now()).
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        fake()->seed(2026);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Model activity is not logged while seeding; ActivityLogSeeder writes the demo entries.
+        $logStatus = app(ActivityLogStatus::class);
+        $logStatus->disable();
+
+        $this->call(RolesAndPermissionsSeeder::class);
+
+        // Make sure the four roles exist even while RolesAndPermissionsSeeder is a stub.
+        foreach (RoleName::cases() as $role) {
+            Role::firstOrCreate(['name' => $role->value, 'guard_name' => 'web']);
+        }
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        $this->call([
+            TeamSeeder::class,
+            WorkstationSeeder::class,
+            UserSeeder::class,
+            ServiceSeeder::class,
+            PlatformAccountSeeder::class,
+            SocialAccountSeeder::class,
+            ClientSeeder::class,
+            LeadSeeder::class,
+            OrderSeeder::class,
+            ApprovalRequestSeeder::class,
+            NotificationSeeder::class,
         ]);
+
+        $logStatus->enable();
+        $this->call(ActivityLogSeeder::class);
     }
 }
