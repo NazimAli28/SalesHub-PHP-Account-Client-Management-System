@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Http\Resources\Concerns\FormatsApiValues;
 use App\Http\Resources\Summaries\UserSummaryResource;
 use App\Models\User;
+use App\Support\IpMask;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -12,7 +13,8 @@ use Spatie\Activitylog\Models\Activity;
 
 /**
  * One audit-log entry. `properties` and `attribute_changes` are scrubbed: any key that looks like a
- * secret is replaced with "[redacted]", whatever the writer logged.
+ * secret is replaced with "[redacted]", whatever the writer logged. In demo
+ * mode IP addresses are coarsened (see IpMask), because every visitor shares the demo accounts.
  *
  * @mixin Activity
  */
@@ -44,8 +46,8 @@ class ActivityResource extends JsonResource
                 'id' => $this->subject_id,
                 'label' => $this->subjectLabel($this->subject),
             ],
-            'properties' => self::scrub($this->properties?->all() ?? []),
-            'attribute_changes' => self::scrub($this->attribute_changes?->all() ?? []),
+            'properties' => IpMask::maskProperties(self::scrub($this->properties?->all() ?? [])),
+            'attribute_changes' => IpMask::maskProperties(self::scrub($this->attribute_changes?->all() ?? [])),
             'created_at' => $this->dateTime($this->created_at),
         ];
     }

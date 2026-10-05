@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Enums\ImportType;
+use RuntimeException;
 
 /**
  * The importable fields of each import type, header-name suggestions and the CSV templates.
@@ -122,7 +123,7 @@ final class ImportSchema
     public static function template(ImportType $type): string
     {
         $fields = self::fields($type);
-        $out = fopen('php://temp', 'r+');
+        $out = fopen('php://temp', 'r+') ?: throw new RuntimeException('Unable to open a temporary stream.');
         fputcsv($out, array_map(fn (ImportField $f) => $f->key, $fields), ',', '"', '');
         fputcsv($out, array_map(fn (ImportField $f) => $f->example, $fields), ',', '"', '');
         rewind($out);

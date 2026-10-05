@@ -18,7 +18,10 @@ class ServiceFactory extends Factory
      */
     public function definition(): array
     {
-        $name = Str::title(fake()->unique()->words(3, true));
+        // Faker types words() as array|string; with $asText = true it always returns a string.
+        /** @var string $words */
+        $words = fake()->unique()->words(3, true);
+        $name = Str::title($words);
 
         return [
             'name' => $name,

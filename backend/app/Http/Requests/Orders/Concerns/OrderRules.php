@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use App\Models\PlatformAccount;
 use App\Models\User;
 use App\Rules\VisibleTo;
+use App\Support\LocalToday;
 use Illuminate\Validation\Rule;
 
 /**
@@ -23,7 +24,7 @@ trait OrderRules
             'platform_account_id' => ['nullable', 'integer', new VisibleTo(PlatformAccount::class, $user)],
             'status' => [Rule::enum(OrderStatus::class)],
             'discount_cents' => ['integer', 'min:0', 'max:100000000'],
-            'ordered_on' => ['date_format:Y-m-d', 'before_or_equal:today'],
+            'ordered_on' => ['date_format:Y-m-d', LocalToday::notFuture()],
             'notes' => ['nullable', 'string', 'max:5000'],
             'reason' => ['nullable', 'string', 'max:500'],
         ];

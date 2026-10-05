@@ -12,6 +12,7 @@ use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Support\DemoAccounts;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -57,6 +58,7 @@ class UserController extends Controller
     public function destroy(Request $request, User $user, DeleteUser $deleteUser): Response
     {
         Gate::authorize('delete', $user);
+        DemoAccounts::guard($user, 'the demo accounts cannot be deleted');
 
         /** @var User $actor */
         $actor = $request->user();

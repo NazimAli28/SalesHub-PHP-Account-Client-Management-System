@@ -70,32 +70,35 @@ class ImportController extends Controller
     }
 
     /**
-     * The failed rows (at most the stored errors) as a CSV with an extra "Error" column.
+     * The failed rows (at most the stored errors) as a CSV with an extra "Error" column. Built from the
+     * row values stored with the errors: the uploaded file is deleted once the import finishes.
      */
     public function errors(Import $import): StreamedResponse
     {
         Gate::authorize('view', $import);
 
-        /** @var list<array{row: int, message: string}> $errors */
+        /** @var list<array{row: int, message: string, values?: list<string|null>}> $errors */
         $errors = $import->errors ?? [];
-        $messages = [];
+        $headers = $import->headers;
+
+        /** @var array<int, array{values: list<string|null>|null, messages: list<string>}> $rows */
+        $rows = [];
         foreach ($errors as $error) {
-            $messages[$error['row']][] = $error['message'];
+            $rows[$error['row']] ??= ['values' => null, 'messages' => []];
+            $rows[$error['row']]['values'] ??= $error['values'] ?? null;
+            $rows[$error['row']]['messages'][] = $error['message'];
         }
 
-        return response()->streamDownload(function () use ($import, $messages): void {
+        return response()->streamDownload(function () use ($headers, $rows): void {
             $out = fopen('php://output', 'w');
             if ($out === false) {
                 return;
             }
             fwrite($out, "\xEF\xBB\xBF");
-            CsvSanitizer::write($out, [...$import->headers, 'Error']);
-            if ($messages !== []) {
-                foreach (ImportFiles::open($import)->rows() as $number => $row) {
-                    if (isset($messages[$number])) {
-                        CsvSanitizer::write($out, [...array_values($row), implode('; ', $messages[$number])]);
-                    }
-                }
+            CsvSanitizer::write($out, [...$headers, 'Error']);
+            foreach ($rows as $row) {
+                $values = array_pad(array_slice($row['values'] ?? [], 0, count($headers)), count($headers), '');
+                CsvSanitizer::write($out, [...$values, implode('; ', $row['messages'])]);
             }
             fclose($out);
         }, 'import-'.$import->id.'-errors.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);

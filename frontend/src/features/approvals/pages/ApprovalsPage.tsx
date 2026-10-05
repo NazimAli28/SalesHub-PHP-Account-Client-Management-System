@@ -159,7 +159,8 @@ export default function ApprovalsPage() {
       <Tabs value={tab} onValueChange={changeTab}>
         <TabsList aria-label="Approval views">
           {tabs.map((value) => (
-            <TabsTrigger key={value} value={value}>
+            // The tabs only change the table below, there are no tab panels to point at.
+            <TabsTrigger key={value} value={value} aria-controls={undefined}>
               {TAB_LABELS[value]}
             </TabsTrigger>
           ))}

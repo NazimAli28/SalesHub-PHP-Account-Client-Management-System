@@ -23,7 +23,7 @@ class WorkstationSummaryResource extends JsonResource
             'code' => $this->code,
             'label' => $this->label,
             'team_id' => $this->team_id,
-            'team' => $this->whenLoaded('team', fn () => [
+            'team' => $this->whenLoaded('team', fn () => $this->team === null ? null : [
                 'id' => $this->team->id,
                 'name' => $this->team->name,
             ]),

@@ -109,7 +109,7 @@ class StoreOrderRequest extends FormRequest
     {
         $id = $this->input('lead_id');
 
-        return $id === null ? null : Lead::query()->find($id);
+        return is_int($id) || is_string($id) ? Lead::query()->find($id) : null;
     }
 
     private function subtotalCents(): int

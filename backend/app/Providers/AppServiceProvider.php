@@ -16,6 +16,7 @@ use App\Models\Team;
 use App\Models\User;
 use App\Models\Workstation;
 use App\Policies\ActivityPolicy;
+use App\Support\ApiRateLimits;
 use App\Support\LoginThrottle;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Gate;
@@ -64,6 +65,7 @@ class AppServiceProvider extends ServiceProvider
             ->when($this->app->isProduction(), fn (Password $rule) => $rule->uncompromised()));
 
         RateLimiter::for(LoginThrottle::NAME, LoginThrottle::limits(...));
+        ApiRateLimits::register();
 
         Gate::policy(Activity::class, ActivityPolicy::class);
 

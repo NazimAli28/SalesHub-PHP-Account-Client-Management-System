@@ -25,10 +25,15 @@ class ImportStartController extends Controller
 
         /** @var User $user */
         $user = $request->user();
-        $import->forceFill([
-            'mapping' => ImportMapping::validate($import, $request->input('mapping')),
-            'status' => ImportStatus::Queued,
-        ])->save();
+        $mapping = ImportMapping::validate($import, $request->input('mapping'));
+
+        // Atomic uploaded -> queued: of two concurrent starts only one changes the row.
+        $claimed = Import::query()
+            ->whereKey($import->id)
+            ->where('status', ImportStatus::Uploaded->value)
+            ->update(['mapping' => json_encode($mapping, JSON_THROW_ON_ERROR), 'status' => ImportStatus::Queued->value]);
+
+        abort_if($claimed === 0, 409, 'This import has already been started.');
 
         activity('import')
             ->event('started')

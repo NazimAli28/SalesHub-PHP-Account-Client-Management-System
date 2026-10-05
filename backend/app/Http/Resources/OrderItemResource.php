@@ -20,7 +20,7 @@ class OrderItemResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $currency = $this->relationLoaded('order') ? $this->order->currency : 'USD';
+        $currency = $this->relationLoaded('order') ? ($this->order === null ? 'USD' : $this->order->currency) : 'USD';
 
         return [
             'id' => $this->id,

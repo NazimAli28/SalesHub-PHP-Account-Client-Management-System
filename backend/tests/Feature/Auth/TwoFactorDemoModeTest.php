@@ -50,7 +50,10 @@ describe('with demo mode on', function () {
     it('still lets a user turn two-factor off', function () {
         $user = User::factory()->salesExecutive()->withTwoFactor()->create();
 
-        $this->spaAs($user)->spa('DELETE', '/api/auth/two-factor', ['password' => 'Demo@12345'])->assertNoContent();
+        $this->spaAs($user)->spa('DELETE', '/api/auth/two-factor', [
+            'password' => 'Demo@12345',
+            'code' => $user->two_factor_recovery_codes[0],
+        ])->assertNoContent();
 
         expect($user->fresh()->hasTwoFactorEnabled())->toBeFalse();
     });

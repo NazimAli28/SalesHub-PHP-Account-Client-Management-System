@@ -7,6 +7,7 @@ use App\Models\PlatformAccount;
 use App\Models\SocialAccount;
 use App\Models\User;
 use App\Rules\VisibleTo;
+use App\Support\LocalToday;
 use Closure;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -26,7 +27,7 @@ trait SocialAccountRules
             'platform' => [Rule::enum(SocialPlatform::class)],
             'username' => ['string', 'max:100'],
             'login_email' => ['nullable', 'string', 'email', 'max:255'],
-            'created_on' => ['nullable', 'date_format:Y-m-d', 'before_or_equal:today'],
+            'created_on' => ['nullable', 'date_format:Y-m-d', LocalToday::notFuture()],
             'is_in_use' => ['boolean'],
             'reason' => ['nullable', 'string', 'max:500'],
         ];

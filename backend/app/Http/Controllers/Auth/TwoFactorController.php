@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Actions\Auth\EnsureNotDemoMode;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ConfirmPasswordRequest;
+use App\Http\Requests\Auth\DisableTwoFactorRequest;
 use App\Http\Requests\Auth\TwoFactorCodeRequest;
 use App\Models\User;
 use App\Support\AuditLogger;
+use App\Support\LoginThrottle;
 use App\Support\TwoFactorAuthenticator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -83,12 +85,38 @@ class TwoFactorController extends Controller
     }
 
     /**
-     * DELETE /api/auth/two-factor {password}: turn two-factor sign-in off (also cancels an unfinished setup).
+     * DELETE /api/auth/two-factor {password, code}: turn two-factor sign-in off (also cancels an
+     * unfinished setup). While it is on, `code` must be a current authenticator code or an unused
+     * recovery code (which is spent); wrong codes count toward the two-factor lockout.
      */
-    public function destroy(ConfirmPasswordRequest $request): Response
+    public function destroy(DisableTwoFactorRequest $request): Response|JsonResponse
     {
         $user = $this->user($request);
         $wasEnabled = $user->hasTwoFactorEnabled();
+
+        if ($wasEnabled) {
+            $retryAfter = LoginThrottle::twoFactorLockedOutFor($user->getKey(), $request->ip());
+
+            if ($retryAfter !== null) {
+                return LoginThrottle::twoFactorLockedOutResponse($retryAfter);
+            }
+
+            $code = $request->string('code')->toString();
+            $valid = preg_match('/^\s*\d{3}\s*\d{3}\s*$/', $code) === 1
+                ? $this->twoFactor->verify($user, (string) $user->two_factor_secret, $code)
+                : $this->twoFactor->consumeRecoveryCode($user, $code);
+
+            if (! $valid) {
+                LoginThrottle::twoFactorFailed($user->getKey(), $request->ip());
+                AuditLogger::auth('two_factor_failed', $user, $request, ['action' => 'disable']);
+
+                $message = 'This code is invalid or has already been used.';
+
+                return response()->json(['message' => $message, 'errors' => ['code' => [$message]]], 422);
+            }
+
+            LoginThrottle::twoFactorClear($user->getKey(), $request->ip());
+        }
 
         $user->forceFill([
             'two_factor_secret' => null,

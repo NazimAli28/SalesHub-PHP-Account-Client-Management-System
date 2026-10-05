@@ -73,10 +73,22 @@ describe('store', function () {
             ->assertUnprocessable()->assertJsonValidationErrors(['lost_reason']);
         $this->postJson('/api/leads', ['client_id' => $client->id, 'stage' => 'won'])
             ->assertUnprocessable()->assertJsonValidationErrors(['stage']);
-        $this->postJson('/api/leads', ['client_id' => $client->id, 'currency' => 'usd', 'contacted_on' => today()->addDay()->toDateString()])
+        $this->postJson('/api/leads', ['client_id' => $client->id, 'currency' => 'usd', 'contacted_on' => today()->addDays(2)->toDateString()])
             ->assertUnprocessable()->assertJsonValidationErrors(['currency', 'contacted_on']);
         $this->postJson('/api/leads', ['client' => ['discord_username' => $client->discord_username]])
             ->assertUnprocessable()->assertJsonValidationErrors(['client.discord_username']);
+    });
+
+    it('accepts the local date of a user east of UTC after their midnight', function () {
+        $this->actingAsUser($this->agent);
+        $client = Client::factory()->create(['owner_id' => $this->agent->id]);
+        // 20:00 UTC on Oct 5 is already Oct 6 in UTC+5 and later.
+        $this->travelTo(now()->setDate(2026, 10, 5)->setTime(20, 0));
+
+        $this->postJson('/api/leads', ['client_id' => $client->id, 'contacted_on' => '2026-10-06'])
+            ->assertCreated();
+        $this->postJson('/api/leads', ['client_id' => $client->id, 'contacted_on' => '2026-10-07'])
+            ->assertUnprocessable()->assertJsonValidationErrors(['contacted_on']);
     });
 
     it('rejects referenced records outside the user scope', function () {

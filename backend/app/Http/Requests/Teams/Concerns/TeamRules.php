@@ -35,7 +35,7 @@ trait TeamRules
     private function teamLeadRule(?Team $team): Closure
     {
         return function (string $attribute, mixed $value, Closure $fail) use ($team): void {
-            $lead = User::query()->find($value);
+            $lead = is_int($value) || is_string($value) ? User::query()->find($value) : null;
 
             $valid = $lead !== null
                 && $lead->is_active

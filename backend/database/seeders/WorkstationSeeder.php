@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Team;
 use App\Models\Workstation;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Seeder;
 
 class WorkstationSeeder extends Seeder
@@ -18,7 +19,7 @@ class WorkstationSeeder extends Seeder
         for ($i = 1; $i <= 12; $i++) {
             Workstation::factory()->create([
                 'code' => sprintf('PC-%02d', $i),
-                'team_id' => $teams[intdiv($i - 1, 3)]->id,
+                'team_id' => ($teams->get(intdiv($i - 1, 3)) ?? throw new ModelNotFoundException)->id,
                 'label' => 'Desk '.$i,
             ]);
         }

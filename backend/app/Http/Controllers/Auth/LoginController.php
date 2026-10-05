@@ -40,7 +40,9 @@ class LoginController extends Controller
         $passwordMatches = Hash::check($password, $user->password ?? self::DUMMY_HASH);
 
         if ($user === null || ! $passwordMatches) {
-            AuditLogger::auth('login_failed', $user, $request, ['identifier' => $identifier]);
+            // The identifier is kept only when it names a real account: an unknown value may be a
+            // password typed into the wrong box.
+            AuditLogger::auth('login_failed', $user, $request, $user !== null ? ['identifier' => $identifier] : []);
 
             $message = 'These credentials do not match our records.';
 

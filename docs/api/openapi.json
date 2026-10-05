@@ -2043,7 +2043,7 @@
         "/imports/{import}/errors": {
             "get": {
                 "operationId": "imports.errors",
-                "summary": "The failed rows (at most the stored errors) as a CSV with an extra \"Error\" column",
+                "summary": "The failed rows (at most the stored errors) as a CSV with an extra \"Error\" column. Built from the\nrow values stored with the errors: the uploaded file is deleted once the import finishes",
                 "tags": [
                     "Import"
                 ],
@@ -2165,7 +2165,7 @@
                                                     "type": "object",
                                                     "properties": {
                                                         "total_rows": {
-                                                            "type": "string"
+                                                            "type": "integer"
                                                         },
                                                         "checked": {
                                                             "type": "integer"
@@ -5809,7 +5809,10 @@
                                                                 "type": "string"
                                                             },
                                                             "ip_address": {
-                                                                "type": "string"
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
                                                             },
                                                             "device": {
                                                                 "type": "string"
@@ -6850,7 +6853,7 @@
             },
             "delete": {
                 "operationId": "twoFactor.destroy",
-                "summary": "DELETE /api/auth/two-factor {password}: turn two-factor sign-in off (also cancels an unfinished setup)",
+                "summary": "DELETE /api/auth/two-factor {password, code}: turn two-factor sign-in off (also cancels an\nunfinished setup). While it is on, `code` must be a current authenticator code or an unused\nrecovery code (which is spent); wrong codes count toward the two-factor lockout",
                 "tags": [
                     "TwoFactor"
                 ],
@@ -6862,17 +6865,65 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "maxLength": 32
+                        }
                     }
                 ],
                 "responses": {
                     "204": {
                         "description": "No content"
                     },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "code": {
+                                            "type": "string",
+                                            "const": "too_many_attempts"
+                                        },
+                                        "retry_after": {
+                                            "type": [
+                                                "integer",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "code",
+                                        "retry_after"
+                                    ]
+                                }
+                            }
+                        },
+                        "headers": {
+                            "Retry-After": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }
@@ -8655,16 +8706,16 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "client_id": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "body": {
                         "type": "string"
                     },
                     "is_pinned": {
-                        "type": "string"
+                        "type": "boolean"
                     },
                     "author": {
                         "$ref": "#/components/schemas/UserSummaryResource"
@@ -8971,7 +9022,7 @@
                 "type": "object",
                 "properties": {
                     "id": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "type": {
                         "type": [
@@ -9013,41 +9064,37 @@
                         "type": "string"
                     },
                     "headers": {
-                        "type": "string"
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     },
                     "mapping": {
-                        "type": "string"
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {}
                     },
                     "fields": {
                         "type": "array",
                         "items": {}
                     },
                     "total_rows": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "processed_rows": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "created_rows": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "failed_rows": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "errors": {
-                        "anyOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                },
-                                "minItems": 0,
-                                "maxItems": 0
-                            }
-                        ]
+                        "type": "array",
+                        "items": {}
                     },
                     "user": {
                         "$ref": "#/components/schemas/UserSummaryResource"
@@ -12850,7 +12897,7 @@
             },
             "UpdateUserRequest": {
                 "type": "object",
-                "description": "PUT and PATCH are partial. Activation goes through the dedicated deactivate/activate endpoints.",
+                "description": "PUT and PATCH are partial. Activation goes through the dedicated deactivate/activate endpoints.\nYour own password is changed through PUT /api/auth/password (it re-checks the current one), so\n`password` is prohibited when you edit yourself. In demo mode the seeded accounts keep their\npassword, username, email and role (403 `demo_mode`).",
                 "properties": {
                     "name": {
                         "type": "string",
@@ -13136,7 +13183,10 @@
                         "type": "integer"
                     },
                     "team": {
-                        "type": "object",
+                        "type": [
+                            "object",
+                            "null"
+                        ],
                         "properties": {
                             "id": {
                                 "type": "integer"

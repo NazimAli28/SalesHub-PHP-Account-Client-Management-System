@@ -312,8 +312,9 @@ final class OverviewReport
 
         $board = [];
         foreach ($rows as $agentId => $row) {
-            if ($agents->has($agentId)) {
-                $board[] = ['user' => ['id' => $agentId, 'name' => (string) $agents[$agentId]->name], ...$row];
+            $agent = $agents->get($agentId);
+            if ($agent !== null) {
+                $board[] = ['user' => ['id' => $agentId, 'name' => (string) $agent->name], ...$row];
             }
         }
 
@@ -356,7 +357,7 @@ final class OverviewReport
      */
     private function upcomingPayments(AnalyticsScope $scope): array
     {
-        return $this->payments($scope)
+        return array_values($this->payments($scope)
             ->where('payments.status', PaymentStatus::Scheduled->value)
             ->where('payments.due_date', '>=', today()->toDateString())
             ->with(['order:id,order_number,client_id', 'order.client:id,name'])
@@ -364,6 +365,6 @@ final class OverviewReport
             ->orderBy('payments.id')
             ->limit(5)
             ->get()
-            ->all();
+            ->all());
     }
 }

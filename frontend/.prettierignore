@@ -2,3 +2,6 @@ dist
 node_modules
 coverage
 src/api/schema.d.ts
+e2e/.auth
+playwright-report
+test-results

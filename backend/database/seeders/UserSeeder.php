@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\Workstation;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -53,7 +54,7 @@ class UserSeeder extends Seeder
             $factory->create([
                 'username' => $username,
                 'email' => $username.'@example.com',
-                'team_id' => $teams[$teamIndex]->id,
+                'team_id' => ($teams->get($teamIndex) ?? throw new ModelNotFoundException)->id,
                 'workstation_id' => $stations[$code],
             ]);
         }

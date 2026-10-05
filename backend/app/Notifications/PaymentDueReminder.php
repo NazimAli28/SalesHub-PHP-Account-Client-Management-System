@@ -9,6 +9,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use LogicException;
 
 /**
  * Sent to an order's owner for a scheduled payment that is due within three days or overdue.
@@ -32,7 +33,11 @@ class PaymentDueReminder extends Notification implements ShouldQueue
     public static function forPayment(Payment $payment): self
     {
         $order = $payment->order;
-        $client = $order->client;
+        $client = $order?->client;
+
+        if ($order === null || $client === null) {
+            throw new LogicException("Payment [{$payment->id}] has no order or client to remind about.");
+        }
 
         return new self(
             paymentId: $payment->id,

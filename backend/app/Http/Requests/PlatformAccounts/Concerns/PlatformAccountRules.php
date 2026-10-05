@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\PlatformAccounts\Concerns;
 
+use App\Support\LocalToday;
 use Illuminate\Validation\Rule;
 
 /**
@@ -18,7 +19,7 @@ trait PlatformAccountRules
             'email' => ['string', 'email', 'max:255', Rule::unique('platform_accounts', 'email')->ignore($ignore)],
             'discord_email' => ['nullable', 'string', 'email', 'max:255', Rule::unique('platform_accounts', 'discord_email')->ignore($ignore)],
             'discord_username' => ['nullable', 'string', 'max:64'],
-            'discord_created_on' => ['nullable', 'date_format:Y-m-d', 'before_or_equal:today'],
+            'discord_created_on' => ['nullable', 'date_format:Y-m-d', LocalToday::notFuture()],
             'recovery_email' => ['nullable', 'string', 'email', 'max:255'],
             'batch_date' => ['date_format:Y-m-d'],
             'notes' => ['nullable', 'string', 'max:5000'],

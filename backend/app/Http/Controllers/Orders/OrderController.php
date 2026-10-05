@@ -99,6 +99,6 @@ class OrderController extends Controller
             ->withPaymentTotals()
             ->withOverdueCount()
             ->with([...OrderResource::DEFAULT_WITH, 'client', 'owner', 'closer', 'team', 'platformAccount', 'items.service', 'payments'])
-            ->findOrFail($order->getKey());
+            ->findOrFail($order->id);
     }
 }

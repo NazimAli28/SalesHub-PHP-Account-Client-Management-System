@@ -70,35 +70,44 @@ Two features run in the background, so start these next to `php artisan serve` (
 
 ```bash
 php artisan queue:work      # CSV imports (ProcessImport) and PaymentDueReminder notifications
-php artisan schedule:work   # runs payments:send-reminders every day at 08:00
+php artisan schedule:work   # reminders (08:00), import pruning and audit-log cleanup (03:00), demo reset (hourly, demo mode only)
 php artisan payments:send-reminders   # or run the reminders once by hand (--days=3)
 ```
 
 In production, run a queue worker under a process manager and call `php artisan schedule:run` every minute from cron.
 
+**Demo reset.** `php artisan demo:reset` rebuilds the database from the seeders (`migrate:fresh --seed`), clears the cache and deletes uploaded import files. It refuses to run unless `DEMO_MODE=true` (or `--force`), and the scheduler runs it hourly only in demo mode. Every visitor is signed out by it.
+
 ### Environment notes
 
 | Variable | Purpose |
 |---|---|
-| `DEMO_MODE` | `true` on the public demo: changing a password or turning on two-factor sign-in answers 403, because visitors share the demo accounts. Default `false`. |
+| `DEMO_MODE` | `true` on the public demo: changing a password, turning on two-factor sign-in and signing out other sessions answer 403 `demo_mode`; the seeded accounts (`DEMO_USERNAMES`) keep their password, username, email and role and cannot be deactivated or deleted; sessions and audit-log IPs of other visitors are hidden; the demo resets hourly. Default `false`. |
+| `ACTIVITY_LOG_RETENTION_DAYS` | Audit-log entries older than this are deleted daily (default 180). |
+| `TRUSTED_PROXIES` | IPs/CIDRs of the reverse proxy (`config/trustedproxy.php`). Never `*` unless only the proxy can reach the app. |
 | `SESSION_DRIVER` | Keep `database` (the default) so `GET /api/auth/sessions` can list and revoke browsers; other drivers show only the current session. |
 | `QUEUE_CONNECTION` | `database` by default; imports stay `queued` until a worker runs. |
 
-Uploaded import CSVs are stored on the private local disk under `storage/app/private/imports` (never publicly served; the path is not exposed by the API).
+Uploaded import CSVs are stored on the private local disk under `storage/app/private/imports` (never publicly served; the path is not exposed by the API). They are deleted when the import finishes, and never-started uploads are pruned after 24 hours.
+
+### Production
+
+Start from [`.env.production.example`](.env.production.example): `APP_DEBUG=false`, `LOG_LEVEL=warning`, Secure database sessions, `SANCTUM_STATEFUL_DOMAINS` and `FRONTEND_URL` set to the public host (CORS has no localhost fallback in production), `TRUSTED_PROXIES` set to the platform proxy, a queue worker and the scheduler. Security headers (CSP, HSTS on HTTPS, nosniff, frame denial) come from `App\Http\Middleware\SecurityHeaders`; see [SECURITY.md](../SECURITY.md).
 
 ## Security highlights
 
 - Credentials are encrypted at rest (`encrypted` casts) and never serialized. They can only be read through the reveal endpoints, which check permissions and write to the audit log.
-- Login throttling per identifier+IP and per IP, generic failure messages, inactive-account blocking, session regeneration, and a strong password policy.
+- Login throttling that counts failures per identifier+IP and per identifier per hour, plus a per-IP cap (successful sign-ins never lock an account), generic failure messages, inactive-account blocking, session regeneration, and a strong password policy.
 - Optional TOTP two-factor sign-in with replay protection, single-use recovery codes and a per-user lockout on wrong codes; sessions list exposes only HMAC ids.
 - 71 permissions across 4 roles (`App\Support\PermissionMatrix`), enforced by Policies, with row-level scoping (`visibleTo`) so each role sees only its own, its team's, or all records.
 - Optional office-network IP allowlist for agent roles (`IP_ALLOWLIST_ENABLED`).
 - An audit trail of model changes and auth events (spatie/laravel-activitylog).
+- Security headers on every response, named rate limits on analytics, exports and imports, and demo-mode protections for the shared accounts. Checklist: [docs/security/owasp-top-10.md](../docs/security/owasp-top-10.md).
 
 ## Quality checks
 
 ```bash
 composer lint      # Laravel Pint (code style)
-composer analyse   # Larastan / PHPStan level 6
+composer analyse   # Larastan / PHPStan level 8
 composer test      # Pest
 ```

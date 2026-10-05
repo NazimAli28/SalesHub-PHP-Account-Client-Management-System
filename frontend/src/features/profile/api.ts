@@ -41,7 +41,8 @@ export async function confirmTwoFactor(payload: { code: string }): Promise<Recov
   return (await api.post<Envelope<RecoveryCodes>>('/auth/two-factor/confirm', payload)).data
 }
 
-export function disableTwoFactor(payload: { password: string }): Promise<void> {
+/** Needs the password and, while two-step verification is on, a TOTP or recovery `code`. */
+export function disableTwoFactor(payload: { password: string; code: string }): Promise<void> {
   return api.delete<void>('/auth/two-factor', { body: payload })
 }
 

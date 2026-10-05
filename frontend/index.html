@@ -8,22 +8,10 @@
     <meta name="color-scheme" content="light dark" />
     <title>SalesHub</title>
     <!--
-      Applies the saved theme before the first paint so dark-mode users never see a white flash.
-      Keep the storage key and logic in sync with src/app/theme/theme.ts.
+      Applies the saved theme before the first paint (no white flash for dark-mode users).
+      A classic, render-blocking script on purpose; an external file keeps the CSP free of inline scripts.
     -->
-    <script>
-      ;(function () {
-        try {
-          var stored = localStorage.getItem('saleshub-theme')
-          var theme = stored === 'light' || stored === 'dark' ? stored : 'system'
-          var dark =
-            theme === 'dark' ||
-            (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-          document.documentElement.classList.toggle('dark', dark)
-          document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
-        } catch (e) {}
-      })()
-    </script>
+    <script src="/theme-init.js"></script>
   </head>
   <body>
     <div id="root"></div>

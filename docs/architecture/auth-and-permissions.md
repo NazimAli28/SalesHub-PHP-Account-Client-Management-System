@@ -73,13 +73,13 @@ Phase 5 change: after the password, active and IP checks, a user with two-factor
 
 | Control | Specification |
 |---------|---------------|
-| Login limiter | `RateLimiter::for('login', ...)` in `AppServiceProvider` returns two limits: `Limit::perMinute(5)->by(Str::lower($login).'|'.$ip)` and `Limit::perMinute(20)->by($ip)`. Additionally a long window: `Limit::perHour(30)->by(Str::lower($login))` to slow distributed guessing on one account. |
+| Login limiter | `RateLimiter::for('login', LoginThrottle::limits(...))` (`App\Support\LoginThrottle`). Keys are prefixed so a login can never collide with an IP: `login:{login}\|{ip}` 5 per minute, `login-ip:{ip}` 20 per minute (every attempt) and `login-hour:{login}` 30 per hour. The two per-login limits count **failed attempts only** (`Limit::after()` on a 422), so signing in never locks an account. In demo mode the hourly per-login limit is skipped for the seeded demo accounts (username or their email), so strangers cannot lock them for an hour; the per-login-and-IP and per-IP limits still apply. A successful sign-in clears `login:{login}\|{ip}`. |
 | Lockout response | **429**, header `Retry-After: <seconds>`, body `{"message": "Too many login attempts. Please try again in 47 seconds.", "code": "too_many_attempts", "retry_after": 47}`; log `auth.login_locked_out` once per lockout. |
 | Password policy | In `AppServiceProvider::boot`: `Password::defaults(fn () => Password::min(10)->mixedCase()->numbers()->symbols()->when(app()->isProduction(), fn ($r) => $r->uncompromised()))`. Used by password change and admin user create/update. |
 | Inactive users | Blocked at login (above). Middleware `EnsureUserIsActive` on every authenticated route: if `! is_active` → logout, invalidate, **401** `{"message": "Unauthenticated."}`. Deactivating a user also deletes their `sessions` rows. Soft-deleted users cannot authenticate (default scope). |
 | Session fixation | Regenerate on login and on password change; invalidate + regenerate token on logout. |
 | CSRF | Enforced on all stateful non-GET requests via `statefulApi()`; login included. |
-| Auth event logging | Activity log `auth` channel (data-model §7). Failed attempts store the submitted identifier, never the password. |
+| Auth event logging | Activity log `auth` channel (data-model §7). Failed attempts and lockouts store the submitted identifier only when it names an existing account (an unknown value may be a password typed into the wrong box); never the password. |
 | Responses | Never return `password`, `remember_token`, or encrypted columns in any Resource. |
 
 ### 1.4 Two-factor sign-in (Phase 5)
@@ -90,10 +90,10 @@ Optional TOTP (RFC 6238, 6 digits, 30 s) per user, using an authenticator app. C
 
 1. `POST /api/auth/login` checks the password, active flag and IP allowlist as before. For a user with two-factor on it stores a pending sign-in in the session (`id`, `remember`, `at`), logs `auth.two_factor_challenged` and answers **200** `{"data": {"two_factor": true}}`. The session is still a guest. A new login attempt replaces any unfinished pending sign-in.
 2. `POST /api/auth/two-factor-challenge` with `{"code": "123456"}` or `{"recovery_code": "ABCDE-FGHIJ"}` (one of the two is required). The pending sign-in lives for **5 minutes** (`TwoFactorPendingLogin::TTL_SECONDS`); without a valid one the answer is **422** `{"code": "two_factor_expired"}`. Inactive users and IPs outside the allowlist are re-checked and get the same 403 bodies as login.
-3. Wrong or reused code: **422** with an error on `code` or `recovery_code`, logs `auth.two_factor_failed` (method only, never the code). After **5 wrong codes per minute for one user and IP** the endpoint answers **429** `{"code": "too_many_attempts", "retry_after": n}` with `Retry-After`. The route also has `throttle:20,1` per IP.
+3. Wrong or reused code: **422** with an error on `code` or `recovery_code`, logs `auth.two_factor_failed` (method only, never the code). After **5 wrong codes per minute for one user and IP**, or **10 per 15 minutes for one user from any IP** (`two-factor-user:{id}`), the endpoint answers **429** `{"code": "too_many_attempts", "retry_after": n}` with `Retry-After`. The route also has `throttle:20,1` per IP.
 4. Success: pending sign-in and lockout counter cleared, then `CompleteLogin` signs in, **regenerates the session**, updates `last_login_*` and logs `auth.login` with `two_factor: totp|recovery_code`. Returns **200** with the `/me` body. Using a recovery code also logs `auth.two_factor_recovery_code_used` with the number remaining.
 
-**Code checks.** A code is accepted within one 30-second step either side of now. **Replay protection:** the accepted time step is cached per user (`two-factor-timestep:{id}`, 5 minutes) and a code from that step or an older one is rejected. Recovery codes are 8 per set, formatted `XXXXX-XXXXX`, compared with `hash_equals` and removed when used.
+**Code checks.** A code is accepted within one 30-second step either side of now. **Replay protection:** the accepted time step is cached per user (`two-factor-timestep:{id}`, 5 minutes) and a code from that step or an older one is rejected. Recovery codes are 8 per set, formatted `XXXXX-XXXXX`, compared with `hash_equals` and removed when used, atomically (transaction + `lockForUpdate()` on the user row) so two concurrent requests cannot spend the same code.
 
 **Setup and management** (signed-in user; `throttle:10,1`). Password-confirming requests use `ConfirmPasswordRequest`: `{"password": "..."}`, wrong password is **422** on `password`.
 
@@ -101,18 +101,19 @@ Optional TOTP (RFC 6238, 6 digits, 30 s) per user, using an authenticator app. C
 |----------|------|--------|
 | `POST /api/auth/two-factor` | none | Creates a new secret (not active yet) and returns `{secret, otpauth_url, qr_code}` (`qr_code` is an SVG data URI). **409** `two_factor_already_enabled` if already on. Logs nothing until confirmed. |
 | `POST /api/auth/two-factor/confirm` | `code` | Verifies the first code, stores `two_factor_confirmed_at` and returns `{recovery_codes}` once. **409** `two_factor_already_enabled` or `two_factor_not_started`; **422** on a bad code. Logs `auth.two_factor_enabled`. |
-| `DELETE /api/auth/two-factor` | `password` | Clears secret, codes and confirmation (also cancels an unfinished setup). **204**. Logs `auth.two_factor_disabled` when it was on. |
+| `DELETE /api/auth/two-factor` | `password`, `code` | `DisableTwoFactorRequest`. While two-factor is on, `code` is required: a current authenticator code (6 digits) or an unused recovery code (spent). A wrong code is **422** on `code`, logs `auth.two_factor_failed` (`action: disable`) and counts toward the two-factor lockout (429). Cancelling an unfinished setup needs only the password. Clears secret, codes and confirmation. **204**. Logs `auth.two_factor_disabled` when it was on. |
 | `POST /api/auth/two-factor/recovery-codes/view` | `password` | Returns the unused codes. **409** `two_factor_not_enabled` when off. Logs `auth.two_factor_recovery_codes_viewed`. |
 | `POST /api/auth/two-factor/recovery-codes` | `password` | Replaces all codes with a new set and returns them. **409** `two_factor_not_enabled`. Logs `auth.two_factor_recovery_codes_regenerated`. |
 
 The secret and recovery codes are encrypted at rest (`encrypted` casts), hidden from serialization and only ever returned by the responses above. `/me` exposes only the boolean `two_factor_enabled`.
 
-**Demo mode.** With `DEMO_MODE=true` (`config('saleshub.demo_mode')`) the shared demo accounts cannot be locked: `POST /api/auth/two-factor` and `PUT /api/auth/password` answer **403** `{"code": "demo_mode"}` (`App\Actions\Auth\EnsureNotDemoMode`; the password request checks before validation). `/me` returns `demo_mode` so the SPA can explain it.
+**Demo mode.** With `DEMO_MODE=true` (`config('saleshub.demo_mode')`) the shared demo accounts cannot be locked: `POST /api/auth/two-factor` and `PUT /api/auth/password` answer **403** `{"code": "demo_mode"}` (`App\Actions\Auth\EnsureNotDemoMode`; the password request checks before validation). `/me` returns `demo_mode` so the SPA can explain it. The seeded demo accounts (`saleshub.demo_usernames`, env `DEMO_USERNAMES`, defaulting to the seeded usernames) are also protected in user administration: `PATCH /api/users/{id}` changing their password, username, email or role, and deactivate, activate and delete, answer **403** `demo_mode` (`App\Support\DemoAccounts`; unchanged values are accepted). Users created during the demo stay fully editable. Browser sessions: see 1.5. The `demo:reset` command (hourly in demo mode) rebuilds the database from the seeders.
 
 ### 1.5 Browser sessions (Phase 5)
 
 - `GET /api/auth/sessions` lists the user's browsers: `{id, ip_address, device, last_active_at, is_current}`, current first. It reads the `sessions` table, so it needs `SESSION_DRIVER=database` (the default here); with another driver it returns only the current session. Session IDs are bearer secrets, so `id` is a truncated HMAC (`hash_hmac('sha256', sessionId, APP_KEY)`), never the real ID. `device` is a short label parsed from the user agent (`DescribeUserAgent`).
 - `DELETE /api/auth/sessions/others` with `{"password": "..."}` (`throttle:6,1`) deletes every other session row for the user, rotates `remember_token` so remember-me cookies on other browsers stop working, logs `auth.sessions_revoked` with the count and returns `{"data": {"revoked": n}}`. There is no endpoint to revoke a single session.
+- Demo mode: the list contains only the current browser, IP addresses are coarsened (IPv4 /24 as `203.0.113.x`, IPv6 /48; `App\Support\IpMask`, also applied to IP properties in the audit log) and `DELETE /api/auth/sessions/others` answers **403** `demo_mode`.
 
 ## 2. Roles
 
@@ -304,6 +305,7 @@ Phase 5 (`tests/Feature/Auth/TwoFactor*Test.php`, `SessionsTest.php`)
 32. Setup, confirm, disable and recovery-code endpoints: password required where listed, 409 codes, secrets never in `/me` or activity properties.
 33. Sessions list hides real session IDs and marks the current one; revoking others deletes their rows and rotates `remember_token`.
 34. `DEMO_MODE=true`: enabling two-factor and changing the password both answer 403 `demo_mode`.
+35. Security hardening (`tests/Feature/Auth/SecurityHardeningTest.php`, `tests/Feature/Api/SecurityHardeningTest.php`, `tests/Feature/Console/DemoResetTest.php`): successful sign-ins never lock; 30 failures per hour lock a login (not the demo accounts in demo mode); login and IP keys never collide; demo-account edits, deactivation and deletion answer 403 `demo_mode`; own password via the user endpoint is 422; sessions and audit-log IPs are masked in demo mode; disabling two-factor needs a code; security headers per response kind.
 
 ## 7. Open questions
 

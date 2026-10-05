@@ -21,17 +21,17 @@ function useRouteAnnouncements(mainRef: RefObject<HTMLElement | null>) {
   const crumbs = useCrumbs()
   const title = crumbs[crumbs.length - 1]?.label
   const { pathname } = useLocation()
-  const firstRender = useRef(true)
+  const previousPath = useRef(pathname)
 
   useEffect(() => {
     document.title = title ? `${title} · SalesHub` : 'SalesHub'
   }, [title])
 
   useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false
-      return
-    }
+    // Only on a real navigation: moving focus on the first render (React StrictMode runs effects
+    // twice in development) would skip past the "Skip to content" link.
+    if (previousPath.current === pathname) return
+    previousPath.current = pathname
     mainRef.current?.focus({ preventScroll: true })
   }, [pathname, mainRef])
 }

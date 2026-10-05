@@ -292,7 +292,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** The failed rows (at most the stored errors) as a CSV with an extra "Error" column */
+        /**
+         * The failed rows (at most the stored errors) as a CSV with an extra "Error" column. Built from the
+         *     row values stored with the errors: the uploaded file is deleted once the import finishes
+         */
         get: operations["imports.errors"];
         put?: never;
         post?: never;
@@ -937,7 +940,11 @@ export interface paths {
         put?: never;
         /** POST /api/auth/two-factor: start (or restart) setup with a new secret. Not active until confirmed */
         post: operations["twoFactor.store"];
-        /** DELETE /api/auth/two-factor {password}: turn two-factor sign-in off (also cancels an unfinished setup) */
+        /**
+         * DELETE /api/auth/two-factor {password, code}: turn two-factor sign-in off (also cancels an
+         *     unfinished setup). While it is on, `code` must be a current authenticator code or an unused
+         *     recovery code (which is spent); wrong codes count toward the two-factor lockout
+         */
         delete: operations["twoFactor.destroy"];
         options?: never;
         head?: never;
@@ -1240,10 +1247,10 @@ export interface components {
         };
         /** ClientNoteResource */
         ClientNoteResource: {
-            id: string;
-            client_id: string;
+            id: number;
+            client_id: number;
             body: string;
-            is_pinned: string;
+            is_pinned: boolean;
             author?: components["schemas"]["UserSummaryResource"];
             can_edit: string;
             can_delete: string;
@@ -1318,7 +1325,7 @@ export interface components {
         };
         /** ImportResource */
         ImportResource: {
-            id: string;
+            id: number;
             type: {
                 value: string;
                 label: string;
@@ -1328,14 +1335,14 @@ export interface components {
                 label: string;
             } | null;
             original_filename: string;
-            headers: string;
-            mapping: string;
+            headers: string[];
+            mapping: unknown[] | null;
             fields: unknown[];
-            total_rows: string;
-            processed_rows: string;
-            created_rows: string;
-            failed_rows: string;
-            errors?: string | string[];
+            total_rows: number;
+            processed_rows: number;
+            created_rows: number;
+            failed_rows: number;
+            errors?: unknown[];
             user?: components["schemas"]["UserSummaryResource"];
             started_at: string;
             finished_at: string;
@@ -2299,6 +2306,9 @@ export interface components {
         /**
          * UpdateUserRequest
          * @description PUT and PATCH are partial. Activation goes through the dedicated deactivate/activate endpoints.
+         *     Your own password is changed through PUT /api/auth/password (it re-checks the current one), so
+         *     `password` is prohibited when you edit yourself. In demo mode the seeded accounts keep their
+         *     password, username, email and role (403 `demo_mode`).
          */
         UpdateUserRequest: {
             name?: string;
@@ -2372,7 +2382,7 @@ export interface components {
             team?: {
                 id: number;
                 name: string;
-            };
+            } | null;
         };
     };
     responses: {
@@ -3335,7 +3345,7 @@ export interface operations {
                                 errors: string;
                             }[];
                             summary: {
-                                total_rows: string;
+                                total_rows: number;
                                 checked: number;
                                 valid: number;
                                 invalid: number;
@@ -4961,7 +4971,7 @@ export interface operations {
                     "application/json": {
                         data: {
                             id: string;
-                            ip_address: string;
+                            ip_address: string | null;
                             device: string;
                             last_active_at: string;
                             is_current: boolean;
@@ -5417,6 +5427,7 @@ export interface operations {
         parameters: {
             query: {
                 password: string;
+                code?: string | null;
             };
             header?: never;
             path?: never;
@@ -5433,6 +5444,20 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
+            429: {
+                headers: {
+                    "Retry-After"?: string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        /** @constant */
+                        code: "too_many_attempts";
+                        retry_after: number | null;
+                    };
+                };
+            };
         };
     };
     "twoFactor.confirm": {

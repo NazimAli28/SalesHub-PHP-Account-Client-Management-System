@@ -29,7 +29,7 @@ class ApprovalSubmitted extends Notification
      */
     public function toArray(User $notifiable): array
     {
-        $requester = $this->approval->requester->name;
+        $requester = $this->approval->requester === null ? 'Someone' : $this->approval->requester->name;
 
         return [
             'approval_request_id' => $this->approval->id,

@@ -76,6 +76,17 @@ final class ImportFiles
         return new CsvFile(Storage::disk(self::DISK)->path($import->path));
     }
 
+    /**
+     * Deletes the uploaded CSV. Called when an import finishes (completed or failed) or is pruned;
+     * the error report is built from the row values stored with the errors, not from the file.
+     */
+    public static function delete(Import $import): void
+    {
+        if ($import->path !== '') {
+            Storage::disk(self::DISK)->delete($import->path);
+        }
+    }
+
     private static function reject(string $message): never
     {
         throw ValidationException::withMessages(['file' => [$message]]);

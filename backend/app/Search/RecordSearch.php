@@ -7,6 +7,7 @@ use App\Models\Lead;
 use App\Models\Order;
 use App\Models\PlatformAccount;
 use App\Models\User;
+use App\Support\LikePattern;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Gate;
 
@@ -17,9 +18,6 @@ use Illuminate\Support\Facades\Gate;
 final class RecordSearch
 {
     public const PER_GROUP = 5;
-
-    /** @var list<string> */
-    private const WILDCARDS = ['!', '%', '_'];
 
     /**
      * @return list<array{key: string, label: string, hits: list<array{type: string, id: int, title: string, subtitle: string|null, url: string}>}>
@@ -51,7 +49,7 @@ final class RecordSearch
      */
     public function escape(string $term): string
     {
-        return str_replace(self::WILDCARDS, array_map(fn (string $c): string => '!'.$c, self::WILDCARDS), $term);
+        return LikePattern::escape($term);
     }
 
     /**
@@ -62,6 +60,8 @@ final class RecordSearch
     {
         $query->where(function (Builder $q) use ($columns, $like): void {
             foreach ($columns as $column) {
+                // Column names come from this class's own constants, never from user input; only the LIKE term is bound.
+                // @phpstan-ignore argument.type (the qualified column name is a plain string, not a literal-string)
                 $q->orWhereRaw($q->getModel()->qualifyColumn($column)." like ? escape '!'", [$like]);
             }
         });
@@ -75,14 +75,14 @@ final class RecordSearch
         $query = Client::query()->visibleTo($user);
         $this->matching($query, ['name', 'discord_username'], $like);
 
-        return $query->orderBy('name')->limit(self::PER_GROUP)->get(['id', 'name', 'discord_username', 'email'])
+        return array_values($query->orderBy('name')->limit(self::PER_GROUP)->get(['id', 'name', 'discord_username', 'email'])
             ->map(fn (Client $c): array => [
                 'type' => 'client',
                 'id' => $c->id,
                 'title' => $c->name ?: $c->discord_username,
                 'subtitle' => $c->name ? $c->discord_username : $c->email,
                 'url' => '/clients/'.$c->id,
-            ])->all();
+            ])->all());
     }
 
     /**
@@ -93,14 +93,18 @@ final class RecordSearch
         $query = Lead::query()->visibleTo($user)->with('client:id,name,discord_username');
         $query->whereHas('client', fn (Builder $c) => $this->matching($c, ['name', 'discord_username'], $like));
 
-        return $query->latest('contacted_on')->latest('id')->limit(self::PER_GROUP)->get()
-            ->map(fn (Lead $l): array => [
-                'type' => 'lead',
-                'id' => $l->id,
-                'title' => ($l->client->name ?: $l->client->discord_username),
-                'subtitle' => $l->stage->label().' lead, '.$l->client->discord_username,
-                'url' => '/leads?search='.rawurlencode($l->client->discord_username),
-            ])->all();
+        return array_values($query->latest('contacted_on')->latest('id')->limit(self::PER_GROUP)->get()
+            ->map(function (Lead $l): array {
+                $discord = $l->client === null ? '' : $l->client->discord_username;
+
+                return [
+                    'type' => 'lead',
+                    'id' => $l->id,
+                    'title' => $l->client === null ? '' : ($l->client->name ?: $discord),
+                    'subtitle' => $l->stage->label().' lead, '.$discord,
+                    'url' => '/leads?search='.rawurlencode($discord),
+                ];
+            })->all());
     }
 
     /**
@@ -114,14 +118,14 @@ final class RecordSearch
             $q->orWhereHas('client', fn (Builder $c) => $this->matching($c, ['name', 'discord_username'], $like));
         });
 
-        return $query->latest('ordered_on')->latest('id')->limit(self::PER_GROUP)->get()
+        return array_values($query->latest('ordered_on')->latest('id')->limit(self::PER_GROUP)->get()
             ->map(fn (Order $o): array => [
                 'type' => 'order',
                 'id' => $o->id,
                 'title' => $o->order_number,
-                'subtitle' => $o->client->name ?: $o->client->discord_username,
+                'subtitle' => $o->client?->name ?: $o->client?->discord_username,
                 'url' => '/orders/'.$o->id,
-            ])->all();
+            ])->all());
     }
 
     /**
@@ -134,13 +138,13 @@ final class RecordSearch
         $query = PlatformAccount::query()->visibleTo($user);
         $this->matching($query, ['email', 'discord_username'], $like);
 
-        return $query->orderBy('email')->limit(self::PER_GROUP)->get(['id', 'email', 'discord_username', 'standing'])
+        return array_values($query->orderBy('email')->limit(self::PER_GROUP)->get(['id', 'email', 'discord_username', 'standing'])
             ->map(fn (PlatformAccount $a): array => [
                 'type' => 'platform_account',
                 'id' => $a->id,
                 'title' => $a->email,
                 'subtitle' => $a->discord_username,
                 'url' => '/platform-accounts/'.$a->id,
-            ])->all();
+            ])->all());
     }
 }

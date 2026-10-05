@@ -10,7 +10,7 @@ import { securityKeys, signOutOtherSessions, useSessionsQuery } from '../api'
 import { ConfirmPasswordDialog } from './ConfirmPasswordDialog'
 
 /** Browsers signed in to this account, with "sign out everywhere else". */
-export function SessionsCard() {
+export function SessionsCard({ demoMode = false }: { demoMode?: boolean }) {
   const sessions = useSessionsQuery()
   const [confirming, setConfirming] = useState(false)
   const others = (sessions.data ?? []).filter((session) => !session.is_current).length
@@ -56,14 +56,21 @@ export function SessionsCard() {
           </ul>
         )}
 
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => setConfirming(true)}
-          disabled={!sessions.isSuccess || others === 0}
-        >
-          Sign out other sessions
-        </Button>
+        {demoMode ? (
+          <p className="text-muted-foreground text-sm">
+            The demo accounts are shared, so only this browser is listed and signing out the others
+            is switched off.
+          </p>
+        ) : (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setConfirming(true)}
+            disabled={!sessions.isSuccess || others === 0}
+          >
+            Sign out other sessions
+          </Button>
+        )}
       </CardContent>
 
       <ConfirmPasswordDialog

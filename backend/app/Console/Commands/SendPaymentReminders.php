@@ -39,7 +39,7 @@ class SendPaymentReminders extends Command
                     return;
                 }
 
-                $payment->order->owner?->notify(PaymentDueReminder::forPayment($payment));
+                $payment->order?->owner?->notify(PaymentDueReminder::forPayment($payment));
                 $sent++;
             });
 

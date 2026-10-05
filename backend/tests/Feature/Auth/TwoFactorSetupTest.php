@@ -101,16 +101,68 @@ it('requires the current password to turn two-factor off', function () {
 
     $this->spaAs($user)->spa('DELETE', '/api/auth/two-factor')
         ->assertStatus(422)->assertJsonValidationErrors('password');
-    $this->spa('DELETE', '/api/auth/two-factor', ['password' => 'Wrong-Passw0rd!'])
+    $this->spa('DELETE', '/api/auth/two-factor', ['password' => 'Wrong-Passw0rd!', 'code' => twoFactorSetupOtp((string) $user->two_factor_secret)])
         ->assertStatus(422)->assertJsonValidationErrors('password');
 
     expect($user->fresh()->hasTwoFactorEnabled())->toBeTrue();
 });
 
-it('turns two-factor off and logs it', function () {
+it('requires a valid code as well as the password to turn two-factor off', function () {
     $user = User::factory()->salesExecutive()->withTwoFactor()->create();
 
-    $this->spaAs($user)->spa('DELETE', '/api/auth/two-factor', ['password' => 'Demo@12345'])->assertNoContent();
+    $this->spaAs($user)->spa('DELETE', '/api/auth/two-factor', ['password' => 'Demo@12345'])
+        ->assertStatus(422)->assertJsonValidationErrors('code');
+    $this->spa('DELETE', '/api/auth/two-factor', ['password' => 'Demo@12345', 'code' => '000000'])
+        ->assertStatus(422)->assertJsonPath('errors.code.0', 'This code is invalid or has already been used.');
+    $this->spa('DELETE', '/api/auth/two-factor', ['password' => 'Demo@12345', 'code' => 'NOT-A-CODE'])
+        ->assertStatus(422)->assertJsonValidationErrors('code');
+
+    expect($user->fresh()->hasTwoFactorEnabled())->toBeTrue()
+        ->and(twoFactorSetupLogs('two_factor_failed')->where('causer_id', $user->id)->count())->toBe(2);
+});
+
+it('turns two-factor off with a recovery code', function () {
+    $user = User::factory()->salesExecutive()->withTwoFactor()->create();
+
+    $this->spaAs($user)->spa('DELETE', '/api/auth/two-factor', [
+        'password' => 'Demo@12345',
+        'code' => strtolower($user->two_factor_recovery_codes[3]),
+    ])->assertNoContent();
+
+    expect($user->fresh()->hasTwoFactorEnabled())->toBeFalse();
+});
+
+it('cancels an unfinished setup with the password alone', function () {
+    $user = $this->makeUser(RoleName::SalesExecutive);
+    $this->spaAs($user)->spa('POST', '/api/auth/two-factor')->assertOk();
+
+    $this->spa('DELETE', '/api/auth/two-factor', ['password' => 'Demo@12345'])->assertNoContent();
+
+    expect($user->fresh()->two_factor_secret)->toBeNull();
+});
+
+it('locks out turning two-factor off after repeated wrong codes', function () {
+    $user = User::factory()->salesExecutive()->withTwoFactor()->create();
+    $this->spaAs($user);
+
+    for ($i = 0; $i < 5; $i++) {
+        $this->spa('DELETE', '/api/auth/two-factor', ['password' => 'Demo@12345', 'code' => '000000'])->assertStatus(422);
+    }
+
+    $this->spa('DELETE', '/api/auth/two-factor', ['password' => 'Demo@12345', 'code' => twoFactorSetupOtp((string) $user->two_factor_secret)])
+        ->assertStatus(429)
+        ->assertJsonPath('code', 'too_many_attempts');
+
+    expect($user->fresh()->hasTwoFactorEnabled())->toBeTrue();
+});
+
+it('turns two-factor off with the password and a current code, and logs it', function () {
+    $user = User::factory()->salesExecutive()->withTwoFactor()->create();
+
+    $this->spaAs($user)->spa('DELETE', '/api/auth/two-factor', [
+        'password' => 'Demo@12345',
+        'code' => twoFactorSetupOtp((string) $user->two_factor_secret),
+    ])->assertNoContent();
 
     $fresh = $user->fresh();
 

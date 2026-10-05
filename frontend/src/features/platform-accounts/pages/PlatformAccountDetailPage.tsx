@@ -20,10 +20,19 @@ import { PlatformAccountFormSheet } from '../components/PlatformAccountFormSheet
 import { AssignWorkstationDialog, ChangeStandingDialog } from '../components/PlatformAccountDialogs'
 import { RevealCredentialsPanel } from '../components/RevealCredentialsPanel'
 import type { PlatformAccount } from '../types'
+import { cn } from '@/lib/utils'
 
-function Detail({ label, children }: { label: string; children: ReactNode }) {
+function Detail({
+  label,
+  children,
+  className,
+}: {
+  label: string
+  children: ReactNode
+  className?: string
+}) {
   return (
-    <div className="space-y-0.5">
+    <div className={cn('space-y-0.5', className)}>
       <dt className="text-muted-foreground text-xs">{label}</dt>
       <dd className="text-sm break-words">{children ?? '—'}</dd>
     </div>
@@ -208,11 +217,9 @@ export default function PlatformAccountDetailPage() {
               <Detail label="Phone holder name">
                 <Stored value={account.has_phone_holder_name} />
               </Detail>
-              <div className="sm:col-span-2">
-                <Detail label="Notes">
-                  <span className="whitespace-pre-wrap">{account.notes}</span>
-                </Detail>
-              </div>
+              <Detail label="Notes" className="sm:col-span-2">
+                <span className="whitespace-pre-wrap">{account.notes}</span>
+              </Detail>
             </dl>
           </CardContent>
         </Card>

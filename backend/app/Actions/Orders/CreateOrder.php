@@ -9,6 +9,7 @@ use App\Models\Lead;
 use App\Models\Order;
 use App\Models\Service;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
 class CreateOrder
@@ -44,7 +45,7 @@ class CreateOrder
                     'service_id' => $item['service_id'],
                     'description' => $item['description'] ?? null,
                     'quantity' => $item['quantity'] ?? 1,
-                    'unit_price_cents' => $item['unit_price_cents'] ?? $service->base_price_cents,
+                    'unit_price_cents' => $item['unit_price_cents'] ?? ($service ?? throw new ModelNotFoundException)->base_price_cents,
                 ]);
             }
 

@@ -91,7 +91,7 @@ export default function ProfilePage() {
         {demoMode ? <DemoModeNotice /> : null}
         <div className="grid gap-6 lg:grid-cols-2">
           <TwoFactorCard enabled={twoFactorEnabled} demoMode={demoMode} />
-          <SessionsCard />
+          <SessionsCard demoMode={demoMode} />
         </div>
       </section>
     </div>

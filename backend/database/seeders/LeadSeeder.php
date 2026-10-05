@@ -9,6 +9,7 @@ use App\Models\Lead;
 use App\Models\PlatformAccount;
 use App\Models\Service;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Seeder;
 
 class LeadSeeder extends Seeder
@@ -49,7 +50,7 @@ class LeadSeeder extends Seeder
         foreach ($plan as $stage) {
             /** @var Client $client */
             $client = fake()->randomElement($clients->all());
-            $owner = $users[$client->owner_id];
+            $owner = $users->get($client->owner_id) ?? throw new ModelNotFoundException;
             $contactedDaysAgo = fake()->numberBetween(1, 180);
             $contacted = now()->subDays($contactedDaysAgo);
             $changedDaysAgo = fake()->numberBetween(0, $contactedDaysAgo);

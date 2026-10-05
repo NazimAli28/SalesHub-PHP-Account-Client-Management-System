@@ -8,6 +8,7 @@ use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use PragmaRX\Google2FA\Google2FA;
 
@@ -87,24 +88,37 @@ final class TwoFactorAuthenticator
 
     /**
      * Remove the matching recovery code from the user's list. Returns false when none matches.
+     * Atomic: the user row is locked while the list is read and rewritten, so two concurrent requests
+     * cannot both spend the same code.
      */
     public function consumeRecoveryCode(User $user, string $code): bool
     {
         $normalized = Str::upper(trim($code));
 
-        /** @var list<string> $codes */
-        $codes = array_values((array) ($user->two_factor_recovery_codes ?? []));
-
-        foreach ($codes as $index => $candidate) {
-            if (hash_equals($candidate, $normalized)) {
-                unset($codes[$index]);
-                $user->forceFill(['two_factor_recovery_codes' => array_values($codes)])->save();
-
-                return true;
-            }
+        if ($normalized === '') {
+            return false;
         }
 
-        return false;
+        return DB::transaction(function () use ($user, $normalized): bool {
+            /** @var User|null $locked */
+            $locked = User::query()->whereKey($user->getKey())->lockForUpdate()->first();
+
+            /** @var list<string> $codes */
+            $codes = array_values((array) ($locked->two_factor_recovery_codes ?? []));
+
+            foreach ($codes as $index => $candidate) {
+                if (hash_equals($candidate, $normalized)) {
+                    unset($codes[$index]);
+                    $remaining = array_values($codes);
+                    $locked?->forceFill(['two_factor_recovery_codes' => $remaining])->save();
+                    $user->forceFill(['two_factor_recovery_codes' => $remaining])->syncOriginalAttribute('two_factor_recovery_codes');
+
+                    return true;
+                }
+            }
+
+            return false;
+        });
     }
 
     public function forgetTimestep(User $user): void

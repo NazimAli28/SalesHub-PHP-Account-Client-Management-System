@@ -1,7 +1,7 @@
 export type Theme = 'system' | 'light' | 'dark'
 export type ResolvedTheme = 'light' | 'dark'
 
-/** Must match the key read by the inline script in index.html. */
+/** Must match the key read by public/theme-init.js (loaded from index.html). */
 export const THEME_STORAGE_KEY = 'saleshub-theme'
 
 const DARK_QUERY = '(prefers-color-scheme: dark)'

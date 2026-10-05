@@ -110,16 +110,26 @@ describe('ProfilePage security', () => {
     ).toBeInTheDocument()
   })
 
-  it('needs the password to turn two-step verification off', async () => {
+  it('needs the password and a code to turn two-step verification off', async () => {
     let body: unknown
     server.use(
       http.delete('*/api/auth/two-factor', async ({ request }) => {
         body = await request.json()
-        if ((body as { password: string }).password !== 'Demo@12345') {
+        const { password, code } = body as { password: string; code: string }
+        if (password !== 'Demo@12345') {
           return HttpResponse.json(
             {
               message: 'The password is incorrect.',
               errors: { password: ['The password is incorrect.'] },
+            },
+            { status: 422 },
+          )
+        }
+        if (code !== '123456') {
+          return HttpResponse.json(
+            {
+              message: 'This code is invalid or has already been used.',
+              errors: { code: ['This code is invalid or has already been used.'] },
             },
             { status: 422 },
           )
@@ -135,16 +145,33 @@ describe('ProfilePage security', () => {
     await user.click(screen.getByRole('button', { name: 'Turn off' }))
     const dialog = await screen.findByRole('dialog', { name: 'Turn off two-step verification?' })
 
+    // Both fields are required before anything is sent.
     await user.type(within(dialog).getByLabelText(/Current password/), 'wrong')
+    await user.click(within(dialog).getByRole('button', { name: 'Turn off' }))
+    expect(
+      await within(dialog).findByText(
+        'Enter a code from your authenticator app or a recovery code.',
+      ),
+    ).toBeInTheDocument()
+    expect(body).toBeUndefined()
+
+    await user.type(within(dialog).getByLabelText(/Authentication code/), '000000')
     await user.click(within(dialog).getByRole('button', { name: 'Turn off' }))
     expect(await within(dialog).findByText('The password is incorrect.')).toBeInTheDocument()
 
     await user.clear(within(dialog).getByLabelText(/Current password/))
     await user.type(within(dialog).getByLabelText(/Current password/), 'Demo@12345')
     await user.click(within(dialog).getByRole('button', { name: 'Turn off' }))
+    expect(
+      await within(dialog).findByText('This code is invalid or has already been used.'),
+    ).toBeInTheDocument()
+
+    await user.clear(within(dialog).getByLabelText(/Authentication code/))
+    await user.type(within(dialog).getByLabelText(/Authentication code/), '123456')
+    await user.click(within(dialog).getByRole('button', { name: 'Turn off' }))
 
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
-    expect(body).toEqual({ password: 'Demo@12345' })
+    expect(body).toEqual({ password: 'Demo@12345', code: '123456' })
     expect(await within(twoFactorCard()).findByText('Off')).toBeInTheDocument()
   })
 
@@ -216,5 +243,9 @@ describe('ProfilePage security', () => {
     expect(screen.getByRole('button', { name: 'Update password' })).toBeDisabled()
     expect(screen.getByLabelText(/Current password/)).toBeDisabled()
     await screen.findByRole('list', { name: 'Active sessions' })
+    expect(
+      screen.queryByRole('button', { name: 'Sign out other sessions' }),
+    ).not.toBeInTheDocument()
+    expect(screen.getByText(/only this browser is listed/)).toBeInTheDocument()
   })
 })

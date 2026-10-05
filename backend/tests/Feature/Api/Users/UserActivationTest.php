@@ -122,14 +122,17 @@ it('ends access when a user is deleted', function () {
     expect(DB::table('sessions')->where('user_id', $agent->id)->count())->toBe(0);
 });
 
-it('ends other sessions when an admin resets a password but keeps the own session on self-update', function () {
+it('ends other sessions when an admin resets a password, and refuses a self password change here', function () {
     $admin = $this->actingAsRole(RoleName::Admin);
     $agent = $this->alpha->agent(0);
     fakeSession($agent);
     $mine = fakeSession($admin);
 
     $this->patchJson("/api/users/{$agent->id}", ['password' => 'Str0ng!Passw0rd'])->assertOk();
-    $this->patchJson("/api/users/{$admin->id}", ['password' => 'Str0ng!Passw0rd'])->assertOk();
+    // Your own password goes through PUT /api/auth/password, which re-checks the current one.
+    $this->patchJson("/api/users/{$admin->id}", ['password' => 'Str0ng!Passw0rd'])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('password');
 
     expect(DB::table('sessions')->where('user_id', $agent->id)->count())->toBe(0)
         ->and(DB::table('sessions')->where('id', $mine)->exists())->toBeTrue();

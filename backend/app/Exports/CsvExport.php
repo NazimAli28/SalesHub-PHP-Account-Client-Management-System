@@ -77,7 +77,7 @@ final class CsvExport
             $lead->lost_reason?->value,
             $lead->lost_note,
             $lead->services->pluck('name')->implode('; '),
-            $lead->created_at->toIso8601String(),
+            $lead->created_at?->toIso8601String(),
         ];
     }
 
@@ -111,7 +111,7 @@ final class CsvExport
             $client->expected_upsell_on?->format('Y-m-d'),
             $client->getAttributes()['notes'] ?? null,
             self::money((int) ($client->getAttributes()['lifetime_value_cents'] ?? 0)),
-            $client->created_at->toIso8601String(),
+            $client->created_at?->toIso8601String(),
         ];
     }
 

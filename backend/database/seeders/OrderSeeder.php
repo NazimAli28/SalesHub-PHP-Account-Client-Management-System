@@ -16,6 +16,7 @@ use App\Models\Service;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Database\Seeders\Support\DemoText;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 
@@ -38,7 +39,7 @@ class OrderSeeder extends Seeder
         $wonLeads = Lead::query()->where('stage', LeadStage::Won->value)->with('services')->orderBy('id')->get();
 
         foreach ($wonLeads as $lead) {
-            $owner = $users[$lead->owner_id];
+            $owner = $users->get($lead->owner_id) ?? throw new ModelNotFoundException;
             $order = $this->createOrder([
                 'client_id' => $lead->client_id,
                 'owner_id' => $lead->owner_id,
@@ -106,7 +107,7 @@ class OrderSeeder extends Seeder
 
         $subtotal = (int) $order->items()->sum('line_total_cents');
         if (fake()->boolean(15)) {
-            $order->discount_cents = (int) round($subtotal * fake()->randomElement([0.05, 0.1]) / 100) * 100;
+            $order->discount_cents = max(0, (int) round($subtotal * fake()->randomElement([0.05, 0.1]) / 100) * 100);
         }
         app(RecalculateOrderTotals::class)->handle($order);
 

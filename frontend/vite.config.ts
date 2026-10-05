@@ -10,6 +10,9 @@ function vendor(packages: string): RegExp {
   return new RegExp(pattern)
 }
 
+// The e2e suite points the dev server at an isolated API (see playwright.config.ts).
+const apiTarget = process.env.E2E_API_URL ?? 'http://localhost:8000'
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
@@ -50,13 +53,14 @@ export default defineConfig({
     port: 5173,
     // Forward API + auth calls to the Laravel dev server (php artisan serve)
     proxy: {
-      '/api': 'http://localhost:8000',
-      '/sanctum': 'http://localhost:8000',
+      '/api': apiTarget,
+      '/sanctum': apiTarget,
     },
   },
   test: {
     environment: 'jsdom',
     globals: true,
+    exclude: ['e2e/**', 'node_modules/**'],
     setupFiles: ['./src/test/setup.ts'],
     css: true,
     // Dialog/sheet/popover interaction tests can exceed the 5 s default when the whole suite

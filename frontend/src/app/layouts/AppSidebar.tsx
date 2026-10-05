@@ -48,7 +48,7 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar collapsible="icon" aria-label="Main navigation">
+    <Sidebar collapsible="icon" role="navigation" aria-label="Main navigation">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -57,7 +57,7 @@ export function AppSidebar() {
                 <BrandMark />
                 <span className="flex flex-col leading-tight">
                   <span className="font-semibold">SalesHub</span>
-                  <span className="text-sidebar-foreground/60 truncate text-xs">
+                  <span className="text-sidebar-foreground/75 truncate text-xs">
                     {user?.team?.name ?? 'Sales operations'}
                   </span>
                 </span>
@@ -101,7 +101,7 @@ export function AppSidebar() {
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="text-sidebar-foreground/50 px-4 pb-3 text-xs group-data-[collapsible=icon]:hidden">
+      <SidebarFooter className="text-sidebar-foreground/75 px-4 pb-3 text-xs group-data-[collapsible=icon]:hidden">
         SalesHub v2
       </SidebarFooter>
       <SidebarRail />

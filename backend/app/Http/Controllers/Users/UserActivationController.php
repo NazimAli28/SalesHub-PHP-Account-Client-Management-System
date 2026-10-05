@@ -8,18 +8,21 @@ use App\Http\Controllers\Controller;
 use App\Http\Queries\UserIndexQuery;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Support\DemoAccounts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 /**
  * PATCH /api/users/{user}/deactivate and /activate. Both use the `deactivate` ability
  * (permission users.deactivate; never on yourself, never the last active admin).
+ * In demo mode the seeded accounts cannot be switched (403 `demo_mode`).
  */
 class UserActivationController extends Controller
 {
     public function deactivate(Request $request, User $user, DeactivateUser $deactivateUser): UserResource
     {
         Gate::authorize('deactivate', $user);
+        DemoAccounts::guard($user, 'the demo accounts cannot be deactivated');
 
         /** @var User $actor */
         $actor = $request->user();
@@ -30,6 +33,7 @@ class UserActivationController extends Controller
     public function activate(Request $request, User $user, ActivateUser $activateUser): UserResource
     {
         Gate::authorize('deactivate', $user);
+        DemoAccounts::guard($user, 'the demo accounts cannot be activated or deactivated');
 
         /** @var User $actor */
         $actor = $request->user();

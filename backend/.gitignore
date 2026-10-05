@@ -26,3 +26,5 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 /storage/phpstan
+/database/e2e.sqlite
+/.env.e2e

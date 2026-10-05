@@ -68,6 +68,13 @@ npm install
 npm run dev                # http://localhost:5173 (proxies /api to :8000)
 ```
 
+## Quality and security
+
+- **Tests:** Pest feature tests for every endpoint (including permission denials), Vitest + Testing Library for components, and Playwright end-to-end tests for the main flows of each role.
+- **Accessibility:** every screen is scanned with axe (WCAG 2.1 A/AA) in light and dark mode as part of the end-to-end suite.
+- **Static analysis:** Larastan level 8, oxlint, strict TypeScript.
+- **Security:** see [SECURITY.md](SECURITY.md) and the [OWASP Top 10 checklist](docs/security/owasp-top-10.md).
+
 ## Roadmap
 
 - [x] **Phase 0:** monorepo setup, tooling, CI
@@ -76,7 +83,7 @@ npm run dev                # http://localhost:5173 (proxies /api to :8000)
 - [x] **Phase 3:** frontend foundation (app shell, auth, data tables, design system)
 - [x] **Phase 4:** all v1 screens rebuilt
 - [x] **Phase 5:** analytics dashboard, Kanban pipeline, client 360, import/export, payment reminders, two-factor sign-in
-- [ ] **Phase 6:** end-to-end tests, accessibility and security hardening
+- [x] **Phase 6:** end-to-end tests, accessibility and security hardening
 - [ ] **Phase 7:** live demo deployment and v2.0 release
 
 ## License

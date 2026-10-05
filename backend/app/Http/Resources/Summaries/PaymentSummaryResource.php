@@ -24,7 +24,7 @@ class PaymentSummaryResource extends JsonResource
         return [
             'id' => $this->id,
             'order_id' => $this->order_id,
-            'order_number' => $this->whenLoaded('order', fn () => $this->order->order_number),
+            'order_number' => $this->whenLoaded('order', fn () => $this->order?->order_number),
             'sequence' => $this->sequence,
             'amount' => $this->money($this->amount_cents, $this->currency),
             'due_date' => $this->date($this->due_date),

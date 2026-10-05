@@ -68,6 +68,6 @@ final class RecordSnapshot
             ->values()
             ->all();
 
-        return $ids;
+        return array_values($ids);
     }
 }

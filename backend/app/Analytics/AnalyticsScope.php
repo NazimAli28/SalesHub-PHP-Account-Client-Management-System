@@ -63,7 +63,7 @@ final class AnalyticsScope
 
         $ids = $teamId === null
             ? null
-            : User::query()->where('team_id', $teamId)->pluck('id')->map(fn ($id): int => (int) $id)->all();
+            : array_values(User::query()->where('team_id', $teamId)->pluck('id')->map(fn ($id): int => (int) $id)->all());
 
         return new self($user, $tier, $ids, $teamId, null);
     }

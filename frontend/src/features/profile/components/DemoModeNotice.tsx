@@ -9,8 +9,9 @@ export function DemoModeNotice() {
     >
       <InfoIcon className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
       <p>
-        This is the public demo, and everyone shares these accounts. Changing the password and
-        turning on two-step verification are switched off so nobody gets locked out.
+        This is the public demo, and everyone shares these accounts. Changing the password, turning
+        on two-step verification and signing out other sessions are switched off so nobody gets
+        locked out.
       </p>
     </div>
   )

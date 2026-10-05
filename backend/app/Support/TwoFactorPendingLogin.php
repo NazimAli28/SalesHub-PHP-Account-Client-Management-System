@@ -41,7 +41,7 @@ final class TwoFactorPendingLogin
             return null;
         }
 
-        return User::query()->find($pending['id']);
+        return is_int($pending['id']) || is_string($pending['id']) ? User::query()->find($pending['id']) : null;
     }
 
     public static function remember(Request $request): bool

@@ -56,12 +56,23 @@ it('returns the same generic 422 for a wrong password and an unknown identifier'
 });
 
 it('never stores the password in the failed login log', function () {
+    User::factory()->salesExecutive()->create(['username' => 'agent1']);
+
     $this->spaLogin('agent1', 'Super-Secret-1!')->assertStatus(422);
 
     $log = authLogs('login_failed')->firstOrFail();
 
     expect($log->properties->get('identifier'))->toBe('agent1')
         ->and(json_encode($log->properties))->not->toContain('Super-Secret-1!');
+});
+
+it('does not log an identifier that matches no account (it may be a mistyped password)', function () {
+    $this->spaLogin('Sup3r-Secret-Typo!', 'whatever')->assertStatus(422);
+
+    $log = authLogs('login_failed')->firstOrFail();
+
+    expect($log->properties->has('identifier'))->toBeFalse()
+        ->and(json_encode($log->properties))->not->toContain('Sup3r-Secret-Typo');
 });
 
 it('validates the login payload', function () {

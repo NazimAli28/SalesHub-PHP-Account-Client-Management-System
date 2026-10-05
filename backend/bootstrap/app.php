@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureIpIsAllowed;
 use App\Http\Middleware\EnsureUserIsActive;
+use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -22,7 +23,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'ip.allowed' => EnsureIpIsAllowed::class,
         ]);
 
-        $middleware->trustProxies(at: env('TRUSTED_PROXIES') ?: null);
+        $middleware->append(SecurityHeaders::class);
+
+        // Trusted proxies: config/trustedproxy.php (TRUSTED_PROXIES), read at request time so it also
+        // works with a cached config.
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

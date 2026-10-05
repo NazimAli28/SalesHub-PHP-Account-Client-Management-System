@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Actions\Auth\DescribeUserAgent;
+use App\Actions\Auth\EnsureNotDemoMode;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ConfirmPasswordRequest;
 use App\Models\User;
 use App\Support\AuditLogger;
+use App\Support\IpMask;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,6 +17,9 @@ use Illuminate\Support\Str;
 
 /**
  * The signed-in user's browser sessions (rows of the `sessions` table; database session driver).
+ *
+ * Demo mode: the demo accounts are shared by every visitor, so the list shows only this browser (with
+ * a coarsened IP) and signing out the others is refused (403 `demo_mode`).
  */
 class SessionsController extends Controller
 {
@@ -26,11 +31,11 @@ class SessionsController extends Controller
         $user = $this->user($request);
         $currentId = $request->session()->getId();
 
-        if (! $this->usesDatabaseSessions()) {
-            // Other drivers cannot list sessions; show just this one.
+        if (! $this->usesDatabaseSessions() || EnsureNotDemoMode::enabled()) {
+            // Other drivers cannot list sessions; the demo must not show other visitors' browsers.
             return response()->json(['data' => [[
                 'id' => $this->opaqueId($currentId),
-                'ip_address' => $request->ip(),
+                'ip_address' => IpMask::forDisplay($request->ip()),
                 'device' => DescribeUserAgent::label($request->userAgent()),
                 'last_active_at' => now()->toIso8601ZuluString(),
                 'is_current' => true,
@@ -45,7 +50,7 @@ class SessionsController extends Controller
         $sessions = $rows
             ->map(fn (object $row): array => [
                 'id' => $this->opaqueId((string) $row->id),
-                'ip_address' => $row->ip_address,
+                'ip_address' => IpMask::forDisplay($row->ip_address === null ? null : (string) $row->ip_address),
                 'device' => DescribeUserAgent::label($row->user_agent),
                 'last_active_at' => CarbonImmutable::createFromTimestampUTC((int) $row->last_activity)->toIso8601ZuluString(),
                 'is_current' => hash_equals((string) $row->id, $currentId),
@@ -62,6 +67,7 @@ class SessionsController extends Controller
      */
     public function destroyOthers(ConfirmPasswordRequest $request): JsonResponse
     {
+        EnsureNotDemoMode::check('signing out the other sessions');
         $user = $this->user($request);
         $revoked = 0;
 

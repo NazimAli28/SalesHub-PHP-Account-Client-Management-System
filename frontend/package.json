@@ -13,6 +13,8 @@
     "test:watch": "vitest",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
     "api:types": "openapi-typescript ../docs/api/openapi.json -o src/api/schema.d.ts && prettier --write src/api/schema.d.ts"
   },
   "dependencies": {
@@ -43,6 +45,8 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
     "@tanstack/react-query-devtools": "^5.104.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",

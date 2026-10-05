@@ -12,6 +12,8 @@ Analytics, search, client notes and timeline, CSV import and export, and payment
 | `team_id` | Optional team filter. |
 | `user_id` | Optional single-person filter. |
 
+**Rate limit.** 30 requests per minute per user (429 with `Retry-After`).
+
 **Permissions and scope.** Any of `reports.view-all`, `reports.view-team` or `reports.view-own` (else 403). The broadest tier decides the scope: all, the user's own team, or only the user's own records. A `team_id` or `user_id` outside the tier is 403. Every query starts from the model's `visibleTo($user)` scope and is then narrowed by owner, so numbers match what the user can open.
 
 **Response (`data`).** Money uses the standard `{amount_cents, currency, formatted}` shape; currency is `USD` (the demo data is single-currency).
@@ -80,14 +82,26 @@ Flow: upload, map columns, preview, start, poll.
 
 **Preview** returns `{rows: [{row, values, valid, errors}], summary: {total_rows, checked, valid, invalid}}`. For clients it also flags duplicate Discord usernames inside the file.
 
-**Processing.** `ProcessImport` runs on the queue (`php artisan queue:work`), one row at a time through the same rules and create actions as the UI (ownership and defaults match). Status goes `uploaded`, `queued`, `processing`, `completed` (or `failed`); counters `processed_rows`, `created_rows`, `failed_rows` update every 20 rows, so the SPA polls `GET /api/imports/{import}`. At most 200 row errors are stored (`{row, column, field, message}`); the error CSV is capped the same way. `preview` and `start` on an import that has already started are **409**. Start and finish are written to the activity log (`import`).
+**Processing.** `ProcessImport` runs on the queue (`php artisan queue:work`), one row at a time through the same rules and create actions as the UI (ownership and defaults match). Status goes `uploaded`, `queued`, `processing`, `completed` (or `failed`); counters `processed_rows`, `created_rows`, `failed_rows` update every 20 rows, so the SPA polls `GET /api/imports/{import}`. At most 200 row errors are stored (`{row, column, field, message}`); the error CSV is capped the same way. The first error of each failed row also stores that row's values (internal, never in the API), so the error CSV is built without the uploaded file: **the file is deleted as soon as the import completes or fails**. `preview` and `start` on an import that has already started are **409**; `start` moves `uploaded` to `queued` with one guarded update, and the job moves `queued` to `processing` the same way, so two concurrent starts or a duplicate job cannot run an import twice. Start and finish are written to the activity log (`import`).
+
+**Limits and housekeeping.** Upload, preview and start share a limit of 10 requests per minute per user (429). Uploads that are never started are pruned with their file after 24 hours (`model:prune` for `App\Models\Import`, daily at 03:00; `IMPORTS_PRUNE_AFTER_HOURS`).
 
 ## Exports
 
-`GET /api/exports/{type}` (`routes/api/exports.php`, `Exports\ExportController`), `type` is `leads` or `clients`. Needs `reports.export` and `viewAny` on the model. It accepts the same `filter[...]` and `sort` parameters as the index endpoint and exports only rows in the user's `visibleTo` scope. The CSV is streamed in chunks of 500 rows, capped at **10,000 rows**, UTF-8 with a BOM, named `{type}-{date}.csv`. Credentials and other hidden columns are never in a column list. Cells starting with `=`, `+`, `-`, `@`, tab or carriage return get a leading single quote (`CsvSanitizer`), so spreadsheets treat them as text; the same sanitizer writes the import error CSV. Each export is logged under `export` with the type, row count, filters and sort.
+`GET /api/exports/{type}` (`routes/api/exports.php`, `Exports\ExportController`), `type` is `leads` or `clients`. Needs `reports.export` and `viewAny` on the model. It accepts the same `filter[...]` and `sort` parameters as the index endpoint and exports only rows in the user's `visibleTo` scope. The CSV is streamed in chunks of 500 rows, capped at **10,000 rows**, UTF-8 with a BOM, named `{type}-{date}.csv`. Credentials and other hidden columns are never in a column list. Cells starting with `=`, `+`, `-`, `@`, tab or carriage return get a leading single quote (`CsvSanitizer`), so spreadsheets treat them as text; the same sanitizer writes the import error CSV. Each export is logged under `export` with the type, row count, filters and sort. Limited to 5 exports per minute per user (429); responses are `Cache-Control: no-store`.
 
 ## Payment reminders
 
 `php artisan payments:send-reminders {--days=3}` (`App\Console\Commands\SendPaymentReminders`) is scheduled in `routes/console.php` daily at 08:00 without overlapping. It finds scheduled payments that are overdue or due within `--days` days, whose order owner is active, and notifies the owner with `PaymentDueReminder`. It skips a payment that already has a reminder created today, so running it twice is safe.
 
 `PaymentDueReminder` is queued and goes to the notifications bell (`database`) and by email when the user has an address. Database payload: `{payment_id, order_id, order_number, due_date, amount_cents, currency, overdue, message}`. Needs a running scheduler (`php artisan schedule:work` locally) and queue worker (`php artisan queue:work`).
+
+## Scheduled housekeeping and the demo reset
+
+`routes/console.php` also schedules (run `php artisan schedule:work` locally, or `schedule:run` every minute from cron in production):
+
+| Command | When | What |
+|---------|------|------|
+| `model:prune --model=App\Models\Import` | Daily 03:00 | Deletes never-started uploads older than 24 h and their files. |
+| `activitylog:clean --force` | Daily 03:15 | Deletes audit-log entries older than `activitylog.clean_after_days` (`ACTIVITY_LOG_RETENTION_DAYS`, default 180). |
+| `demo:reset` | Hourly, **only when `DEMO_MODE=true`**, without overlapping | `migrate:fresh --seed --force`, `cache:clear`, deletes `storage/app/private/imports/*`. Every visitor is signed out. Refuses to run when demo mode is off unless `--force` is passed (`App\Console\Commands\ResetDemoCommand`, `App\Actions\Demo\ResetDemo`). |

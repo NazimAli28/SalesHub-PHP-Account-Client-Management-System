@@ -77,7 +77,7 @@ describe('store', function () {
         $this->postJson('/api/orders', ['client_id' => $this->client->id, 'items' => []])->assertUnprocessable()->assertJsonValidationErrors(['items']);
         $this->postJson('/api/orders', ['client_id' => $this->client->id, 'items' => [['quantity' => 0, 'unit_price_cents' => -1]]])
             ->assertUnprocessable()->assertJsonValidationErrors(['items.0.service_id', 'items.0.quantity', 'items.0.unit_price_cents']);
-        $this->postJson('/api/orders', ['client_id' => $this->client->id, 'items' => [$item], 'currency' => 'usd', 'status' => 'nope', 'ordered_on' => today()->addDay()->toDateString()])
+        $this->postJson('/api/orders', ['client_id' => $this->client->id, 'items' => [$item], 'currency' => 'usd', 'status' => 'nope', 'ordered_on' => today()->addDays(2)->toDateString()])
             ->assertUnprocessable()->assertJsonValidationErrors(['currency', 'status', 'ordered_on']);
         $this->postJson('/api/orders', ['client_id' => $this->client->id, 'items' => [$item], 'discount_cents' => 999999])
             ->assertUnprocessable()->assertJsonValidationErrors(['discount_cents']);

@@ -24,8 +24,16 @@ final class EnsureNotDemoMode
             return;
         }
 
-        throw new HttpResponseException(response()->json([
-            'message' => "The public demo shares its accounts, so {$action} is disabled.",
+        throw self::exception("{$action} is disabled");
+    }
+
+    /**
+     * The 403 `demo_mode` response; `$reason` completes "The public demo shares its accounts, so ...".
+     */
+    public static function exception(string $reason): HttpResponseException
+    {
+        return new HttpResponseException(response()->json([
+            'message' => "The public demo shares its accounts, so {$reason}.",
             'code' => 'demo_mode',
         ], 403));
     }

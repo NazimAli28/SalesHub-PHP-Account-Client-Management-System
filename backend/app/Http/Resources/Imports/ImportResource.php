@@ -8,6 +8,7 @@ use App\Imports\ImportSchema;
 use App\Models\Import;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Arr;
 
 /**
  * Never exposes the stored file path. Row errors are left out of the list endpoint.
@@ -35,11 +36,22 @@ class ImportResource extends JsonResource
             'processed_rows' => $this->processed_rows,
             'created_rows' => $this->created_rows,
             'failed_rows' => $this->failed_rows,
-            'errors' => $this->when($request->route()?->getName() !== 'imports.index', fn () => $this->errors ?? []),
+            'errors' => $this->when($request->route()?->getName() !== 'imports.index', fn () => self::publicErrors($this->errors ?? [])),
             'user' => UserSummaryResource::make($this->whenLoaded('user')),
             'started_at' => $this->dateTime($this->started_at),
             'finished_at' => $this->dateTime($this->finished_at),
             'created_at' => $this->dateTime($this->created_at),
         ];
+    }
+
+    /**
+     * Row errors without the stored row values (those only feed the error CSV).
+     *
+     * @param  array<int, array<string, mixed>>  $errors
+     * @return list<array<string, mixed>>
+     */
+    private static function publicErrors(array $errors): array
+    {
+        return array_values(array_map(fn (array $error): array => Arr::except($error, ['values']), $errors));
     }
 }

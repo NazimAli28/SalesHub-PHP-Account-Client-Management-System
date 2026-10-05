@@ -14,13 +14,13 @@ import { OtpCodeField } from '@/features/auth/components/OtpCodeField'
 import { otpCodeSchema, type OtpCodeValues } from '@/features/auth/schemas'
 import {
   confirmTwoFactor,
-  disableTwoFactor,
   regenerateRecoveryCodes,
   showRecoveryCodes,
   startTwoFactorSetup,
   type TwoFactorSetup,
 } from '../api'
 import { ConfirmPasswordDialog } from './ConfirmPasswordDialog'
+import { DisableTwoFactorDialog } from './DisableTwoFactorDialog'
 import { RecoveryCodesPanel } from './RecoveryCodesPanel'
 
 type PasswordAction = 'disable' | 'show-codes' | 'regenerate-codes'
@@ -183,16 +183,10 @@ export function TwoFactorCard({ enabled, demoMode }: { enabled: boolean; demoMod
         )}
       </CardContent>
 
-      <ConfirmPasswordDialog
+      <DisableTwoFactorDialog
         open={dialogOpen('disable')}
         onOpenChange={closeDialog}
-        title="Turn off two-step verification?"
-        description="Signing in will only need your password again. Enter your password to confirm."
-        submitLabel="Turn off"
-        action={disableTwoFactor}
-        successMessage="Two-step verification is off."
-        invalidate={[authKeys.me]}
-        onConfirmed={() => setCodes(null)}
+        onDisabled={() => setCodes(null)}
       />
       <ConfirmPasswordDialog
         open={dialogOpen('show-codes')}

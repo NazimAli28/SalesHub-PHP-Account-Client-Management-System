@@ -17,8 +17,8 @@ class ActivityLogSeeder extends Seeder
     public function run(): void
     {
         $users = User::query()->where('is_active', true)->pluck('id')->all();
-        $leads = Lead::query()->limit(60)->pluck('id')->all();
-        $orders = Order::query()->limit(40)->pluck('id')->all();
+        $leads = array_values(array_map('intval', Lead::query()->limit(60)->pluck('id')->all()));
+        $orders = array_values(array_map('intval', Order::query()->limit(40)->pluck('id')->all()));
         $accounts = PlatformAccount::query()->limit(30)->pluck('id')->all();
 
         $rows = [];
@@ -94,7 +94,7 @@ class ActivityLogSeeder extends Seeder
                 'subject_type' => 'lead',
                 'subject_id' => fake()->randomElement($leads),
                 'attribute_changes' => json_encode([
-                    'attributes' => ['stage' => $stages[array_search($old, $stages, true) + 1]],
+                    'attributes' => ['stage' => $stages[(int) array_search($old, $stages, true) + 1] ?? $old],
                     'old' => ['stage' => $old],
                 ]),
             ];

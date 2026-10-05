@@ -34,6 +34,8 @@ class LoginRequest extends FormRequest
 
     /**
      * Column the identifier is matched against.
+     *
+     * @return 'email'|'username'
      */
     public function identifierField(): string
     {

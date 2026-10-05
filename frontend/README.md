@@ -27,6 +27,16 @@ Run the API alongside it (`php artisan serve` in `../backend`, port 8000). The d
 | `npm run typecheck`               | TypeScript, strict mode                                                           |
 | `npm test` / `test:watch`         | Vitest + Testing Library, with the API mocked by MSW                              |
 | `npm run api:types`               | Regenerates `src/api/schema.d.ts` from `../docs/api/openapi.json`                 |
+| `npm run e2e` / `e2e:ui`          | Playwright end-to-end and axe accessibility tests (starts its own servers)        |
+
+## End-to-end tests
+
+`npm run e2e` starts its own API on :8001 (PHP's built-in server against a fresh, seeded SQLite file `backend/database/e2e.sqlite`) and a Vite server on :5174, so your dev database is never touched. First run `npx playwright install chromium`.
+
+- `PHP_BINARY`: path to PHP 8.3+ (defaults to `php`).
+- `E2E_REUSE_SERVER=1` reuses running servers while you iterate; `E2E_VERBOSE=1` prints server logs.
+- Specs live in `e2e/`: sign-in per role, leads and the board, approvals, Client 360 notes, CSV import, the command palette, the dashboard, keyboard checks and `a11y.spec.ts` (axe on every screen, light and dark).
+- Tests run serially on one worker because they share one database. CI runs them in the `e2e` job and uploads the report when it fails.
 
 ## Environment
 
