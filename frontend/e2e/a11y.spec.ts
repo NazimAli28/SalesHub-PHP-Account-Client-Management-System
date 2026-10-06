@@ -88,7 +88,10 @@ test.describe('as admin', () => {
       test('/leads board has no serious violations', async ({ page }) => {
         await page.goto('/leads')
         await page.getByRole('radio', { name: 'Board view' }).click()
-        await expect(page.getByRole('button', { name: /^Move .* to…$/ }).first()).toBeVisible()
+        // Seven columns load one by one from the single-threaded test server.
+        await expect(page.getByRole('button', { name: /^Move .* to…$/ }).first()).toBeVisible({
+          timeout: 45_000,
+        })
         await settle(page)
         await expectNoSeriousViolations(page, `/leads board (${scheme})`)
       })

@@ -25,7 +25,7 @@ export function SessionsCard({ demoMode = false }: { demoMode?: boolean }) {
       </CardHeader>
       <CardContent className="space-y-4">
         {sessions.isPending ? (
-          <div className="space-y-2" aria-label="Loading sessions">
+          <div className="space-y-2" role="status" aria-label="Loading sessions">
             <Skeleton className="h-12 w-full" />
             <Skeleton className="h-12 w-full" />
           </div>
