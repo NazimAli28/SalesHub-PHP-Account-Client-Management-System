@@ -22,7 +22,7 @@ export function NotificationsBell() {
             {unread > 0 ? (
               <span
                 aria-hidden="true"
-                className="bg-primary text-primary-foreground tabular ring-background absolute top-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] leading-none font-semibold ring-2"
+                className="bg-primary text-primary-foreground tabular ring-background absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] leading-none font-semibold ring-2"
               >
                 {unread > 99 ? '99+' : unread}
               </span>

@@ -96,16 +96,19 @@ function PaymentRow({ payment, today }: { payment: DuePayment; today: string }) 
 
   return (
     <li className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3 first:pt-0 last:pb-0">
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 basis-full sm:basis-0">
         <p className="truncate text-sm font-medium">{clientName}</p>
         <p className="text-muted-foreground text-xs">
-          <Link to={detailPath.order(payment.order_id)} className="hover:underline">
+          <Link
+            to={detailPath.order(payment.order_id)}
+            className="whitespace-nowrap hover:underline"
+          >
             Order {orderNumber}
           </Link>
           {' · '}installment {payment.sequence}
         </p>
       </div>
-      <div className="text-right text-sm">
+      <div className="mr-auto text-sm sm:mr-0 sm:text-right">
         <MoneyText money={payment.amount} className="font-medium" />
         <p className={overdue ? 'text-xs font-medium text-red-600 dark:text-red-400' : 'text-xs'}>
           <RelativeTime value={payment.due_date} display="date" />
@@ -140,14 +143,14 @@ function LeadRow({ lead, today }: { lead: Lead; today: string }) {
   const name = lead.client?.name ?? lead.client?.discord_username ?? `Client #${lead.client_id}`
   return (
     <li className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3 first:pt-0 last:pb-0">
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 basis-full sm:basis-0">
         <p className="truncate text-sm font-medium">{name}</p>
         {lead.last_message ? (
           <p className="text-muted-foreground truncate text-xs">{lead.last_message}</p>
         ) : null}
       </div>
       <StatusBadge kind="leadStage" value={lead.stage} />
-      <div className="text-right text-sm">
+      <div className="ml-auto text-right text-sm">
         <MoneyText money={lead.estimated_value} />
         <p className={overdue ? 'text-xs font-medium text-red-600 dark:text-red-400' : 'text-xs'}>
           <RelativeTime value={lead.next_follow_up_on} display="date" />

@@ -8,6 +8,7 @@ import { AppBreadcrumb } from './AppBreadcrumb'
 import { useCrumbs } from './use-crumbs'
 import { AppSidebar } from './AppSidebar'
 import { CommandMenu } from './CommandMenu'
+import { DemoBanner } from './DemoBanner'
 import { NotificationsBell } from './NotificationsBell'
 import { UserMenu } from './UserMenu'
 
@@ -53,6 +54,7 @@ export function AppLayout() {
       <AppSidebar />
       {/* min-w-0 lets wide content (the leads board, tables) scroll inside the page, not widen it. */}
       <SidebarInset className="min-w-0">
+        <DemoBanner />
         {/* Thin progress bar while a lazy route chunk loads. */}
         <div
           aria-hidden="true"

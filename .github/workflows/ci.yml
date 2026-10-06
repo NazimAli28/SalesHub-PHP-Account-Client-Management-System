@@ -111,3 +111,38 @@ jobs:
             frontend/playwright-report
             frontend/test-results
           retention-days: 7
+
+  docker:
+    name: Docker image (build and smoke test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the image (not pushed)
+        run: docker build -t saleshub:ci --build-arg VITE_DEMO_MODE=true .
+
+      - name: Start the container
+        run: |
+          docker run -d --name saleshub -p 8080:8080 \
+            -e APP_URL=http://localhost:8080 \
+            -e SANCTUM_STATEFUL_DOMAINS=localhost:8080 \
+            -e FRONTEND_URL=http://localhost:8080 \
+            -e SESSION_SECURE_COOKIE=false \
+            -e DEMO_MODE=true \
+            saleshub:ci
+
+      - name: Smoke test
+        run: |
+          for i in $(seq 1 60); do
+            if curl -fsS http://localhost:8080/up > /dev/null; then break; fi
+            sleep 2
+          done
+          curl -fsS http://localhost:8080/up > /dev/null
+          curl -fsS http://localhost:8080/ | grep -qi '<div id="root">'
+          curl -fsS http://localhost:8080/leads | grep -qi '<div id="root">'
+          status=$(curl -s -o /dev/null -w '%{http_code}' -H 'Accept: application/json' http://localhost:8080/api/auth/me)
+          test "$status" = "401"
+
+      - name: Container logs
+        if: failure()
+        run: docker logs saleshub

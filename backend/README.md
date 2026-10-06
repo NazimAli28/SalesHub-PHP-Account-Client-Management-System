@@ -92,7 +92,7 @@ Uploaded import CSVs are stored on the private local disk under `storage/app/pri
 
 ### Production
 
-Start from [`.env.production.example`](.env.production.example): `APP_DEBUG=false`, `LOG_LEVEL=warning`, Secure database sessions, `SANCTUM_STATEFUL_DOMAINS` and `FRONTEND_URL` set to the public host (CORS has no localhost fallback in production), `TRUSTED_PROXIES` set to the platform proxy, a queue worker and the scheduler. Security headers (CSP, HSTS on HTTPS, nosniff, frame denial) come from `App\Http\Middleware\SecurityHeaders`; see [SECURITY.md](../SECURITY.md).
+The full deployment guide (Docker image, Render, MySQL, security notes) is in [docs/deployment.md](../docs/deployment.md). In production Laravel also serves the built SPA (`SpaController`, the catch-all in `routes/web.php`, `SPA_INDEX`). Start from [`.env.production.example`](.env.production.example): `APP_DEBUG=false`, `LOG_LEVEL=warning`, Secure database sessions, `SANCTUM_STATEFUL_DOMAINS` and `FRONTEND_URL` set to the public host (CORS has no localhost fallback in production), `TRUSTED_PROXIES` set to the platform proxy, a queue worker and the scheduler. Security headers (CSP, HSTS on HTTPS, nosniff, frame denial) come from `App\Http\Middleware\SecurityHeaders`; see [SECURITY.md](../SECURITY.md).
 
 ## Security highlights
 

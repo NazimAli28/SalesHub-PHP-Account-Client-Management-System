@@ -26,6 +26,12 @@ return [
     'public_api_docs' => (bool) env('PUBLIC_API_DOCS', true),
 
     /*
+    | The built SPA's index.html (the Docker image puts it here; absent in development, where Vite
+    | serves the app, so a placeholder page is returned instead).
+    */
+    'spa_index' => env('SPA_INDEX', resource_path('spa/index.html')),
+
+    /*
     | Public demo mode. The demo accounts are shared by every visitor, so changing a password
     | and turning on two-factor sign-in are refused (403) to keep them usable for everyone.
     */

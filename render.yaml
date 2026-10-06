@@ -1,0 +1,57 @@
+# Render Blueprint: a free, single-container live demo (see docs/deployment.md).
+# New > Blueprint > pick this repo (branch v2 or main) > fill the two values marked sync: false.
+services:
+  - type: web
+    name: saleshub-demo
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /up
+    autoDeploy: true
+    buildFilter:
+      paths:
+        - Dockerfile
+        - docker/**
+        - backend/**
+        - frontend/**
+    envVars:
+      # Build arg: shows the quick-login buttons for the demo accounts.
+      - key: VITE_DEMO_MODE
+        value: 'true'
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: 'false'
+      - key: DEMO_MODE
+        value: 'true'
+      # Optional. Leave empty to use an ephemeral key generated on each boot (demo only; sessions end
+      # on restart, which is fine because the demo data resets anyway). To pin one:
+      # php artisan key:generate --show
+      - key: APP_KEY
+        sync: false
+      # The public URL, e.g. https://saleshub-demo.onrender.com (no trailing slash).
+      - key: APP_URL
+        sync: false
+      # The same host without the scheme, e.g. saleshub-demo.onrender.com
+      - key: SANCTUM_STATEFUL_DOMAINS
+        sync: false
+      # Same origin as APP_URL (CORS allowlist).
+      - key: FRONTEND_URL
+        sync: false
+      - key: SESSION_DRIVER
+        value: database
+      - key: SESSION_SECURE_COOKIE
+        value: 'true'
+      # Render's proxy is the only way in, so trusting every proxy is acceptable here. Do NOT do this
+      # when the container's port is reachable directly (clients could spoof their IP address).
+      - key: TRUSTED_PROXIES
+        value: '*'
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: MAIL_MAILER
+        value: log
+      - key: PUBLIC_API_DOCS
+        value: 'true'
+      - key: QUEUE_CONNECTION
+        value: sync

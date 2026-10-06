@@ -28,6 +28,7 @@ Run the API alongside it (`php artisan serve` in `../backend`, port 8000). The d
 | `npm test` / `test:watch`         | Vitest + Testing Library, with the API mocked by MSW                              |
 | `npm run api:types`               | Regenerates `src/api/schema.d.ts` from `../docs/api/openapi.json`                 |
 | `npm run e2e` / `e2e:ui`          | Playwright end-to-end and axe accessibility tests (starts its own servers)        |
+| `npm run screenshots`             | Regenerates the README images in `../docs/screenshots` (starts the e2e servers)   |
 
 ## End-to-end tests
 
@@ -44,6 +45,8 @@ Run the API alongside it (`php artisan serve` in `../backend`, port 8000). The d
 | ---------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `VITE_API_URL`   | empty   | API origin when it differs from the app's. Leave empty for same-origin production and for the dev proxy                                              |
 | `VITE_DEMO_MODE` | `false` | `true` shows "Sign in as Admin / Support / Team Lead / Sales Executive" buttons on the login page (public demo only, with seeded fictional accounts) |
+
+The demo-mode banner ("Demo mode: shared demo accounts, data resets every hour") is driven by the API's `demo_mode` flag on `/auth/me`, not by a `VITE_*` variable; users can dismiss it for the session.
 
 Only `VITE_*` variables reach the browser, so never put secrets in them.
 

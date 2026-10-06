@@ -9,6 +9,9 @@ const API_PORT = process.env.E2E_API_PORT ?? '8001'
 const WEB_PORT = process.env.E2E_WEB_PORT ?? '5174'
 const baseURL = `http://localhost:${WEB_PORT}`
 
+// Worker processes don't see the CLI arguments, but they inherit the environment.
+if (process.argv.includes('--project=screenshots')) process.env.SHOW_SCREENSHOTS_PROJECT = '1'
+
 export default defineConfig({
   testDir: './e2e',
   // One shared database: tests run one at a time, in file order.
@@ -35,6 +38,17 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
       dependencies: ['setup'],
     },
+    // README screenshots: only registered by `npm run screenshots` (never part of `npm run e2e`).
+    ...(process.env.SHOW_SCREENSHOTS_PROJECT
+      ? [
+          {
+            name: 'screenshots',
+            testMatch: /screenshots.spec.ts/,
+            use: { ...devices['Desktop Chrome'] },
+            dependencies: ['setup'],
+          },
+        ]
+      : []),
   ],
   webServer: [
     {
