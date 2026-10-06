@@ -9,9 +9,9 @@
 ![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
 ![License: all rights reserved](https://img.shields.io/badge/license-all%20rights%20reserved-lightgrey)
 
-**Live demo:** <https://saleshub-demo.onrender.com> _(link added at launch)_
+**Live demo:** <https://nazimali28.github.io/SalesHub-PHP-Account-Client-Management-System/>
 
-The demo runs on a free tier, so the first request after a quiet period can take up to a minute while the container wakes up. Data is fictional and the database is rebuilt every hour.
+The live demo runs entirely in your browser against a mock API built from the real seed data; run the full Laravel stack with Docker (see [Deploy](#deploy)). Data is fictional, and your changes stay in your browser tab.
 
 | Role            | Username  | What this role sees                                                            |
 | --------------- | --------- | ------------------------------------------------------------------------------ |
@@ -191,8 +191,8 @@ More: [backend/README.md](backend/README.md), [frontend/README.md](frontend/READ
 One Docker image serves the API and the SPA on a single origin (FrankenPHP, with SQLite for the demo), and runs the scheduler alongside the web server.
 
 - Build: `docker build -t saleshub:demo --build-arg VITE_DEMO_MODE=true .`, then run it with `APP_URL`, `SANCTUM_STATEFUL_DOMAINS` and `DEMO_MODE=true`.
-- Free live demo: **New → Blueprint** on Render using [`render.yaml`](render.yaml); the health check is `/up`.
-- The demo reseeds every hour and on every boot, so a cold start takes about a minute.
+- Free browser demo: GitHub Pages, built by [`.github/workflows/pages.yml`](.github/workflows/pages.yml) (`npm run build:demo`). The SPA answers its API in the browser from data exported with `php artisan demo:export-static`.
+- Self-hosted full stack: **New → Blueprint** on Render (or any Docker host) using [`render.yaml`](render.yaml); the health check is `/up`, and the demo database reseeds every hour.
 - Environment variables, security notes and a MySQL setup are in [docs/deployment.md](docs/deployment.md).
 
 ## v1 versus v2

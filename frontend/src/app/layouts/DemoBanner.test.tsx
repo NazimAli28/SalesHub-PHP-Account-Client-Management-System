@@ -25,4 +25,15 @@ describe('DemoBanner', () => {
     renderWithProviders(<DemoBanner />, { user: makeUser({ demo_mode: true }) })
     expect(screen.queryByRole('complementary', { name: 'Demo mode' })).not.toBeInTheDocument()
   })
+
+  it('explains the static browser demo and offers a reset', () => {
+    renderWithProviders(<DemoBanner staticDemo />, { user: makeUser({ demo_mode: true }) })
+    const banner = screen.getByRole('complementary', { name: 'Demo mode' })
+    expect(banner).toHaveTextContent('the API runs in your browser with sample data')
+    expect(screen.getByRole('button', { name: 'Reset demo data' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Full Laravel stack on GitHub' })).toHaveAttribute(
+      'href',
+      expect.stringContaining('github.com'),
+    )
+  })
 })

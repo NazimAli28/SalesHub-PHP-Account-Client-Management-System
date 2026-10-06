@@ -34,7 +34,8 @@ export default defineConfig({
     { name: 'setup', testMatch: /auth\.setup\.ts/ },
     {
       name: 'chromium',
-      testIgnore: /auth\.setup\.ts/,
+      // static-demo.spec.ts runs against the GitHub Pages build (playwright.demo.config.ts).
+      testIgnore: [/auth\.setup\.ts/, /static-demo\.spec\.ts/],
       use: { ...devices['Desktop Chrome'] },
       dependencies: ['setup'],
     },

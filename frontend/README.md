@@ -17,18 +17,21 @@ Run the API alongside it (`php artisan serve` in `../backend`, port 8000). The d
 
 ## Scripts
 
-| Command                           | What it does                                                                      |
-| --------------------------------- | --------------------------------------------------------------------------------- |
-| `npm run dev`                     | Vite dev server on :5173 with the API proxy                                       |
-| `npm run build`                   | Type-checks, then builds into `dist/` (route-level code splitting, vendor chunks) |
-| `npm run preview`                 | Serves the production build locally                                               |
-| `npm run lint`                    | oxlint                                                                            |
-| `npm run format` / `format:check` | Prettier (with Tailwind class sorting)                                            |
-| `npm run typecheck`               | TypeScript, strict mode                                                           |
-| `npm test` / `test:watch`         | Vitest + Testing Library, with the API mocked by MSW                              |
-| `npm run api:types`               | Regenerates `src/api/schema.d.ts` from `../docs/api/openapi.json`                 |
-| `npm run e2e` / `e2e:ui`          | Playwright end-to-end and axe accessibility tests (starts its own servers)        |
-| `npm run screenshots`             | Regenerates the README images in `../docs/screenshots` (starts the e2e servers)   |
+| Command                           | What it does                                                                                 |
+| --------------------------------- | -------------------------------------------------------------------------------------------- |
+| `npm run dev`                     | Vite dev server on :5173 with the API proxy                                                  |
+| `npm run build`                   | Type-checks, then builds into `dist/` (route-level code splitting, vendor chunks)            |
+| `npm run preview`                 | Serves the production build locally                                                          |
+| `npm run lint`                    | oxlint                                                                                       |
+| `npm run format` / `format:check` | Prettier (with Tailwind class sorting)                                                       |
+| `npm run typecheck`               | TypeScript, strict mode                                                                      |
+| `npm test` / `test:watch`         | Vitest + Testing Library, with the API mocked by MSW                                         |
+| `npm run api:types`               | Regenerates `src/api/schema.d.ts` from `../docs/api/openapi.json`                            |
+| `npm run e2e` / `e2e:ui`          | Playwright end-to-end and axe accessibility tests (starts its own servers)                   |
+| `npm run screenshots`             | Regenerates the README images in `../docs/screenshots` (starts the e2e servers)              |
+| `npm run build:demo`              | Static browser demo for GitHub Pages (`--mode demo`, `.env.demo`): API mocked in the browser |
+| `npm run preview:demo`            | Serves that build on :4180 under the Pages base path                                         |
+| `npm run e2e:demo`                | Builds the browser demo and runs `e2e/static-demo.spec.ts` against it (no PHP)               |
 
 ## End-to-end tests
 
@@ -39,12 +42,23 @@ Run the API alongside it (`php artisan serve` in `../backend`, port 8000). The d
 - Specs live in `e2e/`: sign-in per role, leads and the board, approvals, Client 360 notes, CSV import, the command palette, the dashboard, keyboard checks and `a11y.spec.ts` (axe on every screen, light and dark).
 - Tests run serially on one worker because they share one database. CI runs them in the `e2e` job and uploads the report when it fails.
 
+## Browser demo (GitHub Pages)
+
+`npm run build:demo` builds the real SPA with `VITE_STATIC_DEMO=true` and the base path `/SalesHub-PHP-Account-Client-Management-System/` (see `.env.demo`). `main.tsx` then lazy-loads `src/demo/start.ts`, which loads `src/demo/data/demo-data.json` (exported by `php artisan demo:export-static`), moves its dates to today, and starts an MSW service worker that answers every `/api` and `/sanctum` call in the browser:
+
+- `src/demo/store.ts`: the in-memory tables, saved to sessionStorage after each write (a refresh keeps changes in that tab; the banner's **Reset demo data** clears them).
+- `src/demo/permissions.ts`, `query.ts`, `present.ts`, `engine.ts`, `validate.ts`: the permission matrix and `visibleTo` scoping, the filter/sort/pagination engine, the Resource shapes, the approval rule (200/202/403) and maker-checker engine, and Laravel-style 422s.
+- `src/demo/handlers/*`: one file per module. Imports answer `403 demo_mode`; exports build the CSV in the browser; analytics come from snapshots the real `OverviewReport` computed at export time.
+
+The Vite plugin in `vite.config.ts` adds `mockServiceWorker.js` and a `404.html` copy (deep links) to the demo build only; normal builds and tests contain none of `src/demo`.
+
 ## Environment
 
-| Variable         | Default | Purpose                                                                                                                                              |
-| ---------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `VITE_API_URL`   | empty   | API origin when it differs from the app's. Leave empty for same-origin production and for the dev proxy                                              |
-| `VITE_DEMO_MODE` | `false` | `true` shows "Sign in as Admin / Support / Team Lead / Sales Executive" buttons on the login page (public demo only, with seeded fictional accounts) |
+| Variable           | Default | Purpose                                                                                                                                              |
+| ------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VITE_API_URL`     | empty   | API origin when it differs from the app's. Leave empty for same-origin production and for the dev proxy                                              |
+| `VITE_STATIC_DEMO` | `false` | `true` only in the browser demo build (`.env.demo`); `VITE_BASE_PATH` sets its base path                                                             |
+| `VITE_DEMO_MODE`   | `false` | `true` shows "Sign in as Admin / Support / Team Lead / Sales Executive" buttons on the login page (public demo only, with seeded fictional accounts) |
 
 The demo-mode banner ("Demo mode: shared demo accounts, data resets every hour") is driven by the API's `demo_mode` flag on `/auth/me`, not by a `VITE_*` variable; users can dismiss it for the session.
 
@@ -75,6 +89,7 @@ src/
   lib/          permissions, enums and status tones, formatting, roles
   hooks/        small generic hooks
   test/         Vitest setup, MSW handlers, fixtures, render helpers
+  demo/         static browser demo only: in-browser API (MSW) and the exported data set
 ```
 
 ## Notes

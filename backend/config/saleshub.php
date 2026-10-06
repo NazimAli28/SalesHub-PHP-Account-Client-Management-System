@@ -37,6 +37,9 @@ return [
     */
     'demo_mode' => (bool) env('DEMO_MODE', false),
 
+    // Faker seed used by the demo seeders, so every seeded database has the same fictional data.
+    'demo_seed' => (int) env('DEMO_SEED', 2027),
+
     /*
     | The seeded demo accounts (usernames). In demo mode their password, username, email and role
     | cannot be changed, they cannot be deactivated, activated or deleted, and they are never locked

@@ -11,6 +11,8 @@ use App\Models\Service;
 use App\Models\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Seeder;
+use Random\Engine\Mt19937;
+use Random\Randomizer;
 
 class LeadSeeder extends Seeder
 {
@@ -29,8 +31,9 @@ class LeadSeeder extends Seeder
             ...array_fill(0, 100, LeadStage::Won),
             ...array_fill(0, 120, LeadStage::Lost),
         ];
-        mt_srand(2026);
-        shuffle($plan);
+        // A local seeded generator keeps this mix stable without reseeding PHP's global one, which
+        // would also freeze every Faker value generated afterwards.
+        $plan = (new Randomizer(new Mt19937(2026)))->shuffleArray($plan);
 
         $clients = Client::query()->get();
         $serviceIds = Service::query()->where('slug', '!=', 'custom')->pluck('id')->all();

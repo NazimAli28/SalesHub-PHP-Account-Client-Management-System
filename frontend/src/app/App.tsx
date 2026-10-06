@@ -9,9 +9,15 @@ import { paths } from './paths'
 import { createQueryClient } from './query-client'
 import { routes } from './router'
 
+/** The app's base path (`/` normally; the repository path in the GitHub Pages demo). */
+function routerBasename(): string | undefined {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+  return base === '' ? undefined : base
+}
+
 export function App() {
   const [queryClient] = useState(createQueryClient)
-  const [router] = useState(() => createBrowserRouter(routes))
+  const [router] = useState(() => createBrowserRouter(routes, { basename: routerBasename() }))
 
   // Global 401 handling: the session ended (expired, signed out elsewhere, deactivated).
   // Forget cached data, mark the user as signed out and send them to /login?redirect=...

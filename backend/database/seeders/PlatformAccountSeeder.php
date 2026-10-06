@@ -6,6 +6,8 @@ use App\Enums\AccountStanding;
 use App\Models\PlatformAccount;
 use App\Models\Workstation;
 use Illuminate\Database\Seeder;
+use Random\Engine\Mt19937;
+use Random\Randomizer;
 
 class PlatformAccountSeeder extends Seeder
 {
@@ -24,8 +26,9 @@ class PlatformAccountSeeder extends Seeder
             ...array_fill(0, 3, AccountStanding::Violation),
             ...array_fill(0, 3, AccountStanding::Disabled),
         ];
-        mt_srand(2026);
-        shuffle($standings);
+        // A local seeded generator keeps this mix stable without reseeding PHP's global one, which
+        // would also freeze every Faker value generated afterwards.
+        $standings = (new Randomizer(new Mt19937(2026)))->shuffleArray($standings);
 
         $batches = [
             now()->subDays(170)->toDateString(),

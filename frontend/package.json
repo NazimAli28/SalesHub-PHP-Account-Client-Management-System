@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:demo": "tsc -b && vite build --mode demo",
+    "preview:demo": "vite preview --mode demo --port 4180 --strictPort",
     "preview": "vite preview",
     "lint": "oxlint",
     "typecheck": "tsc -b --noEmit",
@@ -15,6 +17,7 @@
     "format:check": "prettier --check .",
     "e2e": "playwright test",
     "e2e:ui": "playwright test --ui",
+    "e2e:demo": "npm run build:demo && playwright test --config playwright.demo.config.ts",
     "screenshots": "playwright test --project=screenshots",
     "api:types": "openapi-typescript ../docs/api/openapi.json -o src/api/schema.d.ts && prettier --write src/api/schema.d.ts"
   },

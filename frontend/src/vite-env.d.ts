@@ -5,6 +5,8 @@ interface ImportMetaEnv {
   readonly VITE_API_URL?: string
   /** `'true'` shows the demo quick-login buttons on the sign-in page. */
   readonly VITE_DEMO_MODE?: string
+  /** `'true'` in the static browser demo (`npm run build:demo`): the API runs in the browser. */
+  readonly VITE_STATIC_DEMO?: string
 }
 
 interface ImportMeta {

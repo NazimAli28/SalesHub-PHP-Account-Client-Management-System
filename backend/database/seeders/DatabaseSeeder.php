@@ -12,7 +12,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        fake()->seed(2026);
+        // A fixed seed makes the demo data reproducible (stable screenshots and static demo exports).
+        fake()->seed(config()->integer('saleshub.demo_seed'));
 
         // Model activity is not logged while seeding; ActivityLogSeeder writes the demo entries.
         $logStatus = app(ActivityLogStatus::class);
